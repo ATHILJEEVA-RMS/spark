@@ -87,7 +87,7 @@ const jsonLd = {
           </div>
 
           <div class="flavour-hero__actions" data-reveal="up" style="--reveal-delay: 300ms">
-            <Button href="/flavours" variant="clay" size="lg">All Flavours</Button>
+            <Button href="/spark/flavours" variant="clay" size="lg">All Flavours</Button>
           </div>
         </div>
 
@@ -106,7 +106,7 @@ const jsonLd = {
     <Container>
       <div class="flavour-nav__inner">
         <a
-          href={`/flavours/${prev.id}`}
+          href={`/spark/flavours/${prev.id}`}
           class="flavour-nav__link"
           style={`--flavour-primary: ${prev.data.colors.primary}; --flavour-soft: ${prev.data.colors.soft};`}
         >
@@ -115,12 +115,12 @@ const jsonLd = {
           <span class="flavour-nav__mood">{prev.data.mood}</span>
         </a>
 
-        <a href="/flavours" class="flavour-nav__all">
+        <a href="/spark/flavours" class="flavour-nav__all">
           <span class="flavour-nav__all-text">All Flavours</span>
         </a>
 
         <a
-          href={`/flavours/${next.id}`}
+          href={`/spark/flavours/${next.id}`}
           class="flavour-nav__link flavour-nav__link--next"
           style={`--flavour-primary: ${next.data.colors.primary}; --flavour-soft: ${next.data.colors.soft};`}
         >

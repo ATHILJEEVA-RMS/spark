@@ -14,16 +14,16 @@ export const site = {
 };
 
 export const nav = [
-  { label: 'Home', href: '/' },
-  { label: 'Flavours', href: '/flavours' },
-  { label: 'About', href: '/about' },
-  { label: 'Distributor', href: '/contact#distributor' },
-  { label: 'Contact', href: '/contact' },
+  { label: 'Home', href: '/spark/' },
+  { label: 'Flavours', href: '/spark/flavours' },
+  { label: 'About', href: '/spark/about' },
+  { label: 'Distributor', href: '/spark/contact#distributor' },
+  { label: 'Contact', href: '/spark/contact' },
 ];
 
 export const cta = {
   label: 'Become a Distributor',
-  href: '/contact#distributor',
+  href: '/spark/contact#distributor',
 };
 
 /* ---------- Hero ---------- */
@@ -31,8 +31,8 @@ export const hero = {
   eyebrow: 'New generation sparkling refreshment',
   title: ['FIND', 'YOUR', 'SPARK.'],
   lede: 'Eight vibrant flavours. Crafted in Tamil Nadu. Made to refresh every moment.',
-  primaryCta: { label: 'Explore Flavours', href: '/flavours' },
-  secondaryCta: { label: 'Become a Distributor', href: '/contact#distributor' },
+  primaryCta: { label: 'Explore Flavours', href: '/spark/flavours' },
+  secondaryCta: { label: 'Become a Distributor', href: '/spark/contact#distributor' },
   meta: 'Crafted in Tamil Nadu',
 };
 
@@ -49,7 +49,7 @@ export const collection = {
   eyebrow: 'Our Collection',
   heading: ['Our', 'Collection'],
   lede: 'Eight signature flavours crafted for every mood.',
-  cta: { label: 'Explore All Flavours', href: '/flavours' },
+  cta: { label: 'Explore All Flavours', href: '/spark/flavours' },
 };
 
 /* ---------- Flavours page hero ---------- */
@@ -68,14 +68,14 @@ export const future = {
     'More vibrant creations are already in the making.',
     'Stay tuned for what’s next.',
   ],
-  cta: { label: 'Stay Updated', href: '/#newsletter' },
+  cta: { label: 'Stay Updated', href: '/spark/#newsletter' },
 };
 
 /* ---------- Our craft ---------- */
 export const craft = {
   eyebrow: 'Our craft',
   heading: ['Crafted with care.', 'Perfected for you.'],
-  cta: { label: 'Discover Our Craft', href: '/about' },
+  cta: { label: 'Discover Our Craft', href: '/spark/about' },
   items: [
     {
       title: 'Real Fruit Flavours',
@@ -125,8 +125,8 @@ export const ctaSection = {
   eyebrow: 'Find SPARK',
   heading: 'Your next favourite is waiting.',
   copy: 'Eight vibrant flavours crafted to colour your every moment. Find SPARK at a store near you or bring it to your shelves.',
-  primaryCta: { label: 'Explore Flavours', href: '/flavours' },
-  secondaryCta: { label: 'Become a Distributor', href: '/contact#distributor' },
+  primaryCta: { label: 'Explore Flavours', href: '/spark/flavours' },
+  secondaryCta: { label: 'Become a Distributor', href: '/spark/contact#distributor' },
 };
 
 /* ---------- Contact ---------- */
@@ -160,26 +160,26 @@ export const footer = {
     {
       title: 'Company',
       links: [
-        { label: 'About Us', href: '/about' },
-        { label: 'Our Story', href: '/#story' },
-        { label: 'Craft', href: '/#craft' },
-        { label: 'Careers', href: '/contact' },
+        { label: 'About Us', href: '/spark/about' },
+        { label: 'Our Story', href: '/spark/#story' },
+        { label: 'Craft', href: '/spark/#craft' },
+        { label: 'Careers', href: '/spark/contact' },
       ],
     },
     {
       title: 'Flavours',
       links: [
-        { label: 'All Flavours', href: '/flavours' },
-        { label: 'New Arrivals', href: '/flavours' },
-        { label: 'Coming Soon', href: '/flavours' },
+        { label: 'All Flavours', href: '/spark/flavours' },
+        { label: 'New Arrivals', href: '/spark/flavours' },
+        { label: 'Coming Soon', href: '/spark/flavours' },
       ],
     },
     {
       title: 'Support',
       links: [
-        { label: 'FAQ', href: '/contact' },
-        { label: 'Contact Us', href: '/contact' },
-        { label: 'Distributor Enquiry', href: '/contact#distributor' },
+        { label: 'FAQ', href: '/spark/contact' },
+        { label: 'Contact Us', href: '/spark/contact' },
+        { label: 'Distributor Enquiry', href: '/spark/contact#distributor' },
         { label: 'Privacy Policy', href: '#' },
       ],
     },
