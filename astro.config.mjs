@@ -3,5 +3,6 @@ import { defineConfig } from 'astro/config';
 
 // https://astro.build/config
 export default defineConfig({
-  site: 'https://spark-drinks.example',
+  site: 'https://athiljeeva-rms.github.io',
+  base: '/spark',
 });
