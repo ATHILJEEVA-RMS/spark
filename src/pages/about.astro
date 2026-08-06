@@ -1,0 +1,149 @@
+---
+/* ============================================================
+   ABOUT — the brand story.
+   We don't just make drinks. We create moments.
+   ============================================================ */
+import { about } from '../data/site';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Section from '../components/ui/Section.astro';
+import Eyebrow from '../components/ui/Eyebrow.astro';
+import Button from '../components/ui/Button.astro';
+import FlavourSpotlight from '../components/sections/FlavourSpotlight.astro';
+
+const [a1, a2] = about.heading;
+---
+
+<BaseLayout title="About" description={about.body}>
+  <Section spacing="default" width="narrow">
+    <div class="about-hero">
+      <Eyebrow>{about.eyebrow}</Eyebrow>
+      <h1 class="about-hero__title" data-reveal="up">
+        <span>{a1}</span>
+        <span class="about-hero__line--accent"><em>{a2}</em></span>
+      </h1>
+      <p class="about-hero__body" data-reveal="up" style="--reveal-delay: 160ms">
+        {about.body}
+      </p>
+    </div>
+  </Section>
+
+  <Section spacing="tight">
+    <div class="about-mission">
+      <div class="about-mission__aside">
+        <Eyebrow class="about-mission__eyebrow">{about.mission.heading}</Eyebrow>
+        <span class="about-mission__mark" aria-hidden="true">◈</span>
+      </div>
+      <p class="about-mission__body" data-reveal="up">
+        {about.mission.body}
+      </p>
+    </div>
+  </Section>
+
+  <FlavourSpotlight />
+
+  <Section width="narrow">
+    <div class="about-cta">
+      <h2 class="about-cta__title" data-reveal="up">
+        Taste the <em>moods.</em>
+      </h2>
+      <div data-reveal="up" style="--reveal-delay: 140ms">
+        <Button href="/flavours" variant="ink" size="lg">Explore Flavours</Button>
+      </div>
+    </div>
+  </Section>
+</BaseLayout>
+
+<style>
+  .about-hero {
+    display: grid;
+    gap: var(--space-m);
+    justify-items: start;
+    padding-top: calc(var(--space-2xl) + 1rem);
+  }
+
+  .about-hero__title {
+    font-size: var(--text-2xl);
+    line-height: var(--leading-tight);
+    max-width: 22ch;
+  }
+
+  .about-hero__title span {
+    display: block;
+  }
+
+  .about-hero__line--accent em {
+    font-style: italic;
+    font-weight: 400;
+    color: var(--orange);
+  }
+
+  .about-hero__body {
+    font-size: var(--text-md);
+    color: var(--color-text-muted);
+    max-width: 56ch;
+  }
+
+  .about-mission {
+    display: grid;
+    grid-template-columns: 0.6fr 2.2fr;
+    gap: var(--space-xl);
+    align-items: start;
+  }
+
+  .about-mission__aside {
+    position: sticky;
+    top: 8rem;
+    display: grid;
+    gap: var(--space-m);
+    justify-items: start;
+  }
+
+  .about-mission__mark {
+    font-family: var(--font-display);
+    font-size: var(--text-xl);
+    color: var(--orange);
+    font-style: italic;
+  }
+
+  .about-mission__body {
+    font-family: var(--font-display);
+    font-size: var(--text-lg);
+    line-height: 1.4;
+    color: var(--ink-700);
+    max-width: 42ch;
+  }
+
+  .about-cta {
+    display: grid;
+    justify-items: center;
+    gap: var(--space-m);
+    text-align: center;
+  }
+
+  .about-cta__title {
+    font-size: var(--text-2xl);
+  }
+
+  .about-cta__title em {
+    font-style: italic;
+    color: var(--orange);
+  }
+
+  @media (max-width: 48rem) {
+    .about-mission { grid-template-columns: 1fr; }
+    .about-mission__aside { position: static; }
+    .about-mission__mark { display: none; }
+  }
+
+  @media (max-width: 30rem) {
+    .about-hero__title {
+      font-size: var(--text-xl);
+    }
+    .about-mission__body {
+      font-size: var(--text-md);
+    }
+    .about-cta__title {
+      font-size: var(--text-xl);
+    }
+  }
+</style>

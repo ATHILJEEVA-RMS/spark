@@ -1,0 +1,159 @@
+---
+/* ============================================================
+   CTA SECTION — the closing statement.
+   A full-width clay banner swept with the whole flavour
+   palette: oversized headline, quiet copy, two actions,
+   drifting droplets. The final clay surface of the page.
+   ============================================================ */
+import { ctaSection } from '../../data/site';
+import Container from '../ui/Container.astro';
+import Eyebrow from '../ui/Eyebrow.astro';
+import Button from '../ui/Button.astro';
+---
+
+<section class="cta" id="stockists">
+  <Container>
+    <div class="cta__banner clay" data-reveal="up">
+      <span class="cta__drop cta__drop--1" aria-hidden="true"></span>
+      <span class="cta__drop cta__drop--2" aria-hidden="true"></span>
+      <span class="cta__drop cta__drop--3" aria-hidden="true"></span>
+
+      <div class="cta__inner">
+        <Eyebrow class="cta__eyebrow">{ctaSection.eyebrow}</Eyebrow>
+        <h2 class="cta__title">{ctaSection.heading}</h2>
+        <p class="cta__copy">{ctaSection.copy}</p>
+        <div class="cta__actions">
+          <Button href={ctaSection.primaryCta.href} variant="clay" size="lg">{ctaSection.primaryCta.label}</Button>
+          <Button href={ctaSection.secondaryCta.href} variant="ink" size="lg">{ctaSection.secondaryCta.label}</Button>
+        </div>
+      </div>
+    </div>
+  </Container>
+</section>
+
+<style>
+  .cta {
+    padding-block: var(--section-gap) 0;
+  }
+
+  .cta__banner {
+    position: relative;
+    overflow: hidden;
+    padding: var(--space-3xl) var(--space-l);
+    /* the whole palette in one sweep — cream base, every world
+       bleeding softly into the next */
+    background:
+      radial-gradient(50% 90% at 12% 10%, color-mix(in oklab, var(--litchi) 55%, transparent) 0%, transparent 60%),
+      radial-gradient(55% 95% at 88% 15%, color-mix(in oklab, var(--mango) 60%, transparent) 0%, transparent 62%),
+      radial-gradient(70% 110% at 50% 115%, color-mix(in oklab, var(--red-guava) 52%, transparent) 0%, transparent 64%),
+      linear-gradient(145deg, var(--cream-50) 0%, var(--orange-soft) 55%, var(--cream-200) 100%);
+    text-align: center;
+  }
+
+  .cta__inner {
+    position: relative;
+    display: grid;
+    gap: var(--space-m);
+    justify-items: center;
+  }
+
+  .cta__eyebrow {
+    justify-content: center;
+  }
+
+  .cta__title {
+    font-size: var(--text-3xl);
+    line-height: var(--leading-tight);
+    max-width: 16ch;
+  }
+
+  .cta__copy {
+    color: var(--ink-700);
+    max-width: 44ch;
+  }
+
+  .cta__actions {
+    display: flex;
+    gap: var(--space-s);
+    flex-wrap: wrap;
+    justify-content: center;
+    margin-top: var(--space-2xs);
+  }
+
+  /* ---------- Condensation droplets on the banner ---------- */
+  .cta__drop {
+    position: absolute;
+    border-radius: 50%;
+    background: radial-gradient(
+      circle at 32% 30%,
+      rgb(255 255 255 / 0.95) 0%,
+      rgb(255 255 255 / 0.35) 55%,
+      rgb(255 255 255 / 0.1) 100%
+    );
+    box-shadow:
+      inset -2px -3px 6px rgb(26 20 16 / 0.08),
+      0 6px 14px rgb(26 20 16 / 0.12);
+    animation: cta-drop 9s ease-in-out infinite alternate;
+  }
+
+  .cta__drop--1 {
+    width: 3.2rem;
+    aspect-ratio: 1;
+    top: 14%;
+    left: 7%;
+  }
+
+  .cta__drop--2 {
+    width: 2rem;
+    aspect-ratio: 1;
+    top: 30%;
+    right: 10%;
+    animation-delay: -3s;
+  }
+
+  .cta__drop--3 {
+    width: 1.3rem;
+    aspect-ratio: 1;
+    bottom: 18%;
+    left: 18%;
+    animation-delay: -6s;
+  }
+
+  /* ---------- Responsive ---------- */
+  @media (max-width: 48rem) {
+    .cta__banner {
+      padding: var(--space-2xl) var(--space-s);
+    }
+    .cta__title {
+      font-size: var(--text-2xl);
+    }
+  }
+
+  @media (max-width: 30rem) {
+    .cta__banner {
+      padding: var(--space-xl) var(--space-xs);
+    }
+    .cta__actions {
+      flex-direction: column;
+      align-items: stretch;
+      width: 100%;
+    }
+    .cta__actions :global(.btn) {
+      width: 100%;
+      justify-content: center;
+    }
+    .cta__drop--2,
+    .cta__drop--3 {
+      display: none;
+    }
+  }
+
+  @keyframes cta-drop {
+    from { transform: translateY(0); }
+    to   { transform: translateY(-16px); }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .cta__drop { animation: none; }
+  }
+</style>

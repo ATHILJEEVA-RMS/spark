@@ -1,0 +1,30 @@
+---
+/* ============================================================
+   SECTION — vertical rhythm primitive.
+   Wraps every page block with consistent fluid spacing and
+   exposes an id for anchor navigation.
+   ============================================================ */
+import Container from './Container.astro';
+
+interface Props {
+  id?: string;
+  width?: 'wide' | 'narrow';
+  spacing?: 'default' | 'tight' | 'loose' | 'none';
+  class?: string;
+}
+
+const { id, width = 'wide', spacing = 'default', class: className } = Astro.props;
+---
+
+<section {id} class:list={['section', `section--${spacing}`, className]}>
+  <Container {width}>
+    <slot />
+  </Container>
+</section>
+
+<style>
+  .section--default { padding-block: var(--section-gap); }
+  .section--tight   { padding-block: calc(var(--section-gap) * 0.55); }
+  .section--loose   { padding-block: calc(var(--section-gap) * 1.35); }
+  .section--none    { padding-block: 0; }
+</style>

@@ -1,0 +1,23 @@
+---
+/* ============================================================
+   FLAVOUR WORLDS — the full sequence of immersive worlds.
+   Renders one FlavourWorld per entry in the collection,
+   ordered by `order`. The editorial core of the homepage.
+   ============================================================ */
+import { getCollection } from 'astro:content';
+import FlavourWorld from './FlavourWorld.astro';
+
+const flavours = (await getCollection('flavours')).sort((a, b) => a.data.order - b.data.order);
+---
+
+<div class="worlds" id="worlds">
+  {flavours.map((flavour, i) => <FlavourWorld {flavour} index={i} total={flavours.length} />)}
+</div>
+
+<style>
+  /* Worlds paint their own cream→colour→cream gradients; the
+     wrapper simply guarantees there are no gaps between them. */
+  .worlds {
+    display: grid;
+  }
+</style>

@@ -1,0 +1,256 @@
+---
+/* ============================================================
+   MANIFESTO — the brand's opening argument.
+   Big editorial type, a single image-free beat of conviction.
+   The whole band between hero and collection is a full-bleed
+   claymorphic "video" — a looping morphing gradient, drifting
+   clay orbs and a light shimmer sweep. Data from site.ts.
+   ============================================================ */
+import { manifesto } from '../../data/site';
+import Eyebrow from '../ui/Eyebrow.astro';
+
+const [l1, l2] = manifesto.heading;
+---
+
+<section class="manifesto" id="story">
+  {/* full-bleed animated claymorphic background — loops like a video */}
+  <span class="manifesto__bg" aria-hidden="true"></span>
+  <span class="manifesto__orb manifesto__orb--1" aria-hidden="true"></span>
+  <span class="manifesto__orb manifesto__orb--2" aria-hidden="true"></span>
+  <span class="manifesto__orb manifesto__orb--3" aria-hidden="true"></span>
+  <span class="manifesto__orb manifesto__orb--4" aria-hidden="true"></span>
+  <span class="manifesto__shimmer" aria-hidden="true"></span>
+
+  <div class="manifesto__content">
+    <div class="manifesto__inner" data-reveal="up">
+      <Eyebrow class="manifesto__eyebrow">{manifesto.eyebrow}</Eyebrow>
+
+      <h2 class="manifesto__title">
+        <span class="manifesto__line">
+          {l1}
+        </span>
+        <span class="manifesto__line manifesto__line--accent">
+          <em>{l2}</em>
+        </span>
+      </h2>
+
+      <p class="manifesto__body" data-reveal="up" style="--reveal-delay: 160ms">
+        {manifesto.body}
+      </p>
+
+      <p class="manifesto__signature" data-reveal="fade" style="--reveal-delay: 260ms">
+        {manifesto.signature}
+      </p>
+    </div>
+  </div>
+</section>
+
+<style>
+  .manifesto {
+    position: relative;
+    overflow: hidden;
+    isolation: isolate;
+    padding-block: calc(var(--section-gap) * 1.35);
+    background: var(--cream-50);
+  }
+
+  /* ---------- Full-bleed animated gradient base (loops like video) ---------- */
+  .manifesto__bg {
+    position: absolute;
+    inset: 0;
+    z-index: -3;
+    background:
+      radial-gradient(38% 46% at 18% 28%, color-mix(in oklab, var(--mango-soft) 85%, transparent) 0%, transparent 60%),
+      radial-gradient(42% 50% at 82% 22%, color-mix(in oklab, var(--litchi-soft) 80%, transparent) 0%, transparent 62%),
+      radial-gradient(48% 56% at 72% 88%, color-mix(in oklab, var(--red-guava-soft) 75%, transparent) 0%, transparent 64%),
+      radial-gradient(34% 42% at 22% 82%, color-mix(in oklab, var(--orange-soft) 85%, transparent) 0%, transparent 60%),
+      radial-gradient(30% 38% at 52% 52%, color-mix(in oklab, var(--blueberry-soft) 70%, transparent) 0%, transparent 58%),
+      linear-gradient(140deg, var(--cream-50) 0%, var(--cream-100) 50%, var(--cream-200) 100%);
+    background-size: 220% 220%, 240% 240%, 260% 260%, 230% 230%, 250% 250%, 100% 100%;
+    animation: manifesto-flow 26s var(--ease-out-expo) infinite alternate;
+  }
+
+  /* ---------- Drifting clay orbs ---------- */
+  .manifesto__orb {
+    position: absolute;
+    z-index: -2;
+    border-radius: 46% 54% 58% 42% / 52% 46% 54% 48%;
+    background: linear-gradient(145deg, var(--cream-50), var(--cream-200));
+    box-shadow: var(--shadow-clay-sm);
+    opacity: 0.65;
+    animation: manifesto-drift 16s ease-in-out infinite alternate;
+  }
+
+  .manifesto__orb--1 {
+    width: clamp(9rem, 22vw, 18rem);
+    aspect-ratio: 1;
+    top: -10%;
+    left: -8%;
+    animation-duration: 20s;
+  }
+
+  .manifesto__orb--2 {
+    width: clamp(7rem, 16vw, 12rem);
+    aspect-ratio: 1;
+    bottom: -12%;
+    right: -6%;
+    background: linear-gradient(145deg, var(--orange-soft), color-mix(in oklab, var(--orange) 30%, var(--cream-100)));
+    animation-delay: -6s;
+    animation-duration: 15s;
+  }
+
+  .manifesto__orb--3 {
+    width: clamp(4.5rem, 10vw, 7rem);
+    aspect-ratio: 1;
+    top: 24%;
+    right: 6%;
+    background: linear-gradient(145deg, var(--litchi-soft), color-mix(in oklab, var(--litchi) 35%, var(--cream-100)));
+    animation-delay: -10s;
+    animation-duration: 13s;
+    opacity: 0.5;
+  }
+
+  .manifesto__orb--4 {
+    width: clamp(3rem, 7vw, 5rem);
+    aspect-ratio: 1;
+    bottom: 18%;
+    left: 12%;
+    background: linear-gradient(145deg, var(--mango-soft), color-mix(in oklab, var(--mango) 32%, var(--cream-100)));
+    animation-delay: -3s;
+    animation-duration: 11s;
+    opacity: 0.45;
+  }
+
+  /* ---------- Shimmer sweep (light catching the clay) ---------- */
+  .manifesto__shimmer {
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background: linear-gradient(
+      105deg,
+      transparent 0%,
+      transparent 38%,
+      rgb(255 255 255 / 0.14) 47%,
+      rgb(255 255 255 / 0.28) 50%,
+      rgb(255 255 255 / 0.14) 53%,
+      transparent 62%,
+      transparent 100%
+    );
+    background-size: 280% 100%;
+    animation: manifesto-shimmer 11s ease-in-out infinite;
+    pointer-events: none;
+  }
+
+  /* ---------- Content ---------- */
+  .manifesto__content {
+    position: relative;
+    z-index: 1;
+    max-width: var(--container-narrow);
+    margin-inline: auto;
+    padding-inline: var(--gutter);
+  }
+
+  .manifesto__inner {
+    display: grid;
+    justify-items: center;
+    gap: var(--space-m);
+    text-align: center;
+  }
+
+  .manifesto__eyebrow {
+    justify-content: center;
+  }
+
+  .manifesto__title {
+    font-size: var(--text-3xl);
+    line-height: var(--leading-none);
+    text-transform: uppercase;
+    letter-spacing: var(--tracking-tight);
+  }
+
+  .manifesto__line {
+    display: block;
+  }
+
+  .manifesto__line--accent em {
+    font-size: 1.32em;
+    font-weight: 400;
+    text-transform: none;
+    background: linear-gradient(100deg, var(--orange) 0%, var(--red-guava) 55%, var(--litchi-deep) 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+
+  .manifesto__line em {
+    font-style: italic;
+  }
+
+  .manifesto__body {
+    font-size: var(--text-md);
+    color: var(--color-text-muted);
+    max-width: 46ch;
+  }
+
+  .manifesto__signature {
+    font-family: var(--font-display);
+    font-style: italic;
+    font-size: var(--text-lg);
+    color: var(--orange);
+  }
+
+  /* ---------- Motion ---------- */
+  @keyframes manifesto-flow {
+    0%   { background-position: 0% 0%, 100% 0%, 100% 100%, 0% 100%, 50% 50%, 0% 0%; }
+    33%  { background-position: 50% 30%, 50% 60%, 40% 70%, 60% 30%, 70% 20%, 0% 0%; }
+    66%  { background-position: 70% 60%, 30% 70%, 20% 30%, 80% 70%, 30% 80%, 0% 0%; }
+    100% { background-position: 100% 100%, 0% 100%, 0% 0%, 100% 0%, 50% 50%, 0% 0%; }
+  }
+
+  @keyframes manifesto-drift {
+    0%   { transform: translateY(0) rotate(0deg) scale(1); border-radius: 46% 54% 58% 42% / 52% 46% 54% 48%; }
+    50%  { transform: translateY(-24px) rotate(10deg) scale(1.06); border-radius: 55% 45% 44% 56% / 45% 56% 44% 55%; }
+    100% { transform: translateY(-12px) rotate(-6deg) scale(1.03); border-radius: 50% 50% 60% 40% / 60% 40% 50% 50%; }
+  }
+
+  @keyframes manifesto-shimmer {
+    0%, 100% { background-position: 140% 0; opacity: 0; }
+    20%, 80%  { opacity: 1; }
+    50%       { background-position: -40% 0; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .manifesto__bg,
+    .manifesto__orb,
+    .manifesto__shimmer {
+      animation: none;
+    }
+    .manifesto__shimmer { display: none; }
+  }
+
+  /* ---------- Responsive ---------- */
+  @media (max-width: 48rem) {
+    .manifesto {
+      padding-block: calc(var(--section-gap) * 1.15);
+    }
+  }
+
+  @media (max-width: 30rem) {
+    .manifesto {
+      padding-block: calc(var(--section-gap) * 0.95);
+    }
+    .manifesto__inner {
+      gap: var(--space-s);
+    }
+    .manifesto__title {
+      font-size: var(--text-2xl);
+    }
+    .manifesto__body {
+      font-size: var(--text-base);
+    }
+    .manifesto__orb--1 { width: 8rem; }
+    .manifesto__orb--2 { width: 6rem; }
+    .manifesto__orb--3 { display: none; }
+    .manifesto__orb--4 { display: none; }
+  }
+</style>

@@ -1,0 +1,249 @@
+---
+/* ============================================================
+   COLLECTION STRIP — the collection overview.
+   A horizontal scroll-snap strip of every flavour, each a
+   soft-tinted mini clay tile with its staged can. Entirely
+   generated from the content collection; arrow controls are
+   progressive enhancement over native scroll.
+   ============================================================ */
+import { getCollection } from 'astro:content';
+import { collection } from '../../data/site';
+import Section from '../ui/Section.astro';
+import Eyebrow from '../ui/Eyebrow.astro';
+import Button from '../ui/Button.astro';
+import CanStage from '../CanStage.astro';
+
+const flavours = (await getCollection('flavours')).sort((a, b) => a.data.order - b.data.order);
+const [h1, h2] = collection.heading;
+---
+
+<Section id="collection" spacing="tight">
+  <div class="strip-section__head">
+    <div class="strip-section__titles">
+      <Eyebrow>{collection.eyebrow}</Eyebrow>
+      <h2 class="strip-section__title" data-reveal="up">
+        <span>{h1}</span>
+        <span class="strip-section__title-accent"><em>{h2}</em></span>
+      </h2>
+    </div>
+
+    <div class="strip-section__controls" data-reveal="fade" style="--reveal-delay: 160ms">
+      <Button href={collection.cta.href} variant="clay" size="md">{collection.cta.label}</Button>
+      <span class="strip-section__arrows">
+        <button class="strip-section__arrow clay-sm" data-strip-prev aria-label="Scroll flavours backwards">
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
+            <path d="M13 7H2M6 3L2 7l4 4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" />
+          </svg>
+        </button>
+        <button class="strip-section__arrow clay-sm" data-strip-next aria-label="Scroll flavours forwards">
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
+            <path d="M1 7h11M8 3l4 4-4 4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" />
+          </svg>
+        </button>
+      </span>
+    </div>
+  </div>
+
+  <ul class="strip" role="list" data-strip tabindex="0" aria-label="All flavours">
+    {
+      flavours.map((flavour, i) => (
+        <li class="strip__item">
+          <a
+            href={`/flavours#${flavour.id}`}
+            class="strip__tile"
+            style={`--flavour-primary: ${flavour.data.colors.primary}; --flavour-soft: ${flavour.data.colors.soft}; --reveal-delay: ${i * 60}ms;`}
+            data-reveal="up"
+          >
+            <span class="strip__num" aria-hidden="true">{String(flavour.data.order).padStart(2, '0')}</span>
+            <CanStage {flavour} variant="strip" />
+            <span class="strip__meta">
+              <span class="strip__name">{flavour.data.name}</span>
+              <span class="strip__mood">{flavour.data.mood}</span>
+            </span>
+          </a>
+        </li>
+      ))
+    }
+  </ul>
+</Section>
+
+<style>
+  .strip-section__head {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: var(--space-m);
+    flex-wrap: wrap;
+    margin-bottom: var(--space-l);
+  }
+
+  .strip-section__titles {
+    display: grid;
+    gap: var(--space-s);
+  }
+
+  .strip-section__title {
+    font-size: var(--text-2xl);
+    line-height: var(--leading-none);
+    text-transform: uppercase;
+  }
+
+  .strip-section__title span {
+    display: block;
+  }
+
+  .strip-section__title-accent em {
+    font-style: italic;
+    font-weight: 400;
+    text-transform: none;
+    color: var(--orange);
+  }
+
+  .strip-section__controls {
+    display: flex;
+    align-items: center;
+    gap: var(--space-s);
+    flex-wrap: wrap;
+  }
+
+  .strip-section__arrows {
+    display: inline-flex;
+    gap: var(--space-2xs);
+  }
+
+  .strip-section__arrow {
+    display: grid;
+    place-items: center;
+    width: 2.9rem;
+    height: 2.9rem;
+    color: var(--ink-900);
+    transition:
+      box-shadow var(--duration-med) var(--ease-out-expo),
+      translate var(--duration-med) var(--ease-out-expo);
+  }
+
+  .strip-section__arrow:hover {
+    box-shadow: var(--shadow-clay-hover);
+    translate: 0 -3px;
+  }
+
+  /* ---------- The strip ---------- */
+  .strip {
+    display: flex;
+    gap: var(--space-s);
+    padding: var(--space-xs) var(--space-2xs) var(--space-m);
+    margin-inline: calc(var(--space-2xs) * -1);
+    list-style: none;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scrollbar-width: none;
+  }
+
+  .strip::-webkit-scrollbar {
+    display: none;
+  }
+
+  .strip__item {
+    scroll-snap-align: start;
+    flex: 0 0 auto;
+  }
+
+  /* ---------- Tile — mini clay world per flavour ---------- */
+  .strip__tile {
+    position: relative;
+    display: grid;
+    justify-items: center;
+    gap: var(--space-2xs);
+    width: 11.5rem;
+    padding: var(--space-s) var(--space-xs) var(--space-s);
+    border-radius: var(--radius-lg);
+    background: linear-gradient(
+      165deg,
+      var(--cream-50) 0%,
+      var(--flavour-soft) 58%,
+      color-mix(in oklab, var(--flavour-soft) 62%, var(--flavour-primary)) 125%
+    );
+    box-shadow: var(--shadow-clay-sm);
+    overflow: hidden;
+    transition:
+      box-shadow var(--duration-med) var(--ease-out-expo),
+      translate var(--duration-med) var(--ease-out-expo);
+  }
+
+  .strip__tile:hover {
+    box-shadow: var(--shadow-clay-hover);
+    translate: 0 -6px;
+  }
+
+  .strip__num {
+    position: absolute;
+    top: var(--space-2xs);
+    left: var(--space-xs);
+    font-size: var(--text-xs);
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    color: color-mix(in oklab, var(--flavour-primary) 70%, var(--ink-500));
+  }
+
+  .strip__meta {
+    display: grid;
+    gap: 0.1rem;
+    text-align: center;
+  }
+
+  .strip__name {
+    font-family: var(--font-display);
+    font-weight: 560;
+    font-size: var(--text-base);
+    letter-spacing: var(--tracking-tight);
+  }
+
+  .strip__mood {
+    font-size: var(--text-xs);
+    color: var(--color-text-muted);
+  }
+
+  /* ---------- Responsive ---------- */
+  @media (max-width: 48rem) {
+    .strip-section__head {
+      align-items: stretch;
+    }
+    .strip-section__controls {
+      justify-content: space-between;
+      width: 100%;
+    }
+    .strip-section__arrows {
+      display: none;
+    }
+    .strip__tile {
+      width: 10.5rem;
+      padding: var(--space-xs) var(--space-2xs) var(--space-s);
+    }
+    .strip {
+      gap: var(--space-2xs);
+    }
+  }
+
+  @media (max-width: 30rem) {
+    .strip-section__title {
+      font-size: var(--text-xl);
+    }
+    .strip__tile {
+      width: 10rem;
+    }
+  }
+</style>
+
+<script>
+  /* Arrow controls — progressive enhancement over native overflow
+     scroll. One tile width per step, eased by the browser. */
+  const strip = document.querySelector<HTMLElement>('[data-strip]');
+  const step = () => strip?.querySelector('.strip__item')?.clientWidth ?? 240;
+
+  document.querySelector('[data-strip-prev]')?.addEventListener('click', () => {
+    strip?.scrollBy({ left: -(step() + 16), behavior: 'smooth' });
+  });
+  document.querySelector('[data-strip-next]')?.addEventListener('click', () => {
+    strip?.scrollBy({ left: step() + 16, behavior: 'smooth' });
+  });
+</script>

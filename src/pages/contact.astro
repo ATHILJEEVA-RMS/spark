@@ -1,0 +1,168 @@
+---
+/* ============================================================
+   CONTACT — enquiries grid.
+   Business, Distributor, Retail, Media — data-driven clay
+   cards with mailto CTA. Distributor is anchor #distributor.
+   ============================================================ */
+import { contact, cta } from '../data/site';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Section from '../components/ui/Section.astro';
+import Eyebrow from '../components/ui/Eyebrow.astro';
+import Button from '../components/ui/Button.astro';
+
+type IconName = 'spark' | 'globe' | 'basket' | 'pen' | 'mail';
+
+const icons = {
+  spark: '<path d="M12 3l2.4 6.6L21 12l-6.6 2.4L12 21l-2.4-6.6L3 12l6.6-2.4L12 3z"/>',
+  globe: '<circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c2.8 2.6 4.2 5.7 4.2 9S14.8 18.4 12 21c-2.8-2.6-4.2-5.7-4.2-9S9.2 5.6 12 3z"/>',
+  basket: '<path d="M4 9h16l-1.5 11h-13L4 9zM8 9l4-6 4 6"/>',
+  pen: '<path d="M4 20l1-4L16 5l3 3L8 19l-4 1zM14 7l3 3"/>',
+  mail: '<rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/>',
+};
+---
+
+<BaseLayout title="Contact" description={contact.copy}>
+  <Section spacing="default">
+    <div class="contact-hero">
+      <Eyebrow>{contact.eyebrow}</Eyebrow>
+      <h1 class="contact-hero__title" data-reveal="up">
+        Let’s build something <em>refreshing</em><br />together.
+      </h1>
+      <p class="contact-hero__copy" data-reveal="up" style="--reveal-delay: 140ms">
+        {contact.copy}
+      </p>
+    </div>
+
+    <div class="contact-grid">
+      {
+        contact.enquiries.map((q, i) => (
+          <article
+            id={q.id}
+            class="contact-card clay"
+            data-reveal="up"
+            style={`--reveal-delay: ${(i % 2) * 110}ms; scroll-margin-top: 8rem;`}
+          >
+            <span class="contact-card__icon" aria-hidden="true">
+              <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" set:html={icons[q.icon as IconName] ?? icons.spark} />
+            </span>
+            <h2 class="contact-card__title">{q.title}</h2>
+            <p class="contact-card__body">{q.body}</p>
+            <a class="contact-card__link" href={`mailto:${contact.email}?subject=${encodeURIComponent(q.title)}`}>
+              {contact.email}
+            </a>
+          </article>
+        ))
+      }
+    </div>
+
+    <div class="contact-cta">
+      <Button href={cta.href} variant="ink" size="lg">{cta.label}</Button>
+    </div>
+  </Section>
+</BaseLayout>
+
+<style>
+  .contact-hero {
+    display: grid;
+    gap: var(--space-s);
+    justify-items: start;
+    max-width: 52rem;
+    margin-bottom: var(--space-xl);
+    padding-top: calc(var(--space-2xl) + 1rem);
+  }
+
+  .contact-hero__title {
+    font-size: var(--text-2xl);
+    line-height: var(--leading-tight);
+  }
+
+  .contact-hero__title em {
+    font-style: italic;
+    color: var(--orange);
+  }
+
+  .contact-hero__copy {
+    color: var(--color-text-muted);
+    font-size: var(--text-md);
+    max-width: 52ch;
+  }
+
+  .contact-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--space-m);
+  }
+
+  .contact-card {
+    display: grid;
+    gap: var(--space-s);
+    align-content: start;
+    padding: var(--space-l);
+    transition:
+      box-shadow var(--duration-med) var(--ease-out-expo),
+      translate var(--duration-med) var(--ease-out-expo);
+  }
+
+  .contact-card:hover {
+    box-shadow: var(--shadow-clay-hover);
+    translate: 0 -6px;
+  }
+
+  .contact-card__icon {
+    display: grid;
+    place-items: center;
+    width: 3.5rem;
+    height: 3.5rem;
+    border-radius: var(--radius-pill);
+    background: linear-gradient(145deg, var(--cream-50), var(--cream-300));
+    box-shadow: var(--shadow-clay-sm);
+    color: var(--ink-700);
+  }
+
+  .contact-card__title {
+    font-size: var(--text-lg);
+  }
+
+  .contact-card__body {
+    color: var(--color-text-muted);
+    font-size: var(--text-sm);
+    max-width: 36ch;
+  }
+
+  .contact-card__link {
+    justify-self: start;
+    font-size: var(--text-sm);
+    font-weight: 600;
+    color: var(--ink-900);
+    border-bottom: 1.5px solid var(--orange);
+    padding-bottom: 0.1em;
+    transition: opacity var(--duration-fast) ease;
+  }
+
+  .contact-card__link:hover {
+    opacity: 0.65;
+  }
+
+  .contact-cta {
+    display: flex;
+    justify-content: center;
+    margin-top: var(--space-xl);
+  }
+
+  @media (max-width: 48rem) {
+    .contact-grid { grid-template-columns: 1fr; }
+  }
+
+  @media (max-width: 30rem) {
+    .contact-hero__title {
+      font-size: var(--text-xl);
+    }
+    .contact-card {
+      padding: var(--space-m);
+    }
+    .contact-card__icon {
+      width: 3rem;
+      height: 3rem;
+    }
+  }
+</style>

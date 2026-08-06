@@ -1,0 +1,36 @@
+---
+/* ============================================================
+   EYEBROW — the small-caps editorial label with a rule.
+   Marks the start of every story beat.
+   ============================================================ */
+interface Props {
+  class?: string;
+}
+
+const { class: className } = Astro.props;
+---
+
+<p class:list={['eyebrow', className]} data-reveal="fade">
+  <span class="eyebrow__rule" aria-hidden="true"></span>
+  <span class="eyebrow__text"><slot /></span>
+</p>
+
+<style>
+  .eyebrow {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2xs);
+    font-size: var(--text-xs);
+    font-weight: 600;
+    letter-spacing: var(--tracking-caps);
+    text-transform: uppercase;
+    color: var(--color-text-muted);
+  }
+
+  .eyebrow__rule {
+    width: 2.5rem;
+    height: 1px;
+    background: currentColor;
+    opacity: 0.5;
+  }
+</style>

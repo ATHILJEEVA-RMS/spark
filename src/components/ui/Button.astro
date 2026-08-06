@@ -1,0 +1,143 @@
+---
+/* ============================================================
+   BUTTON — claymorphic pill. One of the sanctioned clay
+   surfaces (nav / buttons / cards / badges / feature blocks).
+   variants:
+      clay   — soft cream clay (default)
+      accent — flavour-gradient clay (themed by --flavour-*)
+      ink    — solid near-black, editorial contrast
+      ghost  — flat outline for quiet actions
+   icon="play" prepends a clay play disc (story CTAs).
+   ============================================================ */
+interface Props {
+  href?: string;
+  variant?: 'clay' | 'accent' | 'ink' | 'ghost';
+  size?: 'md' | 'lg';
+  icon?: 'play';
+  class?: string;
+}
+
+const { href, variant = 'clay', size = 'md', icon, class: className } = Astro.props;
+const Tag = href ? 'a' : 'button';
+---
+
+<Tag {href} class:list={['btn', `btn--${variant}`, `btn--${size}`, className]}>
+  {
+    icon === 'play' && (
+      <span class="btn__disc" aria-hidden="true">
+        <svg width="9" height="10" viewBox="0 0 9 10" fill="none">
+          <path d="M8 4.13a1 1 0 0 1 0 1.74L1.7 9.8A1 1 0 0 1 .2 8.93V1.07A1 1 0 0 1 1.7.2L8 4.13z" fill="currentColor" />
+        </svg>
+      </span>
+    )
+  }
+  <span class="btn__label"><slot /></span>
+  {
+    !icon && (
+      <svg class="btn__arrow" width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
+        <path d="M1 7h11M8 3l4 4-4 4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" />
+      </svg>
+    )
+  }
+</Tag>
+
+<style>
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2xs);
+    font-family: var(--font-sans);
+    font-weight: 600;
+    font-size: var(--text-sm);
+    letter-spacing: 0.02em;
+    white-space: nowrap;
+    transition:
+      box-shadow var(--duration-med) var(--ease-out-expo),
+      translate var(--duration-med) var(--ease-out-expo),
+      background-color var(--duration-fast) ease;
+  }
+
+  .btn--md { padding: 0.85em 1.6em; }
+  .btn--lg { padding: 1.05em 2em; font-size: var(--text-base); }
+
+  /* --- clay variant --- */
+  .btn--clay {
+    border-radius: var(--radius-pill);
+    background: linear-gradient(145deg, var(--clay-bg-1, var(--cream-50)), var(--clay-bg-2, var(--cream-200)));
+    box-shadow: var(--shadow-clay-sm);
+    color: var(--ink-900);
+  }
+
+  .btn--clay:hover {
+    box-shadow: var(--shadow-clay-hover);
+    translate: 0 -3px;
+  }
+
+  /* --- accent variant — the flavour world’s own clay --- */
+  .btn--accent {
+    border-radius: var(--radius-pill);
+    background: linear-gradient(
+      145deg,
+      color-mix(in oklab, var(--flavour-primary, var(--orange)) 82%, white),
+      var(--flavour-deep, var(--orange-deep))
+    );
+    color: var(--cream-50);
+    box-shadow:
+      inset 2px 2px 5px rgb(255 255 255 / 0.35),
+      inset -3px -3px 8px rgb(26 20 16 / 0.12),
+      10px 16px 32px color-mix(in oklab, var(--flavour-primary, var(--orange)) 45%, transparent);
+  }
+
+  .btn--accent:hover {
+    translate: 0 -3px;
+    box-shadow:
+      inset 2px 2px 5px rgb(255 255 255 / 0.4),
+      inset -3px -3px 8px rgb(26 20 16 / 0.1),
+      14px 22px 44px color-mix(in oklab, var(--flavour-primary, var(--orange)) 55%, transparent);
+  }
+
+  /* --- ink variant --- */
+  .btn--ink {
+    border-radius: var(--radius-pill);
+    background: var(--ink-900);
+    color: var(--cream-50);
+    box-shadow: 10px 14px 28px rgb(26 20 16 / 0.22);
+  }
+
+  .btn--ink:hover {
+    translate: 0 -3px;
+    background: var(--ink-700);
+  }
+
+  /* --- ghost variant --- */
+  .btn--ghost {
+    border: 1px solid var(--color-line);
+    border-radius: var(--radius-pill);
+    color: inherit;
+  }
+
+  .btn--ghost:hover {
+    border-color: currentColor;
+  }
+
+  /* --- play disc --- */
+  .btn__disc {
+    display: grid;
+    place-items: center;
+    width: 1.9em;
+    height: 1.9em;
+    margin-inline-start: -0.6em;
+    border-radius: 50%;
+    background: linear-gradient(145deg, var(--cream-50), var(--cream-200));
+    box-shadow: var(--shadow-clay-sm);
+    color: var(--flavour-primary, var(--orange));
+  }
+
+  .btn__arrow {
+    transition: translate var(--duration-fast) var(--ease-out-expo);
+  }
+
+  .btn:hover .btn__arrow {
+    translate: 3px 0;
+  }
+</style>

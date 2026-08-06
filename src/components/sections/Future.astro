@@ -1,0 +1,281 @@
+---
+/* ============================================================
+   FUTURE — "More SPARK is Coming" teaser.
+   Creates anticipation: two blurred bottle silhouettes, a soft
+   glowing gradient, floating fruit accents and a single CTA.
+   No fake flavour cards. Until the real upcoming cans exist,
+   existing flavour artwork is reused as a deliberately blurred,
+   label-anonymous silhouette placeholder.
+   ============================================================ */
+import { getCollection } from 'astro:content';
+import { future } from '../../data/site';
+import Section from '../ui/Section.astro';
+import Eyebrow from '../ui/Eyebrow.astro';
+import Button from '../ui/Button.astro';
+import { Image } from 'astro:assets';
+
+const flavours = (await getCollection('flavours')).sort((a, b) => a.data.order - b.data.order);
+/* Two existing cans stand in as anonymous silhouettes. */
+const placeholders = [flavours[2], flavours[6]].filter(Boolean);
+const [h1, h2] = future.heading;
+---
+
+<Section id="coming-soon" spacing="loose">
+  <div class="future" data-reveal="fade">
+    {/* soft glowing gradient world */}
+    <span class="future__glow" aria-hidden="true"></span>
+    <span class="future__glow future__glow--2" aria-hidden="true"></span>
+
+    {/* floating fruit accents */}
+    <span class="future__accent future__accent--1" aria-hidden="true"></span>
+    <span class="future__accent future__accent--2" aria-hidden="true"></span>
+    <span class="future__accent future__accent--3" aria-hidden="true"></span>
+    <span class="future__accent future__accent--4" aria-hidden="true"></span>
+
+    {/* blurred bottle silhouettes */}
+    <div class="future__silhouettes" aria-hidden="true">
+      {
+        placeholders.map((f) => (
+          <span class="future__silhouette">
+            <Image
+              src={f.data.image.src}
+              alt=""
+              width={260}
+              sizes="14rem"
+              widths={[260, 520]}
+              format="webp"
+              quality={80}
+              loading="lazy"
+              decoding="async"
+              class="future__silhouette-img"
+            />
+          </span>
+        ))
+      }
+    </div>
+
+    <div class="future__inner">
+      <Eyebrow class="future__eyebrow">{future.eyebrow}</Eyebrow>
+
+      <h2 class="future__title" data-reveal="up">
+        <span>{h1}</span>
+        <span class="future__title-accent"><em>{h2}</em></span>
+      </h2>
+
+      <div class="future__body" data-reveal="up" style="--reveal-delay: 140ms">
+        {future.body.map((line) => <p>{line}</p>)}
+      </div>
+
+      <div class="future__action" data-reveal="up" style="--reveal-delay: 240ms">
+        <Button href={future.cta.href} variant="clay" size="lg">{future.cta.label}</Button>
+      </div>
+    </div>
+  </div>
+</Section>
+
+<style>
+  .future {
+    position: relative;
+    overflow: hidden;
+    border-radius: var(--radius-clay);
+    padding: var(--space-3xl) var(--space-l);
+    background:
+      radial-gradient(60% 80% at 20% 20%, color-mix(in oklab, var(--mango) 35%, transparent) 0%, transparent 62%),
+      radial-gradient(55% 75% at 82% 30%, color-mix(in oklab, var(--litchi) 38%, transparent) 0%, transparent 64%),
+      radial-gradient(70% 90% at 50% 110%, color-mix(in oklab, var(--red-guava) 32%, transparent) 0%, transparent 66%),
+      linear-gradient(160deg, var(--cream-50) 0%, var(--cream-100) 50%, var(--cream-200) 100%);
+    text-align: center;
+    isolation: isolate;
+  }
+
+  /* ---------- Soft glowing gradients ---------- */
+  .future__glow {
+    position: absolute;
+    inset: -10%;
+    z-index: -1;
+    border-radius: 50%;
+    background:
+      radial-gradient(
+        closest-side,
+        color-mix(in oklab, var(--mango) 30%, transparent),
+        transparent 70%
+      );
+    filter: blur(40px);
+    opacity: 0.7;
+    animation: future-pulse 9s ease-in-out infinite alternate;
+  }
+
+  .future__glow--2 {
+    inset: 20% -20% -20% 30%;
+    background:
+      radial-gradient(
+        closest-side,
+        color-mix(in oklab, var(--litchi) 30%, transparent),
+        transparent 70%
+      );
+    animation-delay: -4s;
+  }
+
+  /* ---------- Blurred bottle silhouettes ---------- */
+  .future__silhouettes {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: clamp(2rem, 8vw, 6rem);
+    pointer-events: none;
+  }
+
+  .future__silhouette {
+    display: block;
+    width: clamp(8rem, 18vw, 14rem);
+    filter: blur(14px) saturate(1.1);
+    opacity: 0.55;
+    animation: future-drift 12s ease-in-out infinite alternate;
+  }
+
+  .future__silhouette:last-child {
+    animation-delay: -6s;
+    animation-direction: alternate-reverse;
+  }
+
+  .future__silhouette-img {
+    display: block;
+    width: 100%;
+    height: auto;
+    /* wash out the label so the silhouette reads as anonymous */
+    filter: brightness(1.05) contrast(0.85);
+    mask-image: linear-gradient(180deg, transparent 0%, black 18%, black 82%, transparent 100%);
+    -webkit-mask-image: linear-gradient(180deg, transparent 0%, black 18%, black 82%, transparent 100%);
+  }
+
+  /* ---------- Floating fruit accents ---------- */
+  .future__accent {
+    position: absolute;
+    border-radius: 50%;
+    background: radial-gradient(
+      circle at 32% 30%,
+      rgb(255 255 255 / 0.95) 0%,
+      color-mix(in oklab, var(--mango) 55%, white) 60%,
+      color-mix(in oklab, var(--mango) 75%, transparent) 100%
+    );
+    box-shadow:
+      inset -1px -2px 3px rgb(26 20 16 / 0.12),
+      0 4px 12px rgb(26 20 16 / 0.14);
+    animation: future-drift 7s ease-in-out infinite alternate;
+  }
+
+  .future__accent--1 {
+    width: 2.6rem; aspect-ratio: 1;
+    top: 14%; left: 12%;
+  }
+  .future__accent--2 {
+    width: 1.6rem; aspect-ratio: 1;
+    top: 26%; right: 16%;
+    animation-delay: -2s;
+  }
+  .future__accent--3 {
+    width: 1.1rem; aspect-ratio: 1;
+    bottom: 22%; left: 22%;
+    animation-delay: -4s;
+  }
+  .future__accent--4 {
+    width: 2rem; aspect-ratio: 1;
+    bottom: 16%; right: 14%;
+    animation-delay: -1s;
+  }
+
+  /* ---------- Content ---------- */
+  .future__inner {
+    position: relative;
+    z-index: 1;
+    display: grid;
+    gap: var(--space-s);
+    justify-items: center;
+    max-width: var(--container-narrow);
+    margin-inline: auto;
+  }
+
+  .future__eyebrow {
+    justify-content: center;
+  }
+
+  .future__title {
+    font-size: var(--text-3xl);
+    line-height: var(--leading-none);
+    text-transform: uppercase;
+    letter-spacing: var(--tracking-tight);
+  }
+
+  .future__title span {
+    display: block;
+  }
+
+  .future__title-accent em {
+    font-style: italic;
+    font-weight: 400;
+    text-transform: none;
+    background: linear-gradient(100deg, var(--mango) 0%, var(--red-guava) 55%, var(--litchi-deep) 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+
+  .future__body {
+    display: grid;
+    gap: 0.1rem;
+    color: var(--ink-700);
+    font-size: var(--text-md);
+    max-width: 40ch;
+  }
+
+  .future__action {
+    margin-top: var(--space-2xs);
+  }
+
+  /* ---------- Motion ---------- */
+  @keyframes future-pulse {
+    from { transform: scale(0.96); opacity: 0.55; }
+    to   { transform: scale(1.04); opacity: 0.8; }
+  }
+
+  @keyframes future-drift {
+    from { transform: translateY(0) rotate(-2deg); }
+    to   { transform: translateY(-14px) rotate(2deg); }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .future__glow,
+    .future__silhouette,
+    .future__accent {
+      animation: none;
+    }
+  }
+
+  @media (max-width: 48rem) {
+    .future {
+      padding: var(--space-2xl) var(--space-s);
+    }
+    .future__silhouettes {
+      gap: 1rem;
+    }
+    .future__silhouette {
+      width: clamp(6rem, 30vw, 9rem);
+    }
+    .future__title {
+      font-size: var(--text-2xl);
+    }
+  }
+
+  @media (max-width: 30rem) {
+    .future {
+      padding: var(--space-xl) var(--space-xs);
+    }
+    .future__accent--1,
+    .future__accent--4 {
+      display: none;
+    }
+  }
+</style>

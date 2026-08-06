@@ -1,0 +1,286 @@
+---
+/* ============================================================
+   SITE HEADER — floating claymorphic nav pill.
+   One of the sanctioned clay surfaces. Frosted clay at rest,
+   deeper shadow once the page scrolls. On small screens the
+   links collapse into a full clay menu overlay driven by the
+   hamburger.
+   ============================================================ */
+import { nav, cta, site } from '../../data/site';
+import Button from '../ui/Button.astro';
+---
+
+<header class="site-header" data-header>
+  <nav class="site-header__pill" aria-label="Primary">
+    <a href="/" class="site-header__logo" aria-label={`${site.brand} — home`}>
+      {site.brand}<span class="site-header__logo-dot">.</span>
+    </a>
+
+    <ul class="site-header__links" role="list">
+      {
+        nav.map((item) => (
+          <li>
+            <a href={item.href} class="site-header__link">
+              {item.label}
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+
+    <span class="site-header__actions">
+      <Button href={cta.href} variant="ink" size="md" class="site-header__cta">
+        {cta.label}
+      </Button>
+
+      <button
+        class="site-header__burger clay-sm"
+        data-menu-toggle
+        aria-expanded="false"
+        aria-controls="mobile-menu"
+        aria-label="Open menu"
+      >
+        <svg class="site-header__burger-icon" width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+          <path class="site-header__burger-top" d="M2 4.5h12" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" />
+          <path class="site-header__burger-mid" d="M2 8h12" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" />
+          <path class="site-header__burger-bot" d="M2 11.5h12" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" />
+        </svg>
+      </button>
+    </span>
+  </nav>
+</header>
+
+{/* ---------- Mobile menu overlay ---------- */}
+<div class="mobile-menu" id="mobile-menu" data-menu hidden>
+  <nav class="mobile-menu__panel clay" aria-label="Mobile">
+    <ul class="mobile-menu__links" role="list">
+      {
+        nav.map((item, i) => (
+          <li>
+            <a href={item.href} class="mobile-menu__link" style={`--i: ${i}`}>
+              {item.label}
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+    <Button href={cta.href} variant="accent" size="lg" class="mobile-menu__cta">
+      {cta.label}
+    </Button>
+  </nav>
+</div>
+
+<style>
+  .site-header {
+    position: fixed;
+    inset: var(--space-s) 0 auto 0;
+    z-index: var(--z-header);
+    display: flex;
+    justify-content: center;
+    padding-inline: var(--gutter);
+    pointer-events: none;
+  }
+
+  .site-header__pill {
+    pointer-events: auto;
+    display: flex;
+    align-items: center;
+    gap: var(--space-m);
+    padding: 0.6rem 0.7rem 0.6rem var(--space-m);
+    border-radius: var(--radius-pill);
+    background: linear-gradient(
+      145deg,
+      color-mix(in oklab, var(--cream-50) 92%, transparent),
+      color-mix(in oklab, var(--cream-200) 88%, transparent)
+    );
+    -webkit-backdrop-filter: blur(14px);
+    backdrop-filter: blur(14px);
+    box-shadow: var(--shadow-clay-sm);
+    transition: box-shadow var(--duration-med) var(--ease-out-expo);
+  }
+
+  .site-header.is-scrolled .site-header__pill {
+    box-shadow: var(--shadow-clay);
+  }
+
+  .site-header__logo {
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: var(--text-md);
+    letter-spacing: var(--tracking-tight);
+  }
+
+  .site-header__logo-dot {
+    color: var(--orange);
+  }
+
+  .site-header__links {
+    display: flex;
+    gap: var(--space-s);
+    margin-inline: auto;
+  }
+
+  .site-header__link {
+    position: relative;
+    font-size: var(--text-sm);
+    font-weight: 500;
+    color: var(--ink-700);
+    padding-block: 0.35em;
+  }
+
+  .site-header__link::after {
+    content: '';
+    position: absolute;
+    inset: auto 0 0 0;
+    height: 1.5px;
+    background: currentColor;
+    scale: 0 1;
+    transform-origin: left;
+    transition: scale var(--duration-fast) var(--ease-out-expo);
+  }
+
+  .site-header__link:hover::after {
+    scale: 1 1;
+  }
+
+  .site-header__actions {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2xs);
+  }
+
+  /* ---------- Burger ---------- */
+  .site-header__burger {
+    display: none;
+    place-items: center;
+    width: 2.9rem;
+    height: 2.9rem;
+    color: var(--ink-900);
+  }
+
+  .site-header__burger-icon path {
+    transition:
+      transform var(--duration-fast) var(--ease-out-expo),
+      opacity var(--duration-fast) ease;
+    transform-origin: center;
+    transform-box: fill-box;
+  }
+
+  .site-header__burger[aria-expanded='true'] .site-header__burger-top { transform: translateY(3.5px) rotate(45deg); }
+  .site-header__burger[aria-expanded='true'] .site-header__burger-mid { opacity: 0; }
+  .site-header__burger[aria-expanded='true'] .site-header__burger-bot { transform: translateY(-3.5px) rotate(-45deg); }
+
+  /* ---------- Mobile menu overlay ---------- */
+  .mobile-menu {
+    position: fixed;
+    inset: 0;
+    z-index: calc(var(--z-header) - 1);
+    display: grid;
+    place-items: center;
+    padding: var(--gutter);
+    background: color-mix(in oklab, var(--cream-100) 82%, transparent);
+    -webkit-backdrop-filter: blur(18px);
+    backdrop-filter: blur(18px);
+    opacity: 0;
+    transition: opacity var(--duration-med) var(--ease-out-expo);
+  }
+
+  .mobile-menu.is-open {
+    opacity: 1;
+  }
+
+  .mobile-menu__panel {
+    display: grid;
+    gap: var(--space-l);
+    justify-items: center;
+    width: min(100%, 26rem);
+    padding: var(--space-2xl) var(--space-l);
+  }
+
+  .mobile-menu__links {
+    display: grid;
+    gap: var(--space-s);
+    padding: 0;
+    list-style: none;
+    text-align: center;
+  }
+
+  .mobile-menu__link {
+    font-family: var(--font-display);
+    font-size: var(--text-xl);
+    font-weight: 560;
+    letter-spacing: var(--tracking-tight);
+    opacity: 0;
+    translate: 0 1rem;
+    transition:
+      opacity var(--duration-med) var(--ease-out-expo),
+      translate var(--duration-med) var(--ease-out-expo),
+      color var(--duration-fast) ease;
+    transition-delay: calc(var(--i) * 60ms);
+  }
+
+  .mobile-menu.is-open .mobile-menu__link {
+    opacity: 1;
+    translate: 0 0;
+  }
+
+  .mobile-menu__link:hover {
+    color: var(--orange);
+  }
+
+  /* ---------- Responsive ---------- */
+  @media (max-width: 56rem) {
+    .site-header__links,
+    .site-header__cta {
+      display: none;
+    }
+    .site-header__burger {
+      display: grid;
+    }
+    .site-header__pill {
+      gap: var(--space-s);
+      padding: 0.55rem 0.55rem 0.55rem var(--space-s);
+    }
+  }
+
+  @media (min-width: 56.01rem) {
+    .mobile-menu {
+      display: none;
+    }
+  }
+</style>
+
+<script>
+  const header = document.querySelector('[data-header]');
+  const onScroll = () => header?.classList.toggle('is-scrolled', window.scrollY > 24);
+  onScroll();
+  window.addEventListener('scroll', onScroll, { passive: true });
+
+  /* ---------- Mobile menu ---------- */
+  const toggle = document.querySelector<HTMLButtonElement>('[data-menu-toggle]');
+  const menu = document.querySelector<HTMLElement>('[data-menu]');
+
+  const setMenu = (open: boolean) => {
+    if (!toggle || !menu) return;
+    toggle.setAttribute('aria-expanded', String(open));
+    toggle.setAttribute('aria-label', open ? 'Close menu' : 'Open menu');
+    document.body.style.overflow = open ? 'hidden' : '';
+    if (open) {
+      menu.hidden = false;
+      requestAnimationFrame(() => menu.classList.add('is-open'));
+    } else {
+      menu.classList.remove('is-open');
+      menu.addEventListener('transitionend', () => (menu.hidden = true), { once: true });
+    }
+  };
+
+  toggle?.addEventListener('click', () =>
+    setMenu(toggle.getAttribute('aria-expanded') !== 'true')
+  );
+
+  menu?.querySelectorAll('a').forEach((a) => a.addEventListener('click', () => setMenu(false)));
+
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && toggle?.getAttribute('aria-expanded') === 'true') setMenu(false);
+  });
+</script>

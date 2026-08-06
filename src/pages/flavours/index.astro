@@ -1,0 +1,105 @@
+---
+/* ============================================================
+   FLAVOURS INDEX — the complete collection.
+   Every flavour as a mini advertising poster, generated from
+   the content collection.
+   ============================================================ */
+import { getCollection } from 'astro:content';
+import { flavoursPage } from '../../data/site';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Section from '../../components/ui/Section.astro';
+import Eyebrow from '../../components/ui/Eyebrow.astro';
+import Marquee from '../../components/ui/Marquee.astro';
+import FlavourCard from '../../components/cards/FlavourCard.astro';
+import CtaSection from '../../components/sections/CtaSection.astro';
+
+const flavours = (await getCollection('flavours')).sort((a, b) => a.data.order - b.data.order);
+const [h1, h2] = flavoursPage.heading;
+const flavourNames = flavours.map((f) => f.data.name);
+---
+
+<BaseLayout
+  title="8 Premium Sparkling Fruit Flavours"
+  description="From Bold Citrus to Exotic Twist — discover SPARK's eight signature flavours crafted to colour your every moment."
+>
+  <Section>
+    <div class="flavours-hero">
+      <div class="flavours-hero__head">
+        <Eyebrow>{flavoursPage.eyebrow}</Eyebrow>
+        <h1 class="flavours-hero__title" data-reveal="up">
+          <span>{h1}</span>
+          <span class="flavours-hero__title-accent"><em>{h2}</em></span>
+        </h1>
+        <p class="flavours-hero__lede" data-reveal="up" style="--reveal-delay: 140ms">
+          {flavoursPage.lede} {flavours.length} personalities live here today — more coming tomorrow.
+        </p>
+      </div>
+
+      <div class="flavours-hero__grid">
+        {flavours.map((flavour, i) => <FlavourCard {flavour} index={i} />)}
+      </div>
+    </div>
+  </Section>
+
+  <Marquee items={flavourNames} />
+
+  <CtaSection />
+</BaseLayout>
+
+<style>
+  .flavours-hero {
+    padding-top: calc(var(--space-2xl) + 1rem);
+  }
+
+  .flavours-hero__head {
+    display: grid;
+    gap: var(--space-s);
+    max-width: 46rem;
+    margin-bottom: var(--space-xl);
+  }
+
+  .flavours-hero__title {
+    font-size: var(--text-3xl);
+    line-height: var(--leading-tight);
+    text-transform: uppercase;
+  }
+
+  .flavours-hero__title span {
+    display: block;
+  }
+
+  .flavours-hero__title-accent em {
+    font-style: italic;
+    font-weight: 400;
+    text-transform: none;
+    color: var(--orange);
+  }
+
+  .flavours-hero__lede {
+    color: var(--color-text-muted);
+    font-size: var(--text-md);
+  }
+
+  .flavours-hero__grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: var(--space-m);
+  }
+
+  @media (max-width: 64rem) {
+    .flavours-hero__grid { grid-template-columns: repeat(2, 1fr); }
+  }
+
+  @media (max-width: 40rem) {
+    .flavours-hero__grid {
+      grid-template-columns: 1fr;
+      gap: var(--space-s);
+    }
+    .flavours-hero__title {
+      font-size: var(--text-2xl);
+    }
+    .flavours-hero__head {
+      margin-bottom: var(--space-l);
+    }
+  }
+</style>

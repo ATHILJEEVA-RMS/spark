@@ -1,0 +1,163 @@
+---
+/* ============================================================
+   FLAVOUR SPOTLIGHT — the immersive deep-gradient block.
+   Full-bleed section drenched in the featured flavour's deep
+   gradient, the can staged like a night-time commercial:
+   glow, splash, reflection and floating motion on the deep
+   atmosphere.
+   ============================================================ */
+import { getCollection } from 'astro:content';
+import { spotlight } from '../../data/site';
+import Button from '../ui/Button.astro';
+import CanStage from '../CanStage.astro';
+
+const flavours = (await getCollection('flavours')).sort((a, b) => a.data.order - b.data.order);
+const featured = flavours.find((f) => f.data.featured) ?? flavours[0];
+const { name, tagline, mood, colors, notes, volume } = featured.data;
+---
+
+<section
+  class="spotlight deep-gradient"
+  style={`--flavour-primary: ${colors.primary}; --flavour-deep: ${colors.deep}; --flavour-soft: ${colors.soft};`}
+>
+  <div class="spotlight__inner">
+    <div class="spotlight__copy">
+      <p class="spotlight__eyebrow" data-reveal="fade">{spotlight.eyebrow} — Nº {String(featured.data.order).padStart(2, '0')}</p>
+      <h2 class="spotlight__title" data-reveal="up">
+        <em>{name}</em>
+      </h2>
+      <p class="spotlight__mood" data-reveal="up" style="--reveal-delay: 100ms">{mood}</p>
+      <p class="spotlight__tagline" data-reveal="up" style="--reveal-delay: 160ms">{tagline}</p>
+
+      <ul class="spotlight__notes" role="list" data-reveal="up" style="--reveal-delay: 220ms">
+        {notes.map((note) => <li class="spotlight__note">{note}</li>)}
+      </ul>
+
+      <div data-reveal="up" style="--reveal-delay: 300ms">
+        <Button href={`/flavours#${featured.id}`} variant="clay" size="lg" class="spotlight__cta">
+          {spotlight.cta}
+        </Button>
+      </div>
+    </div>
+
+    <div class="spotlight__stage" data-reveal="scale" style="--reveal-delay: 150ms">
+      <CanStage flavour={featured} variant="world" />
+      <span class="spotlight__volume">{volume}</span>
+    </div>
+  </div>
+</section>
+
+<style>
+  .spotlight {
+    margin-block: var(--section-gap);
+    color: var(--cream-50);
+    overflow: clip;
+  }
+
+  .spotlight__inner {
+    display: grid;
+    grid-template-columns: 1.1fr 0.9fr;
+    gap: var(--space-xl);
+    align-items: center;
+    max-width: var(--container);
+    margin-inline: auto;
+    padding: var(--space-3xl) var(--gutter);
+  }
+
+  .spotlight__copy {
+    display: grid;
+    gap: var(--space-m);
+    justify-items: start;
+  }
+
+  .spotlight__eyebrow {
+    font-size: var(--text-xs);
+    font-weight: 600;
+    letter-spacing: var(--tracking-caps);
+    text-transform: uppercase;
+    opacity: 0.75;
+  }
+
+  .spotlight__title {
+    font-size: var(--text-hero);
+    line-height: var(--leading-none);
+  }
+
+  .spotlight__tagline {
+    font-family: var(--font-display);
+    font-style: italic;
+    font-size: var(--text-lg);
+    opacity: 0.9;
+  }
+
+  .spotlight__mood {
+    font-size: var(--text-xs);
+    font-weight: 600;
+    letter-spacing: var(--tracking-caps);
+    text-transform: uppercase;
+    opacity: 0.8;
+  }
+
+  .spotlight__notes {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2xs);
+    padding: 0;
+    list-style: none;
+  }
+
+  .spotlight__note {
+    padding: 0.45em 1.1em;
+    border: 1px solid rgb(253 251 245 / 0.35);
+    border-radius: var(--radius-pill);
+    font-size: var(--text-xs);
+    letter-spacing: 0.04em;
+    -webkit-backdrop-filter: blur(6px);
+    backdrop-filter: blur(6px);
+  }
+
+  /* ---------- Stage ---------- */
+  .spotlight__stage {
+    position: relative;
+    display: grid;
+    place-items: center;
+  }
+
+  .spotlight__volume {
+    position: absolute;
+    bottom: 2%;
+    right: 12%;
+    font-family: var(--font-display);
+    font-style: italic;
+    font-size: var(--text-md);
+    opacity: 0.85;
+  }
+
+  @media (max-width: 56rem) {
+    .spotlight__inner {
+      grid-template-columns: 1fr;
+      gap: var(--space-m);
+      padding: var(--space-2xl) var(--gutter);
+    }
+    .spotlight__stage { order: -1; }
+    .spotlight__copy {
+      justify-items: center;
+      text-align: center;
+    }
+    .spotlight__title {
+      font-size: var(--text-3xl);
+    }
+  }
+
+  @media (max-width: 30rem) {
+    .spotlight__inner {
+      padding: var(--space-xl) var(--gutter);
+    }
+    .spotlight__title {
+      font-size: var(--text-2xl);
+    }
+    .spotlight__note {
+      padding: 0.4em 0.9em;
+    }
+  }
+</style>

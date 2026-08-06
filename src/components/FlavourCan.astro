@@ -1,0 +1,56 @@
+---
+/* ============================================================
+   FLAVOUR CAN — the single place every can image on the site
+   is rendered.
+
+   Assets are true transparent cutouts (see tools/process_cans.py)
+   served through Astro's image pipeline: responsive srcsets in
+   modern formats, intrinsic dimensions baked in (zero CLS).
+
+   The component never decorates the artwork itself — all of the
+   premium presentation (glow, reflection, splash, shadow) lives
+   in CanStage, so the label stays pixel-perfect everywhere.
+   ============================================================ */
+import { Image } from 'astro:assets';
+import type { CollectionEntry } from 'astro:content';
+
+interface Props {
+  flavour: CollectionEntry<'flavours'>;
+  loading?: 'lazy' | 'eager';
+  /* Rendered width budget — the pipeline generates 2×/3× sources
+     around it so every density gets a sharp render. */
+  width?: number;
+  sizes?: string;
+  class?: string;
+}
+
+const {
+  flavour,
+  loading = 'lazy',
+  width = 420,
+  sizes = '(max-width: 48rem) 60vw, 22rem',
+  class: className,
+} = Astro.props;
+const { src, alt } = flavour.data.image;
+---
+
+<Image
+  {src}
+  {alt}
+  {loading}
+  {width}
+  {sizes}
+  widths={[width, width * 2, width * 3]}
+  format="webp"
+  quality={90}
+  decoding="async"
+  class:list={['flavour-can', className]}
+/>
+
+<style>
+  .flavour-can {
+    display: block;
+    width: 100%;
+    height: auto;
+  }
+</style>

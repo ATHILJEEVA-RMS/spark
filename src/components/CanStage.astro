@@ -1,0 +1,338 @@
+---
+/* ============================================================
+   CAN STAGE — the premium commercial presentation of a can.
+
+   Every can on the site floats inside this composition:
+     · atmospheric flavour glow       (radial, breathing)
+     · juice-splash blob              (organic, behind the can)
+     · the can itself                 (floating, drop-shadowed)
+     · mirror reflection              (masked fade under the can)
+     · soft elliptical ground shadow  (counter-animated)
+     · drifting condensation droplets (flavour-tinted)
+
+   Variants: hero (large, orbit ring) · world (mid, worlds
+   sections) · card (compact, poster cards) · strip (mini).
+
+   The component only *stages* the artwork — it never alters
+   the can render itself (branding stays pixel-perfect).
+   ============================================================ */
+import type { CollectionEntry } from 'astro:content';
+import FlavourCan from './FlavourCan.astro';
+
+interface Props {
+  flavour: CollectionEntry<'flavours'>;
+  variant?: 'hero' | 'world' | 'card' | 'strip';
+  loading?: 'lazy' | 'eager';
+  class?: string;
+}
+
+const { flavour, variant = 'world', loading = 'lazy', class: className } = Astro.props;
+const { colors } = flavour.data;
+
+const widths = { hero: 460, world: 400, card: 300, strip: 160 } as const;
+const sizes = {
+  hero: '(max-width: 56rem) 52vw, 24rem',
+  world: '(max-width: 56rem) 46vw, 20rem',
+  card: '(max-width: 64rem) 34vw, 15rem',
+  strip: '9rem',
+} as const;
+---
+
+<div
+  class:list={['stage', `stage--${variant}`, className]}
+  style={`--flavour-primary: ${colors.primary}; --flavour-deep: ${colors.deep}; --flavour-soft: ${colors.soft};`}
+>
+  {/* atmosphere */}
+  <span class="stage__glow" aria-hidden="true"></span>
+  <span class="stage__splash" aria-hidden="true"></span>
+  {variant === 'hero' && <span class="stage__ring" aria-hidden="true"></span>}
+
+  {/* floating unit: can + its mirror */}
+  <div class="stage__float">
+    <FlavourCan
+      {flavour}
+      {loading}
+      width={widths[variant]}
+      sizes={sizes[variant]}
+      class="stage__can"
+    />
+    {
+      variant !== 'strip' && (
+        <span class="stage__mirror" aria-hidden="true">
+          <FlavourCan {flavour} width={widths[variant]} sizes={sizes[variant]} class="stage__can stage__can--mirror" />
+        </span>
+      )
+    }
+  </div>
+
+  {/* grounding */}
+  <span class="stage__shadow" aria-hidden="true"></span>
+
+  {/* condensation in the air */}
+  {
+    variant !== 'strip' && (
+      <span class="stage__droplets" aria-hidden="true">
+        <i />
+        <i />
+        <i />
+      </span>
+    )
+  }
+</div>
+
+<style>
+  .stage {
+    position: relative;
+    display: grid;
+    place-items: center;
+    aspect-ratio: 1 / 1.28;
+    isolation: isolate;
+  }
+
+  /* ---------- Atmospheric glow ---------- */
+  .stage__glow {
+    position: absolute;
+    inset: -6%;
+    z-index: -2;
+    border-radius: 50%;
+    background:
+      radial-gradient(
+        closest-side,
+        color-mix(in oklab, var(--flavour-primary) 62%, white) 0%,
+        color-mix(in oklab, var(--flavour-primary) 26%, transparent) 52%,
+        transparent 74%
+      );
+    filter: blur(10px);
+    animation: stage-breathe 7s var(--ease-out-expo) infinite alternate;
+  }
+
+  /* ---------- Juice splash — organic blob behind the can ---------- */
+  .stage__splash {
+    position: absolute;
+    inset: 16% 10% 20%;
+    z-index: -1;
+    background: linear-gradient(
+      160deg,
+      color-mix(in oklab, var(--flavour-primary) 88%, white) 0%,
+      var(--flavour-primary) 55%,
+      var(--flavour-deep) 115%
+    );
+    border-radius: 47% 53% 58% 42% / 52% 44% 56% 48%;
+    opacity: 0.9;
+    filter: blur(1px) saturate(1.05);
+    transform: rotate(-6deg);
+    animation: stage-morph 11s ease-in-out infinite alternate;
+  }
+
+  .stage__splash::before,
+  .stage__splash::after {
+    content: '';
+    position: absolute;
+    border-radius: 50%;
+    background: inherit;
+  }
+
+  /* satellite splash drops */
+  .stage__splash::before {
+    width: 22%;
+    aspect-ratio: 1;
+    top: -9%;
+    right: 6%;
+  }
+
+  .stage__splash::after {
+    width: 13%;
+    aspect-ratio: 1;
+    bottom: 2%;
+    left: -6%;
+  }
+
+  /* ---------- Orbit ring (hero only) ---------- */
+  .stage__ring {
+    position: absolute;
+    inset: 9%;
+    z-index: -1;
+    border-radius: 50%;
+    border: 1px solid color-mix(in oklab, var(--flavour-primary) 42%, transparent);
+    animation: stage-spin 26s linear infinite;
+  }
+
+  .stage__ring::before {
+    content: '';
+    position: absolute;
+    top: -4px;
+    left: 50%;
+    width: 9px;
+    height: 9px;
+    border-radius: 50%;
+    background: var(--flavour-primary);
+    box-shadow: 0 0 12px color-mix(in oklab, var(--flavour-primary) 70%, transparent);
+  }
+
+  /* ---------- Floating can + reflection ---------- */
+  .stage__float {
+    position: relative;
+    display: grid;
+    justify-items: center;
+    width: 52%;
+    animation: stage-float 6s ease-in-out infinite alternate;
+  }
+
+  .stage__float :global(.stage__can) {
+    position: relative;
+    z-index: 1;
+    width: 100%;
+    height: auto;
+    filter:
+      drop-shadow(0 30px 34px rgb(26 20 16 / 0.24))
+      drop-shadow(0 6px 10px rgb(26 20 16 / 0.12));
+  }
+
+  /* mirror copy — absolutely parked under the can (zero layout
+     weight), flipped in place so the can's base sits at the top
+     of the clipped window, then faded out downward. */
+  .stage__mirror {
+    position: absolute;
+    top: calc(100% + 3%);
+    left: 0;
+    width: 100%;
+    height: var(--mirror-h, 30%);
+    overflow: hidden;
+    opacity: 0.16;
+    filter: blur(3px) saturate(0.9);
+    mask-image: linear-gradient(to bottom, black 0%, transparent 85%);
+    -webkit-mask-image: linear-gradient(to bottom, black 0%, transparent 85%);
+    pointer-events: none;
+  }
+
+  .stage__mirror :global(.stage__can--mirror) {
+    width: 100%;
+    height: auto;
+    transform: scaleY(-1);
+    filter: none;
+  }
+
+  /* ---------- Ground shadow — counter-animated against float ---------- */
+  .stage__shadow {
+    position: absolute;
+    bottom: 4%;
+    left: 50%;
+    z-index: -1;
+    width: 46%;
+    height: 5.5%;
+    translate: -50% 0;
+    border-radius: 50%;
+    background: radial-gradient(
+      closest-side,
+      rgb(26 20 16 / 0.34),
+      rgb(26 20 16 / 0.12) 55%,
+      transparent 75%
+    );
+    filter: blur(6px);
+    animation: stage-shadow 6s ease-in-out infinite alternate;
+  }
+
+  /* ---------- Drifting condensation ---------- */
+  .stage__droplets {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+  }
+
+  .stage__droplets i {
+    position: absolute;
+    border-radius: 50%;
+    background: radial-gradient(
+      circle at 32% 30%,
+      rgb(255 255 255 / 0.95) 0%,
+      color-mix(in oklab, var(--flavour-primary) 55%, white) 62%,
+      color-mix(in oklab, var(--flavour-primary) 75%, transparent) 100%
+    );
+    box-shadow:
+      inset -1px -2px 3px rgb(26 20 16 / 0.12),
+      0 3px 8px rgb(26 20 16 / 0.14);
+    animation: stage-drift 8s ease-in-out infinite alternate;
+  }
+
+  .stage__droplets i:nth-child(1) {
+    width: 4.5%;
+    aspect-ratio: 1;
+    top: 18%;
+    left: 12%;
+    animation-duration: 9s;
+  }
+
+  .stage__droplets i:nth-child(2) {
+    width: 3%;
+    aspect-ratio: 1;
+    top: 34%;
+    right: 9%;
+    animation-duration: 7s;
+    animation-delay: -3s;
+  }
+
+  .stage__droplets i:nth-child(3) {
+    width: 2.2%;
+    aspect-ratio: 1;
+    top: 62%;
+    left: 7%;
+    animation-duration: 11s;
+    animation-delay: -5s;
+  }
+
+  /* ---------- Variant scale ---------- */
+  .stage--hero { width: min(100%, 30rem); }
+  .stage--world { width: min(100%, 24rem); }
+  .stage--card { width: min(100%, 15rem); --mirror-h: 24%; }
+  .stage--card .stage__float { width: 46%; }
+
+  .stage--strip { aspect-ratio: 1 / 1.35; width: 100%; }
+  .stage--strip .stage__float { width: 52%; animation: none; }
+  .stage--strip .stage__splash { inset: 26% 16% 30%; opacity: 0.55; }
+  .stage--strip .stage__glow { inset: 8%; filter: blur(6px); animation: none; }
+  .stage--strip .stage__shadow { bottom: 2%; width: 52%; animation: none; }
+  .stage--strip .stage__float :global(.stage__can) {
+    filter: drop-shadow(0 14px 16px rgb(26 20 16 / 0.2));
+  }
+
+  /* ---------- Motion ---------- */
+  @keyframes stage-float {
+    from { transform: translateY(0) rotate(-1.2deg); }
+    to   { transform: translateY(-16px) rotate(1.2deg); }
+  }
+
+  @keyframes stage-shadow {
+    from { transform: scaleX(1); opacity: 1; }
+    to   { transform: scaleX(0.82); opacity: 0.6; }
+  }
+
+  @keyframes stage-breathe {
+    from { scale: 0.93; opacity: 0.75; }
+    to   { scale: 1.06; opacity: 1; }
+  }
+
+  @keyframes stage-morph {
+    from { border-radius: 47% 53% 58% 42% / 52% 44% 56% 48%; transform: rotate(-6deg) scale(1); }
+    to   { border-radius: 55% 45% 44% 56% / 45% 56% 44% 55%; transform: rotate(4deg) scale(1.05); }
+  }
+
+  @keyframes stage-spin {
+    to { transform: rotate(360deg); }
+  }
+
+  @keyframes stage-drift {
+    from { transform: translateY(0); }
+    to   { transform: translateY(-14px); }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .stage__float,
+    .stage__shadow,
+    .stage__glow,
+    .stage__splash,
+    .stage__ring,
+    .stage__droplets i {
+      animation: none;
+    }
+  }
+</style>

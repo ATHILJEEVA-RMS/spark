@@ -1,0 +1,74 @@
+---
+/* ============================================================
+   MARQUEE — infinite editorial ticker.
+   Pure CSS animation, duplicated track for a seamless loop.
+   Pass any array of strings; separated by the brand spark.
+   ============================================================ */
+interface Props {
+  items: string[];
+  class?: string;
+}
+
+const { items, class: className } = Astro.props;
+---
+
+<div class:list={['marquee', className]} aria-hidden="true">
+  <div class="marquee__track">
+    {
+      [0, 1].map(() => (
+        <span class="marquee__group">
+          {items.map((item) => (
+            <span class="marquee__item">
+              {item}
+              <svg class="marquee__spark" width="18" height="18" viewBox="0 0 18 18" fill="none">
+                <path d="M9 0l1.8 6.2L17 8l-6.2 1.8L9 16l-1.8-6.2L1 8l6.2-1.8L9 0z" fill="currentColor"/>
+              </svg>
+            </span>
+          ))}
+        </span>
+      ))
+    }
+  </div>
+</div>
+
+<style>
+  .marquee {
+    overflow: hidden;
+    padding-block: var(--space-s);
+    border-block: 1px solid var(--color-line);
+  }
+
+  .marquee__track {
+    display: flex;
+    width: max-content;
+    animation: marquee 32s linear infinite;
+  }
+
+  .marquee__group {
+    display: flex;
+    flex-shrink: 0;
+  }
+
+  .marquee__item {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-m);
+    padding-inline-end: var(--space-m);
+    font-family: var(--font-display);
+    font-size: var(--text-lg);
+    font-style: italic;
+    font-weight: 400;
+    letter-spacing: var(--tracking-tight);
+    white-space: nowrap;
+    color: var(--ink-700);
+  }
+
+  .marquee__spark {
+    color: var(--flavour-primary, var(--ink-300));
+    flex-shrink: 0;
+  }
+
+  @keyframes marquee {
+    to { transform: translateX(-50%); }
+  }
+</style>

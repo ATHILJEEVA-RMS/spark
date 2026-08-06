@@ -1,0 +1,86 @@
+---
+/* ============================================================
+   CRAFT — "Crafted with care. Perfected for you."
+   The four proof points as clay feature blocks, flowing from
+   src/data/site.ts. The fourth sanctioned clay surface.
+   ============================================================ */
+import { craft } from '../../data/site';
+import Section from '../ui/Section.astro';
+import Eyebrow from '../ui/Eyebrow.astro';
+import Button from '../ui/Button.astro';
+import FeatureCard from '../cards/FeatureCard.astro';
+
+type IconName = 'fruit' | 'bubbles' | 'can' | 'share' | 'globe' | 'basket' | 'pen' | 'spark' | 'mail';
+const [h1, h2] = craft.heading;
+---
+
+<Section id="craft">
+  <div class="craft__head">
+    <Eyebrow>{craft.eyebrow}</Eyebrow>
+    <h2 class="craft__title" data-reveal="up">
+      <span>{h1}</span>
+      <span class="craft__title-accent"><em>{h2}</em></span>
+    </h2>
+    <div data-reveal="up" style="--reveal-delay: 180ms">
+      <Button href={craft.cta.href} variant="ghost" size="md">{craft.cta.label}</Button>
+    </div>
+  </div>
+
+  <div class="craft__grid">
+    {
+      craft.items.map((item, i) => (
+        <FeatureCard title={item.title} body={item.body} icon={item.icon as IconName} index={i} />
+      ))
+    }
+  </div>
+</Section>
+
+<style>
+  .craft__head {
+    display: grid;
+    gap: var(--space-s);
+    justify-items: start;
+    max-width: 46rem;
+    margin-bottom: var(--space-xl);
+  }
+
+  .craft__title {
+    font-size: var(--text-2xl);
+    line-height: var(--leading-tight);
+    text-transform: uppercase;
+  }
+
+  .craft__title span {
+    display: block;
+  }
+
+  .craft__title-accent em {
+    font-style: italic;
+    font-weight: 400;
+    text-transform: none;
+    color: var(--orange);
+  }
+
+  .craft__grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: var(--space-m);
+  }
+
+  @media (max-width: 64rem) {
+    .craft__grid { grid-template-columns: repeat(2, 1fr); }
+  }
+
+  @media (max-width: 40rem) {
+    .craft__grid {
+      grid-template-columns: 1fr;
+      gap: var(--space-s);
+    }
+    .craft__head {
+      margin-bottom: var(--space-l);
+    }
+    .craft__title {
+      font-size: var(--text-xl);
+    }
+  }
+</style>

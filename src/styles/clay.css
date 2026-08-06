@@ -1,0 +1,50 @@
+/* ============================================================
+   SPARK — CLAY UTILITIES
+   Claymorphism recipes. Deliberately scoped: clay is an
+   accent language for cards, feature blocks, nav and buttons
+   only — the page canvas stays flat and editorial.
+
+   Theme any clay surface per-flavour by setting:
+     --clay-bg-1 / --clay-bg-2  (surface gradient stops)
+     --clay-shadow              (optional shadow override)
+   ============================================================ */
+
+.clay {
+  --_bg1: var(--clay-bg-1, var(--cream-50));
+  --_bg2: var(--clay-bg-2, var(--cream-200));
+  background: linear-gradient(145deg, var(--_bg1) 0%, var(--_bg2) 100%);
+  border-radius: var(--radius-clay);
+  box-shadow: var(--clay-shadow, var(--shadow-clay));
+}
+
+/* Small clay (buttons, pills, nav) */
+.clay-sm {
+  --_bg1: var(--clay-bg-1, var(--cream-50));
+  --_bg2: var(--clay-bg-2, var(--cream-200));
+  background: linear-gradient(145deg, var(--_bg1) 0%, var(--_bg2) 100%);
+  border-radius: var(--radius-pill);
+  box-shadow: var(--clay-shadow, var(--shadow-clay-sm));
+}
+
+/* Interactive clay lifts and softens on hover */
+.clay-lift {
+  transition:
+    box-shadow var(--duration-med) var(--ease-out-expo),
+    translate var(--duration-med) var(--ease-out-expo);
+}
+
+.clay-lift:hover {
+  --clay-shadow: var(--shadow-clay-hover);
+  translate: 0 -6px;
+}
+
+/* Deep full-bleed flavour gradient (immersive blocks) */
+.deep-gradient {
+  background:
+    radial-gradient(120% 90% at 20% 0%,
+      color-mix(in oklab, var(--flavour-primary, var(--ink-700)) 65%, white) 0%,
+      transparent 55%),
+    linear-gradient(158deg,
+      var(--flavour-primary, var(--ink-700)) 0%,
+      var(--flavour-deep, var(--ink-900)) 78%);
+}

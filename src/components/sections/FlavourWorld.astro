@@ -1,0 +1,271 @@
+---
+/* ============================================================
+   FLAVOUR WORLD — one immersive section per flavour.
+   Each flavour owns an entire visual world: its own gradient
+   atmosphere, ghost index numeral, oversized name (with the
+   staged can floating in front of the type), tagline, tasting
+   notes and an accent Explore button. Worlds alternate their
+   composition and fade cream → colour → cream so the page
+   flows naturally from one world into the next.
+
+   100% data-driven: one .md in src/content/flavours = one world.
+   ============================================================ */
+import type { CollectionEntry } from 'astro:content';
+import CanStage from '../CanStage.astro';
+
+interface Props {
+  flavour: CollectionEntry<'flavours'>;
+  index: number;
+  total: number;
+}
+
+const { flavour, index, total } = Astro.props;
+const { name, tagline, mood, colors, notes, status, description } = flavour.data;
+const num = String(index + 1).padStart(2, '0');
+const flip = index % 2 === 1;
+---
+
+<section
+  id={flavour.id}
+  class:list={['world', { 'world--flip': flip }]}
+  style={`--flavour-primary: ${colors.primary}; --flavour-deep: ${colors.deep}; --flavour-soft: ${colors.soft};`}
+  aria-label={`${name} flavour world`}
+>
+  <span class="world__index" aria-hidden="true">{num}</span>
+
+  <div class="world__inner">
+    <div class="world__copy">
+      <p class="world__eyebrow" data-reveal="fade">
+        Nº {num} / {String(total).padStart(2, '0')}
+        <span class="world__eyebrow-dot" aria-hidden="true"></span>
+        {mood}
+        {status !== 'current' && <span class="world__status">{status} edition</span>}
+      </p>
+
+      <h2 class="world__name" data-reveal="up">
+        <span class="world__name-text">{name}</span>
+      </h2>
+
+      <p class="world__tagline" data-reveal="up" style="--reveal-delay: 120ms">{tagline}</p>
+
+      <p class="world__description" data-reveal="up" style="--reveal-delay: 160ms">{description}</p>
+
+      <ul class="world__notes" role="list" data-reveal="up" style="--reveal-delay: 200ms">
+        {notes.map((note) => <li class="world__note">{note}</li>)}
+      </ul>
+    </div>
+
+    <div class="world__stage" data-reveal="scale" style="--reveal-delay: 140ms">
+      <CanStage {flavour} variant="world" />
+    </div>
+  </div>
+</section>
+
+<style>
+  .world {
+    position: relative;
+    overflow: clip;
+    padding-block: calc(var(--section-gap) * 1.1);
+    /* cream → flavour → cream: the seamless world-to-world flow */
+    background:
+      radial-gradient(
+        60% 46% at var(--glow-x, 72%) 44%,
+        color-mix(in oklab, var(--flavour-primary) 30%, transparent) 0%,
+        transparent 68%
+      ),
+      linear-gradient(
+        180deg,
+        var(--cream-50) 0%,
+        var(--flavour-soft) 24%,
+        color-mix(in oklab, var(--flavour-soft) 58%, var(--flavour-primary)) 52%,
+        var(--flavour-soft) 78%,
+        var(--cream-50) 100%
+      );
+  }
+
+  .world--flip {
+    --glow-x: 28%;
+  }
+
+  /* ghost numeral behind everything */
+  .world__index {
+    position: absolute;
+    top: 50%;
+    translate: 0 -50%;
+    inset-inline-start: var(--gutter);
+    font-family: var(--font-display);
+    font-size: clamp(16rem, 30vw, 30rem);
+    font-weight: 700;
+    line-height: 1;
+    color: transparent;
+    -webkit-text-stroke: 1.5px color-mix(in oklab, var(--flavour-primary) 38%, transparent);
+    opacity: 0.5;
+    pointer-events: none;
+    user-select: none;
+  }
+
+  .world--flip .world__index {
+    inset-inline-start: auto;
+    inset-inline-end: var(--gutter);
+  }
+
+  .world__inner {
+    position: relative;
+    display: grid;
+    grid-template-columns: 1.05fr 0.95fr;
+    gap: var(--space-l);
+    align-items: center;
+    max-width: var(--container);
+    margin-inline: auto;
+    padding-inline: var(--gutter);
+  }
+
+  .world--flip .world__inner {
+    direction: rtl; /* visual flip, DOM order untouched */
+  }
+
+  .world--flip .world__copy,
+  .world--flip .world__stage {
+    direction: ltr;
+  }
+
+  /* ---------- Copy ---------- */
+  .world__copy {
+    position: relative;
+    z-index: 1;
+    display: grid;
+    gap: var(--space-s);
+    justify-items: start;
+  }
+
+  .world__eyebrow {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2xs);
+    font-size: var(--text-xs);
+    font-weight: 600;
+    letter-spacing: var(--tracking-caps);
+    text-transform: uppercase;
+    color: var(--ink-700);
+  }
+
+  .world__eyebrow-dot {
+    width: 0.45em;
+    height: 0.45em;
+    border-radius: 50%;
+    background: var(--flavour-primary);
+  }
+
+  .world__status {
+    padding: 0.35em 1em;
+    border-radius: var(--radius-pill);
+    background: var(--flavour-primary);
+    color: var(--cream-50);
+    letter-spacing: var(--tracking-caps);
+  }
+
+  .world__name {
+    font-size: var(--text-giant);
+    line-height: var(--leading-none);
+    letter-spacing: var(--tracking-tight);
+    text-transform: uppercase;
+    max-width: 7ch;
+  }
+
+  .world__name-text {
+    display: block;
+    text-wrap: balance;
+  }
+
+  .world__tagline {
+    font-family: var(--font-display);
+    font-style: italic;
+    font-size: var(--text-lg);
+    color: var(--ink-700);
+    max-width: 30ch;
+  }
+
+  .world__description {
+    font-size: var(--text-base);
+    color: var(--ink-700);
+    max-width: 38ch;
+    line-height: var(--leading-body);
+    opacity: 0.85;
+  }
+
+  .world__notes {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2xs);
+    padding: 0;
+    list-style: none;
+  }
+
+  .world__note {
+    padding: 0.5em 1.2em;
+    border-radius: var(--radius-pill);
+    background: linear-gradient(
+      145deg,
+      rgb(253 251 245 / 0.75),
+      color-mix(in oklab, var(--flavour-soft) 72%, transparent)
+    );
+    box-shadow: var(--shadow-clay-sm);
+    font-size: var(--text-xs);
+    font-weight: 500;
+    letter-spacing: 0.04em;
+    color: var(--ink-700);
+  }
+
+  /* ---------- Stage — overlaps the giant name ---------- */
+  .world__stage {
+    position: relative;
+    z-index: 2;
+    display: grid;
+    place-items: center;
+    margin-inline-start: calc(var(--space-3xl) * -1.45);
+  }
+
+  .world--flip .world__stage {
+    margin-inline-start: 0;
+    margin-inline-end: calc(var(--space-3xl) * -1.45);
+  }
+
+  @media (max-width: 56rem) {
+    .world__inner,
+    .world--flip .world__inner {
+      grid-template-columns: 1fr;
+      direction: ltr;
+      gap: var(--space-m);
+    }
+
+    .world__stage,
+    .world--flip .world__stage {
+      order: -1;
+      margin-inline: 0;
+    }
+
+    .world__index {
+      font-size: 12rem;
+      opacity: 0.35;
+    }
+  }
+
+  @media (max-width: 30rem) {
+    .world {
+      padding-block: calc(var(--section-gap) * 0.85);
+    }
+    .world__index {
+      font-size: 8rem;
+    }
+    .world__name {
+      font-size: var(--text-3xl);
+    }
+    .world__tagline {
+      font-size: var(--text-md);
+    }
+    .world__note {
+      padding: 0.45em 1em;
+      font-size: var(--text-xs);
+    }
+  }
+</style>

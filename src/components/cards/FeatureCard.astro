@@ -1,0 +1,73 @@
+---
+/* ============================================================
+   FEATURE CARD — claymorphic feature block.
+   Used for "Why SPARK" style content. Icon is a simple inline
+   SVG set keyed by name so it scales without asset work.
+   ============================================================ */
+interface Props {
+  title: string;
+  body: string;
+  icon?: 'fruit' | 'bubbles' | 'can' | 'share' | 'globe' | 'basket' | 'pen' | 'spark' | 'mail';
+  index?: number;
+}
+
+const { title, body, icon = 'fruit', index = 0 } = Astro.props;
+
+const icons = {
+  fruit: '<circle cx="12" cy="13" r="7"/><path d="M12 6c0-2.5 2-4.5 4.5-4.5.3 2.6-1.8 4.5-4.5 4.5z"/>',
+  bubbles: '<circle cx="8" cy="10" r="3.5"/><circle cx="15.5" cy="7.5" r="2"/><circle cx="14" cy="15" r="3"/>',
+  can: '<rect x="8" y="3" width="8" height="18" rx="2.5"/><path d="M8 8h8M8 17h8"/>',
+  share: '<circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="M8.6 10.5l6.8-4M8.6 13.5l6.8 4"/>',
+  globe: '<circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c2.8 2.6 4.2 5.7 4.2 9S14.8 18.4 12 21c-2.8-2.6-4.2-5.7-4.2-9S9.2 5.6 12 3z"/>',
+  basket: '<path d="M4 9h16l-1.5 11h-13L4 9zM8 9l4-6 4 6"/>',
+  pen: '<path d="M4 20l1-4L16 5l3 3L8 19l-4 1zM14 7l3 3"/>',
+  spark: '<path d="M12 3l2.4 6.6L21 12l-6.6 2.4L12 21l-2.4-6.6L3 12l6.6-2.4L12 3z"/>',
+  mail: '<rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/>',
+};
+---
+
+<article class="feature-card clay" data-reveal="up" style={`--reveal-delay: ${(index % 3) * 110}ms`}>
+  <span class="feature-card__icon" aria-hidden="true">
+    <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" set:html={icons[icon]} />
+  </span>
+  <h3 class="feature-card__title">{title}</h3>
+  <p class="feature-card__body">{body}</p>
+</article>
+
+<style>
+  .feature-card {
+    display: grid;
+    gap: var(--space-s);
+    align-content: start;
+    padding: var(--space-l);
+    transition:
+      box-shadow var(--duration-med) var(--ease-out-expo),
+      translate var(--duration-med) var(--ease-out-expo);
+  }
+
+  .feature-card:hover {
+    box-shadow: var(--shadow-clay-hover);
+    translate: 0 -6px;
+  }
+
+  .feature-card__icon {
+    display: grid;
+    place-items: center;
+    width: 3.5rem;
+    height: 3.5rem;
+    border-radius: var(--radius-pill);
+    background: linear-gradient(145deg, var(--cream-50), var(--cream-300));
+    box-shadow: var(--shadow-clay-sm);
+    color: var(--ink-700);
+  }
+
+  .feature-card__title {
+    font-size: var(--text-lg);
+  }
+
+  .feature-card__body {
+    color: var(--color-text-muted);
+    font-size: var(--text-sm);
+    max-width: 34ch;
+  }
+</style>

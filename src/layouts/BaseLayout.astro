@@ -1,0 +1,115 @@
+---
+/* ============================================================
+   BASE LAYOUT — every page's shell.
+   Loads design tokens + base + clay utilities, fonts, header,
+   footer and the global reveal-on-scroll observer. Carries the
+   full SEO/social meta layer and structured data.
+   ============================================================ */
+import { site } from '../data/site';
+import SiteHeader from '../components/layout/SiteHeader.astro';
+import SiteFooter from '../components/layout/SiteFooter.astro';
+import '../styles/tokens.css';
+import '../styles/base.css';
+import '../styles/clay.css';
+
+interface Props {
+  title?: string;
+  description?: string;
+}
+
+const { title, description = site.description } = Astro.props;
+const pageTitle = title ? `${title} — ${site.brand}` : `${site.brand} — ${site.tagline}`;
+const canonical = new URL(Astro.url.pathname, site.url).href;
+
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'Organization',
+  name: site.brand,
+  url: site.url,
+  description: site.description,
+};
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content={description} />
+    <meta name="generator" content={Astro.generator} />
+    <link rel="canonical" href={canonical} />
+    <title>{pageTitle}</title>
+
+    <!-- Open Graph / Twitter -->
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content={site.brand} />
+    <meta property="og:title" content={pageTitle} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={pageTitle} />
+    <meta name="twitter:description" content={description} />
+    <meta name="theme-color" content="#fdfbf5" />
+
+    <!-- Typography: Fraunces (variable editorial serif) + Space Grotesk -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..900;1,9..144,300..900&family=Space+Grotesk:wght@300..700&display=swap"
+      rel="stylesheet"
+    />
+
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+
+    <script is:inline type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
+  </head>
+  <body>
+    <a class="skip-link" href="#main">Skip to content</a>
+    <SiteHeader />
+    <main id="main">
+      <slot />
+    </main>
+    <SiteFooter />
+
+    <script>
+      /* Global reveal-on-scroll: observes every [data-reveal]
+         element once and adds .is-visible. Pure progressive
+         enhancement — content is visible without JS via the
+         reduced-motion fallback in base.css. */
+      const observer = new IntersectionObserver(
+        (entries) => {
+          for (const entry of entries) {
+            if (entry.isIntersecting) {
+              entry.target.classList.add('is-visible');
+              observer.unobserve(entry.target);
+            }
+          }
+        },
+        { threshold: 0.12, rootMargin: '0px 0px -6% 0px' }
+      );
+
+      document.querySelectorAll('[data-reveal]').forEach((el) => observer.observe(el));
+    </script>
+  </body>
+</html>
+
+<style>
+  .skip-link {
+    position: fixed;
+    top: var(--space-2xs);
+    left: 50%;
+    translate: -50% -200%;
+    z-index: var(--z-overlay);
+    padding: 0.7em 1.4em;
+    border-radius: var(--radius-pill);
+    background: var(--ink-900);
+    color: var(--cream-50);
+    font-size: var(--text-sm);
+    font-weight: 600;
+    transition: translate var(--duration-fast) var(--ease-out-expo);
+  }
+
+  .skip-link:focus-visible {
+    translate: -50% 0;
+  }
+</style>

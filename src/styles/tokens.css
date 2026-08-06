@@ -1,0 +1,179 @@
+/* ============================================================
+   SPARK — DESIGN TOKENS
+   Single source of truth for the whole design system.
+   Every colour, type size, space value, radius and shadow
+   used anywhere on the site is defined here.
+
+   Palette is extracted from the can liquids of the 8 launch
+   flavours. Adding a flavour = adding its tokens + one
+   content file. Nothing else in the system changes.
+   ============================================================ */
+
+:root {
+  /* ----------------------------------------------------------
+     1. BRAND NEUTRALS — "editorial cream paper"
+     Warm paper tones for the editorial base, ink for type.
+     ---------------------------------------------------------- */
+  --cream-50:  #fdfbf5;
+  --cream-100: #faf5ea;
+  --cream-200: #f4ecdc;
+  --cream-300: #eadfc8;
+  --cream-400: #dccbA6;
+
+  --ink-900: #1a1410;   /* primary text, warm near-black */
+  --ink-700: #3e352b;   /* secondary text */
+  --ink-500: #71644f;   /* muted text */
+  --ink-300: #ab9e86;   /* faint text / lines on cream */
+
+  /* ----------------------------------------------------------
+     2. FLAVOUR PALETTE — sampled from the can liquids.
+     primary  = liquid colour (accents, tags, hover states)
+     deep     = gradient end for full-bleed immersive blocks
+     soft     = tint for clay surfaces on cream
+     ---------------------------------------------------------- */
+  --blueberry:       #1b9be0;
+  --blueberry-deep:  #0a5ca8;
+  --blueberry-soft:  #ddeef9;
+
+  --mango:           #f5a11e;
+  --mango-deep:      #d96a00;
+  --mango-soft:      #fcebd0;
+
+  --lemon:           #eccf0d;
+  --lemon-deep:      #b89200;
+  --lemon-soft:      #fbf3c6;
+
+  --cola:            #e23312;
+  --cola-deep:       #3d110a;
+  --cola-soft:       #f7dbd2;
+
+  --green-apple:     #8cc63f;
+  --green-apple-deep:#4a861b;
+  --green-apple-soft:#e8f3d4;
+
+  --litchi:          #ee9fc2;
+  --litchi-deep:     #c34a85;
+  --litchi-soft:     #fbe4ee;
+
+  --orange:          #f47b00;
+  --orange-deep:     #cf4b00;
+  --orange-soft:     #fde4cb;
+
+  --red-guava:       #f26076;
+  --red-guava-deep:  #c22840;
+  --red-guava-soft:  #fbdfe3;
+
+  /* Semantic aliases — components only reference these, never
+     the raw flavour tokens above. */
+  --color-surface:        var(--cream-50);
+  --color-surface-raised: var(--cream-100);
+  --color-text:           var(--ink-900);
+  --color-text-muted:     var(--ink-500);
+  --color-line:           color-mix(in oklab, var(--ink-900) 12%, var(--cream-50));
+
+  /* ----------------------------------------------------------
+     3. TYPOGRAPHY
+     Display: Fraunces — variable editorial serif (opsz axis).
+     Text/UI: Space Grotesk — geometric grotesque counterpoint.
+     Fluid scale (Utopia-style): every step scales between
+     min and max viewport without a breakpoint jump.
+     ---------------------------------------------------------- */
+  --font-display: "Fraunces", "Iowan Old Style", Georgia, serif;
+  --font-sans: "Space Grotesk", "Inter", system-ui, -apple-system, sans-serif;
+
+  --text-xs:   clamp(0.78rem, 0.75rem + 0.15vw, 0.87rem);
+  --text-sm:   clamp(0.89rem, 0.85rem + 0.2vw, 1rem);
+  --text-base: clamp(1rem, 0.95rem + 0.25vw, 1.13rem);
+  --text-md:   clamp(1.13rem, 1.05rem + 0.45vw, 1.38rem);
+  --text-lg:   clamp(1.38rem, 1.18rem + 0.95vw, 1.94rem);
+  --text-xl:   clamp(1.6rem, 1.3rem + 1.5vw, 2.88rem);
+  --text-2xl:  clamp(2rem, 1.55rem + 2.45vw, 4.06rem);
+  --text-3xl:  clamp(2.35rem, 1.7rem + 3.75vw, 6.13rem);
+  --text-hero: clamp(2.75rem, 1.4rem + 6.75vw, 10rem);
+  /* Flavour-world names — the oversized editorial layer the
+     cans float in front of. */
+  --text-giant: clamp(3.25rem, 1.7rem + 8.75vw, 12.5rem);
+
+  --leading-none:  0.92;
+  --leading-tight: 1.05;
+  --leading-snug:  1.25;
+  --leading-body:  1.65;
+
+  --tracking-tight:  -0.02em;
+  --tracking-body:    0.01em;
+  --tracking-caps:    0.22em;
+
+  /* ----------------------------------------------------------
+     4. SPACING — fluid rhythm. Sections breathe with viewport.
+     ---------------------------------------------------------- */
+  --space-3xs: clamp(0.31rem, 0.29rem + 0.1vw, 0.38rem);
+  --space-2xs: clamp(0.56rem, 0.52rem + 0.2vw, 0.69rem);
+  --space-xs:  clamp(0.88rem, 0.81rem + 0.35vw, 1.06rem);
+  --space-s:   clamp(1.13rem, 1.02rem + 0.55vw, 1.44rem);
+  --space-m:   clamp(1.69rem, 1.5rem + 0.95vw, 2.13rem);
+  --space-l:   clamp(2.25rem, 1.95rem + 1.5vw, 2.88rem);
+  --space-xl:  clamp(3.38rem, 2.85rem + 2.65vw, 4.31rem);
+  --space-2xl: clamp(4.5rem, 3.7rem + 4vw, 5.75rem);
+  --space-3xl: clamp(6.75rem, 5.4rem + 6.75vw, 8.63rem);
+
+  --section-gap: clamp(4rem, 3.25rem + 4vw, 9rem);
+  --gutter: clamp(1.15rem, 0.5rem + 3.25vw, 4rem);
+
+  --container: 90rem;          /* 1440px editorial measure */
+  --container-narrow: 68rem;   /* long-form text measure */
+  --measure: 62ch;             /* max line length for prose */
+
+  /* ----------------------------------------------------------
+     5. RADII — clay surfaces are soft and inflated.
+     ---------------------------------------------------------- */
+  --radius-sm:   0.75rem;
+  --radius-md:   1.25rem;
+  --radius-lg:   1.75rem;
+  --radius-clay: 2.5rem;
+  --radius-pill: 999px;
+
+  /* ----------------------------------------------------------
+     6. CLAYMORPHISM — used ONLY for cards, feature blocks,
+     nav and buttons. The page itself stays flat editorial.
+     Clay = soft 145° gradient + inner top light + inner bottom
+     shade + long soft ambient shadow.
+     ---------------------------------------------------------- */
+  --shadow-clay:
+    inset 2px 2px 6px rgb(255 255 255 / 0.8),
+    inset -4px -4px 10px rgb(26 20 16 / 0.06),
+    18px 24px 48px rgb(26 20 16 / 0.12),
+    -8px -10px 24px rgb(255 255 255 / 0.5);
+
+  --shadow-clay-hover:
+    inset 2px 2px 6px rgb(255 255 255 / 0.85),
+    inset -4px -4px 10px rgb(26 20 16 / 0.05),
+    26px 36px 72px rgb(26 20 16 / 0.16),
+    -10px -12px 28px rgb(255 255 255 / 0.55);
+
+  --shadow-clay-sm:
+    inset 1px 1px 4px rgb(255 255 255 / 0.75),
+    inset -2px -2px 6px rgb(26 20 16 / 0.06),
+    8px 12px 24px rgb(26 20 16 / 0.1),
+    -4px -5px 12px rgb(255 255 255 / 0.45);
+
+  /* Deep-shadow variant for clay sitting on dark gradients */
+  --shadow-clay-on-deep:
+    inset 2px 2px 6px rgb(255 255 255 / 0.7),
+    inset -4px -4px 10px rgb(26 20 16 / 0.08),
+    24px 32px 64px rgb(0 0 0 / 0.35);
+
+  /* ----------------------------------------------------------
+     7. MOTION
+     ---------------------------------------------------------- */
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-spring:   cubic-bezier(0.34, 1.56, 0.64, 1);
+  --duration-fast: 0.25s;
+  --duration-med:  0.6s;
+  --duration-slow: 1s;
+
+  /* ----------------------------------------------------------
+     8. Z-INDEX SCALE
+     ---------------------------------------------------------- */
+  --z-header: 100;
+  --z-overlay: 200;
+}
