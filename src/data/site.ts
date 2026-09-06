@@ -10,7 +10,8 @@ export const site = {
   tagline: 'Find your spark.',
   description:
     'SPARK is a new generation of sparkling refreshment — eight vibrant flavours, one unforgettable experience, crafted to refresh every moment.',
-  url: 'https://spark-drinks.example',
+  url: 'https://athiljeeva-rms.github.io',
+  base: '/spark',
 };
 
 export const nav = [
