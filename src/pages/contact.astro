@@ -1,8 +1,7 @@
 ---
 /* ============================================================
-   CONTACT — enquiries grid.
-   Business, Distributor, Retail, Media — data-driven clay
-   cards with mailto CTA. Distributor is anchor #distributor.
+   CONTACT — Enquiry form + enquiry cards.
+   Form submits via mailto: and WhatsApp API.
    ============================================================ */
 import { contact, cta } from '../data/site';
 import BaseLayout from '../layouts/BaseLayout.astro';
@@ -19,6 +18,16 @@ const icons = {
   pen: '<path d="M4 20l1-4L16 5l3 3L8 19l-4 1zM14 7l3 3"/>',
   mail: '<rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/>',
 };
+
+const subjects = [
+  'General Enquiry',
+  'Business Partnership',
+  'Distributor Enquiry',
+  'Retail Opportunity',
+  'Media & Collaboration',
+  'Feedback',
+  'Other',
+];
 ---
 
 <BaseLayout title="Contact" description={contact.copy}>
@@ -26,13 +35,77 @@ const icons = {
     <div class="contact-hero">
       <Eyebrow>{contact.eyebrow}</Eyebrow>
       <h1 class="contact-hero__title" data-reveal="up">
-        Let’s build something <em>refreshing</em><br />together.
+        Let's build something <em>refreshing</em><br />together.
       </h1>
       <p class="contact-hero__copy" data-reveal="up" style="--reveal-delay: 140ms">
         {contact.copy}
       </p>
     </div>
 
+    <!-- ─── Contact Form ─── -->
+    <div class="contact-form-wrap" data-reveal="up" style="--reveal-delay: 200ms">
+      <form class="contact-form clay" id="contact-form" action="https://api.web3forms.com/submit" method="POST" novalidate>
+        <input type="hidden" name="access_key" value="7adf6c4b-5692-4673-9f31-6bdf0d2d1370" />
+        <input type="hidden" name="to" value="soundharyaramasamy1238@gmail.com" />
+        <input type="hidden" name="subject" value="[SPARK Contact] New Enquiry" />
+        <input type="checkbox" name="botcheck" class="hidden" style="display:none" />
+        <div class="contact-form__row">
+          <div class="contact-form__field">
+            <label class="contact-form__label" for="cf-name">Full Name <span aria-hidden="true">*</span></label>
+            <input class="contact-form__input" type="text" id="cf-name" name="name" required placeholder="Your name" autocomplete="name" />
+            <span class="contact-form__error" data-error="name"></span>
+          </div>
+          <div class="contact-form__field">
+            <label class="contact-form__label" for="cf-email">Email Address <span aria-hidden="true">*</span></label>
+            <input class="contact-form__input" type="email" id="cf-email" name="email" required placeholder="you@example.com" autocomplete="email" />
+            <span class="contact-form__error" data-error="email"></span>
+          </div>
+        </div>
+
+        <div class="contact-form__row">
+          <div class="contact-form__field">
+            <label class="contact-form__label" for="cf-phone">Phone Number</label>
+            <input class="contact-form__input" type="tel" id="cf-phone" name="phone" placeholder="+91 98765 43210" autocomplete="tel" />
+          </div>
+          <div class="contact-form__field">
+            <label class="contact-form__label" for="cf-subject">Subject <span aria-hidden="true">*</span></label>
+            <select class="contact-form__input contact-form__select" id="cf-subject" name="subject" required>
+              <option value="" disabled selected>Select a subject</option>
+              {subjects.map((s) => <option value={s}>{s}</option>)}
+            </select>
+            <span class="contact-form__error" data-error="subject"></span>
+          </div>
+        </div>
+
+        <div class="contact-form__field">
+          <label class="contact-form__label" for="cf-message">Message <span aria-hidden="true">*</span></label>
+          <textarea class="contact-form__input contact-form__textarea" id="cf-message" name="message" required rows="5" placeholder="Tell us what you have in mind..."></textarea>
+          <span class="contact-form__error" data-error="message"></span>
+        </div>
+
+        <div class="contact-form__actions">
+          <button type="submit" class="contact-form__submit">
+            Send Message
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/>
+            </svg>
+          </button>
+        </div>
+
+        <p class="contact-form__success" id="contact-success" hidden>
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
+            <polyline points="22 4 12 14.01 9 11.01"/>
+          </svg>
+          Message sent! We'll get back to you soon.
+        </p>
+
+        <!-- Hidden anchor for WhatsApp -->
+        <a id="cf-whatsapp-anchor" hidden href="#" target="_blank" rel="noopener"></a>
+      </form>
+    </div>
+
+    <!-- ─── Enquiry Cards ─── -->
     <div class="contact-grid">
       {
         contact.enquiries.map((q, i) => (
@@ -62,6 +135,7 @@ const icons = {
 </BaseLayout>
 
 <style>
+  /* ─── Hero ─── */
   .contact-hero {
     display: grid;
     gap: var(--space-s);
@@ -87,6 +161,133 @@ const icons = {
     max-width: 52ch;
   }
 
+  /* ─── Form ─── */
+  .contact-form-wrap {
+    max-width: 52rem;
+    margin-bottom: var(--space-2xl);
+  }
+
+  .contact-form {
+    display: grid;
+    gap: var(--space-m);
+    padding: var(--space-l);
+  }
+
+  .contact-form__row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--space-m);
+  }
+
+  .contact-form__field {
+    display: grid;
+    gap: var(--space-3xs);
+  }
+
+  .contact-form__label {
+    font-size: var(--text-sm);
+    font-weight: 600;
+    color: var(--ink-700);
+  }
+
+  .contact-form__label span {
+    color: var(--orange);
+  }
+
+  .contact-form__input {
+    width: 100%;
+    padding: var(--space-xs) var(--space-s);
+    border-radius: var(--radius-sm);
+    border: 1.5px solid var(--ink-300);
+    background: var(--cream-50);
+    color: var(--ink-900);
+    font-family: var(--font-sans);
+    font-size: var(--text-sm);
+    outline: none;
+    transition:
+      border-color var(--duration-fast) ease,
+      box-shadow var(--duration-fast) ease;
+  }
+
+  .contact-form__input::placeholder {
+    color: var(--ink-300);
+  }
+
+  .contact-form__input:focus {
+    border-color: var(--orange);
+    box-shadow: 0 0 0 3px color-mix(in oklab, var(--orange) 20%, transparent);
+  }
+
+  .contact-form__input.is-invalid {
+    border-color: var(--cola);
+  }
+
+  .contact-form__select {
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg width='12' height='8' viewBox='0 0 12 8' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1.5L6 6.5L11 1.5' stroke='%233e352b' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right var(--space-s) center;
+    padding-right: var(--space-xl);
+    cursor: pointer;
+  }
+
+  .contact-form__textarea {
+    resize: vertical;
+    min-height: 8rem;
+  }
+
+  .contact-form__error {
+    font-size: var(--text-xs);
+    color: var(--cola);
+    min-height: 1em;
+  }
+
+  .contact-form__actions {
+    display: flex;
+    justify-content: flex-start;
+  }
+
+  .contact-form__submit {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2xs);
+    padding: var(--space-xs) var(--space-l);
+    border: none;
+    border-radius: var(--radius-pill);
+    background: linear-gradient(145deg, var(--orange), var(--orange-deep));
+    color: var(--cream-50);
+    font-family: var(--font-sans);
+    font-size: var(--text-sm);
+    font-weight: 600;
+    cursor: pointer;
+    box-shadow: var(--shadow-clay-sm);
+    transition:
+      translate var(--duration-fast) var(--ease-out-expo),
+      box-shadow var(--duration-fast) var(--ease-out-expo);
+  }
+
+  .contact-form__submit:hover {
+    translate: 0 -3px;
+    box-shadow: var(--shadow-clay);
+  }
+
+  .contact-form__submit:active {
+    translate: 0 0;
+  }
+
+  .contact-form__success {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2xs);
+    padding: var(--space-s);
+    border-radius: var(--radius-sm);
+    background: color-mix(in oklab, var(--green-apple) 12%, var(--cream-50));
+    color: var(--green-apple-deep);
+    font-size: var(--text-sm);
+    font-weight: 600;
+  }
+
+  /* ─── Enquiry Grid ─── */
   .contact-grid {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
@@ -149,8 +350,10 @@ const icons = {
     margin-top: var(--space-xl);
   }
 
+  /* ─── Responsive ─── */
   @media (max-width: 48rem) {
     .contact-grid { grid-template-columns: 1fr; }
+    .contact-form__row { grid-template-columns: 1fr; }
   }
 
   @media (max-width: 30rem) {
@@ -164,5 +367,139 @@ const icons = {
       width: 3rem;
       height: 3rem;
     }
+    .contact-form {
+      padding: var(--space-m);
+    }
   }
 </style>
+
+<script>
+  const CONTACT_WHATSAPP = '918270596210';
+
+  const form = document.getElementById('contact-form') as HTMLFormElement;
+  const successMsg = document.getElementById('contact-success');
+  const whatsappAnchor = document.getElementById('cf-whatsapp-anchor') as HTMLAnchorElement;
+
+  form?.addEventListener('submit', async (e) => {
+    e.preventDefault();
+
+    const data = new FormData(form);
+    const name = (data.get('name') as string).trim();
+    const email = (data.get('email') as string).trim();
+    const phone = (data.get('phone') as string).trim();
+    const subject = (data.get('subject') as string).trim();
+    const message = (data.get('message') as string).trim();
+
+    let valid = true;
+    const fields = [
+      { key: 'name', val: name },
+      { key: 'email', val: email },
+      { key: 'subject', val: subject },
+      { key: 'message', val: message },
+    ];
+
+    fields.forEach(({ key, val }) => {
+      const errEl = form.querySelector<HTMLElement>(`[data-error="${key}"]`);
+      const inputEl = form.querySelector<HTMLElement>(`[name="${key}"]`);
+      if (!val) {
+        if (errEl) errEl.textContent = 'This field is required';
+        inputEl?.classList.add('is-invalid');
+        valid = false;
+      } else {
+        if (errEl) errEl.textContent = '';
+        inputEl?.classList.remove('is-invalid');
+      }
+    });
+
+    if (email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      const errEl = form.querySelector<HTMLElement>('[data-error="email"]');
+      const inputEl = form.querySelector<HTMLElement>('[name="email"]');
+      if (errEl) errEl.textContent = 'Please enter a valid email';
+      inputEl?.classList.add('is-invalid');
+      valid = false;
+    }
+
+    if (!valid) return;
+
+    // Build the email body for Web3Forms
+    const emailBody = [
+      `Name: ${name}`,
+      `Email: ${email}`,
+      phone ? `Phone: ${phone}` : null,
+      `Subject: ${subject}`,
+      ``,
+      `Message:`,
+      message,
+    ]
+      .filter(Boolean)
+      .join('\n');
+
+    // Set the hidden subject and message fields for Web3Forms
+    const subjectInput = form.querySelector<HTMLInputElement>('input[name="subject"]');
+    if (subjectInput) subjectInput.value = `[SPARK Contact] ${subject}`;
+
+    // Add a formatted message field for the email
+    let msgField = form.querySelector<HTMLInputElement>('input[name="message"]');
+    if (!msgField) {
+      msgField = document.createElement('input');
+      msgField.type = 'hidden';
+      msgField.name = 'message';
+      form.appendChild(msgField);
+    }
+    msgField.value = emailBody;
+
+    // 1. Send email via Web3Forms API
+    const submitBtn = form.querySelector<HTMLButtonElement>('.contact-form__submit');
+    if (submitBtn) {
+      submitBtn.disabled = true;
+      submitBtn.textContent = 'Sending...';
+    }
+
+    try {
+      const response = await fetch('https://api.web3forms.com/submit', {
+        method: 'POST',
+        body: data,
+      });
+      const result = await response.json();
+
+      if (result.success) {
+        if (successMsg) successMsg.hidden = false;
+        form.reset();
+      } else {
+        alert('Something went wrong. Please try again.');
+      }
+    } catch {
+      alert('Network error. Please try again.');
+    } finally {
+      if (submitBtn) {
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = `Send Message <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/></svg>`;
+      }
+    }
+
+    // 2. Open WhatsApp with pre-filled message
+    const whatsappText = [
+      `Hi, I'm ${name}.`,
+      ``,
+      `Subject: ${subject}`,
+      message,
+      ``,
+      `Email: ${email}`,
+      phone ? `Phone: ${phone}` : null,
+    ]
+      .filter(Boolean)
+      .join('\n');
+
+    whatsappAnchor.href = `https://wa.me/${CONTACT_WHATSAPP}?text=${encodeURIComponent(whatsappText)}`;
+    whatsappAnchor.click();
+  });
+
+  form?.querySelectorAll('.contact-form__input').forEach((input) => {
+    input.addEventListener('input', () => {
+      input.classList.remove('is-invalid');
+      const key = input.getAttribute('name');
+      const errEl = form.querySelector<HTMLElement>(`[data-error="${key}"]`);
+      if (errEl) errEl.textContent = '';
+    });
+  });
+</script>

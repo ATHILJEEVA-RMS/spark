@@ -8,6 +8,7 @@
 import { site } from '../data/site';
 import SiteHeader from '../components/layout/SiteHeader.astro';
 import SiteFooter from '../components/layout/SiteFooter.astro';
+import FloatingContact from '../components/ui/FloatingContact.astro';
 import '../styles/tokens.css';
 import '../styles/base.css';
 import '../styles/clay.css';
@@ -73,6 +74,7 @@ const jsonLd = {
       <slot />
     </main>
     <SiteFooter />
+    <FloatingContact />
 
     <script>
       /* Global reveal-on-scroll: observes every [data-reveal]

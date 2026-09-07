@@ -145,14 +145,15 @@ export const ctaSection = {
 /* ---------- Contact ---------- */
 export const contact = {
   eyebrow: 'Contact',
-  heading: 'Let’s build something refreshing together.',
-  copy: 'Business enquiries. Distributor partnerships. Retail opportunities. Media & collaborations.',
-  email: 'hello@spark-drinks.example',
+  heading: 'Let\u2019s build something refreshing together.',
+  copy: 'Have a question, partnership idea, or just want to say hi? Fill out the form below and we\u2019ll get back to you.',
+  email: 'soundharyaramasamy1238@gmail.com',
+  whatsapp: '918270596210',
   enquiries: [
     { title: 'Business enquiries', id: 'business',
       body: 'Partnerships, PR and collaborations with the SPARK brand team.', icon: 'spark' },
     { title: 'Distributor partnerships', id: 'distributor',
-      body: 'Bring SPARK to a new market, city or chain. We’re building everywhere.', icon: 'globe' },
+      body: 'Bring SPARK to a new market, city or chain. We\u2019re building everywhere.', icon: 'globe' },
     { title: 'Retail opportunities', id: 'retail',
       body: 'Shelf space for the colour burst. POs, ranging and display support.', icon: 'basket' },
     { title: 'Media & collaborations', id: 'media',
