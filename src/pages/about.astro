@@ -3,7 +3,7 @@
    ABOUT — the brand story.
    We don't just make drinks. We create moments.
    ============================================================ */
-import { about } from '../data/site';
+import { about, journey } from '../data/site';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Section from '../components/ui/Section.astro';
 import Eyebrow from '../components/ui/Eyebrow.astro';
@@ -11,6 +11,7 @@ import Button from '../components/ui/Button.astro';
 import FlavourSpotlight from '../components/sections/FlavourSpotlight.astro';
 
 const [a1, a2] = about.heading;
+const [j1, j2] = journey.heading;
 ---
 
 <BaseLayout title="About" description={about.body}>
@@ -36,6 +37,29 @@ const [a1, a2] = about.heading;
       <p class="about-mission__body" data-reveal="up">
         {about.mission.body}
       </p>
+    </div>
+  </Section>
+
+  <Section spacing="tight">
+    <div class="about-journey">
+      <div class="about-journey__header">
+        <Eyebrow>{journey.eyebrow}</Eyebrow>
+        <h2 class="about-journey__title" data-reveal="up">
+          <span>{j1}</span>
+          <span class="about-journey__line--accent"><em>{j2}</em></span>
+        </h2>
+        <p class="about-journey__body" data-reveal="up" style="--reveal-delay: 120ms">
+          {journey.body}
+        </p>
+      </div>
+      <div class="about-journey__milestones" data-reveal="up" style="--reveal-delay: 200ms">
+        {journey.milestones.map((m) => (
+          <div class="milestone">
+            <span class="milestone__year">{m.year}</span>
+            <span class="milestone__label">{m.label}</span>
+          </div>
+        ))}
+      </div>
     </div>
   </Section>
 
@@ -133,6 +157,78 @@ const [a1, a2] = about.heading;
     .about-mission { grid-template-columns: 1fr; }
     .about-mission__aside { position: static; }
     .about-mission__mark { display: none; }
+  }
+
+  .about-journey {
+    display: grid;
+    gap: var(--space-xl);
+    padding: var(--space-xl) 0;
+  }
+
+  .about-journey__header {
+    display: grid;
+    gap: var(--space-m);
+    justify-items: start;
+  }
+
+  .about-journey__title {
+    font-size: var(--text-2xl);
+    line-height: var(--leading-tight);
+    max-width: 28ch;
+  }
+
+  .about-journey__title span {
+    display: block;
+  }
+
+  .about-journey__line--accent em {
+    font-style: italic;
+    font-weight: 400;
+    color: var(--orange);
+  }
+
+  .about-journey__body {
+    font-size: var(--text-md);
+    color: var(--color-text-muted);
+    max-width: 56ch;
+    line-height: 1.6;
+  }
+
+  .about-journey__milestones {
+    display: flex;
+    gap: var(--space-l);
+    flex-wrap: wrap;
+  }
+
+  .milestone {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-xs);
+    padding: var(--space-m) var(--space-l);
+    background: var(--surface);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--clay-shadow);
+    min-width: 160px;
+    flex: 1;
+  }
+
+  .milestone__year {
+    font-family: var(--font-display);
+    font-size: var(--text-xl);
+    font-weight: 600;
+    color: var(--orange);
+  }
+
+  .milestone__label {
+    font-size: var(--text-sm);
+    color: var(--color-text-muted);
+    letter-spacing: 0.01em;
+  }
+
+  @media (max-width: 48rem) {
+    .about-journey__milestones {
+      flex-direction: column;
+    }
   }
 
   @media (max-width: 30rem) {

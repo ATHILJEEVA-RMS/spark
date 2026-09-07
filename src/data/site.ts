@@ -121,6 +121,18 @@ export const about = {
   },
 };
 
+/* ---------- Our Journey ---------- */
+export const journey = {
+  eyebrow: 'Our Journey',
+  heading: ['Built from scratch.', 'Stronger than ever.'],
+  body: 'Founded in 2022 in Coimbatore as Hogwarts Food & Beverages Pvt Ltd with a vision to create something different. When challenges tested us in 2024, we didn\'t stop — we rebuilt, rebranded, and came back stronger with SPARK. Today, with eight vibrant flavours and distribution across Tamil Nadu and international orders to Australia, we\'re just getting started.',
+  milestones: [
+    { year: '2022', label: 'Founded in Coimbatore' },
+    { year: '2024', label: 'Reborn as SPARK' },
+    { year: '2026', label: '10+ cities & growing' },
+  ],
+};
+
 /* ---------- CTA ---------- */
 export const ctaSection = {
   eyebrow: 'Find SPARK',
