@@ -29,7 +29,6 @@ export const cta = {
 
 /* ---------- Hero ---------- */
 export const hero = {
-  eyebrow: 'New generation sparkling refreshment',
   title: ['FIND', 'YOUR', 'SPARK.'],
   lede: 'Eight vibrant flavours. Crafted in Tamil Nadu. Made to refresh every moment.',
   primaryCta: { label: 'Explore Flavours', href: '/spark/flavours' },
@@ -69,7 +68,7 @@ export const future = {
     'More vibrant creations are already in the making.',
     'Stay tuned for what’s next.',
   ],
-  cta: { label: 'Stay Updated', href: '/spark/#newsletter' },
+  cta: { label: 'Ask What’s Next', href: '/spark/contact' },
 };
 
 /* ---------- Our craft ---------- */
@@ -137,7 +136,7 @@ export const journey = {
 export const ctaSection = {
   eyebrow: 'Find SPARK',
   heading: 'Your next favourite is waiting.',
-  copy: 'Eight vibrant flavours crafted to colour your every moment. Find SPARK at a store near you or bring it to your shelves.',
+  copy: 'Explore eight vibrant flavours or talk to us about bringing SPARK to your shelves.',
   primaryCta: { label: 'Explore Flavours', href: '/spark/flavours' },
   secondaryCta: { label: 'Become a Distributor', href: '/spark/contact#distributor' },
 };
@@ -164,11 +163,11 @@ export const contact = {
 export const footer = {
   wordmark: { pre: 'Find your', accent: 'spark.' },
   tagline: 'Bold flavours. Real refreshment. Made for every moment.',
-  newsletter: {
-    title: 'Newsletter',
-    copy: 'Stay updated with new flavours and exciting updates.',
-    placeholder: 'Enter your email',
-    cta: 'Subscribe',
+  contact: {
+    title: 'Let’s talk',
+    copy: 'Questions, retail enquiries, or a new partnership? We’d love to hear from you.',
+    cta: 'Get in touch',
+    href: '/spark/contact',
   },
   columns: [
     {
@@ -177,24 +176,13 @@ export const footer = {
         { label: 'About Us', href: '/spark/about' },
         { label: 'Our Story', href: '/spark/#story' },
         { label: 'Craft', href: '/spark/#craft' },
-        { label: 'Careers', href: '/spark/contact' },
-      ],
-    },
-    {
-      title: 'Flavours',
-      links: [
-        { label: 'All Flavours', href: '/spark/flavours' },
-        { label: 'New Arrivals', href: '/spark/flavours' },
-        { label: 'Coming Soon', href: '/spark/flavours' },
       ],
     },
     {
       title: 'Support',
       links: [
-        { label: 'FAQ', href: '/spark/contact' },
         { label: 'Contact Us', href: '/spark/contact' },
         { label: 'Distributor Enquiry', href: '/spark/contact#distributor' },
-        { label: 'Privacy Policy', href: '#' },
       ],
     },
   ],

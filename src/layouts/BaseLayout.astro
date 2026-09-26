@@ -54,6 +54,7 @@ const jsonLd = {
     <meta name="twitter:description" content={description} />
     <meta name="twitter:image" content={`${site.url}${site.base}/og-default.png`} />
     <meta name="theme-color" content="#fdfbf5" />
+    <script is:inline>document.documentElement.classList.add('js');</script>
 
     <!-- Typography: Fraunces (variable editorial serif) + Space Grotesk -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -81,19 +82,23 @@ const jsonLd = {
          element once and adds .is-visible. Pure progressive
          enhancement — content is visible without JS via the
          reduced-motion fallback in base.css. */
-      const observer = new IntersectionObserver(
-        (entries) => {
-          for (const entry of entries) {
-            if (entry.isIntersecting) {
-              entry.target.classList.add('is-visible');
-              observer.unobserve(entry.target);
+      const revealElements = document.querySelectorAll('[data-reveal]');
+      if ('IntersectionObserver' in window) {
+        const observer = new IntersectionObserver(
+          (entries) => {
+            for (const entry of entries) {
+              if (entry.isIntersecting) {
+                entry.target.classList.add('is-visible');
+                observer.unobserve(entry.target);
+              }
             }
-          }
-        },
-        { threshold: 0.12, rootMargin: '0px 0px -6% 0px' }
-      );
-
-      document.querySelectorAll('[data-reveal]').forEach((el) => observer.observe(el));
+          },
+          { threshold: 0.12, rootMargin: '0px 0px -6% 0px' }
+        );
+        revealElements.forEach((el) => observer.observe(el));
+      } else {
+        revealElements.forEach((el) => el.classList.add('is-visible'));
+      }
     </script>
   </body>
 </html>

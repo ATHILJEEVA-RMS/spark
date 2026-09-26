@@ -1,7 +1,7 @@
 ---
 /* ============================================================
    CONTACT — Enquiry form + enquiry cards.
-   Form submits via mailto: and WhatsApp API.
+   Enquiries submit to Web3Forms.
    ============================================================ */
 import { contact, cta } from '../data/site';
 import BaseLayout from '../layouts/BaseLayout.astro';
@@ -46,19 +46,17 @@ const subjects = [
     <div class="contact-form-wrap" data-reveal="up" style="--reveal-delay: 200ms">
       <form class="contact-form clay" id="contact-form" action="https://api.web3forms.com/submit" method="POST" novalidate>
         <input type="hidden" name="access_key" value="7adf6c4b-5692-4673-9f31-6bdf0d2d1370" />
-        <input type="hidden" name="to" value="soundharyaramasamy1238@gmail.com" />
-        <input type="hidden" name="subject" value="[SPARK Contact] New Enquiry" />
         <input type="checkbox" name="botcheck" class="hidden" style="display:none" />
         <div class="contact-form__row">
           <div class="contact-form__field">
             <label class="contact-form__label" for="cf-name">Full Name <span aria-hidden="true">*</span></label>
-            <input class="contact-form__input" type="text" id="cf-name" name="name" required placeholder="Your name" autocomplete="name" />
-            <span class="contact-form__error" data-error="name"></span>
+            <input class="contact-form__input" type="text" id="cf-name" name="name" required placeholder="Your name" autocomplete="name" aria-describedby="cf-name-error" />
+            <span class="contact-form__error" id="cf-name-error" data-error="name"></span>
           </div>
           <div class="contact-form__field">
             <label class="contact-form__label" for="cf-email">Email Address <span aria-hidden="true">*</span></label>
-            <input class="contact-form__input" type="email" id="cf-email" name="email" required placeholder="you@example.com" autocomplete="email" />
-            <span class="contact-form__error" data-error="email"></span>
+            <input class="contact-form__input" type="email" id="cf-email" name="email" required placeholder="you@example.com" autocomplete="email" aria-describedby="cf-email-error" />
+            <span class="contact-form__error" id="cf-email-error" data-error="email"></span>
           </div>
         </div>
 
@@ -69,18 +67,18 @@ const subjects = [
           </div>
           <div class="contact-form__field">
             <label class="contact-form__label" for="cf-subject">Subject <span aria-hidden="true">*</span></label>
-            <select class="contact-form__input contact-form__select" id="cf-subject" name="subject" required>
+            <select class="contact-form__input contact-form__select" id="cf-subject" name="subject" required aria-describedby="cf-subject-error">
               <option value="" disabled selected>Select a subject</option>
               {subjects.map((s) => <option value={s}>{s}</option>)}
             </select>
-            <span class="contact-form__error" data-error="subject"></span>
+            <span class="contact-form__error" id="cf-subject-error" data-error="subject"></span>
           </div>
         </div>
 
         <div class="contact-form__field">
           <label class="contact-form__label" for="cf-message">Message <span aria-hidden="true">*</span></label>
-          <textarea class="contact-form__input contact-form__textarea" id="cf-message" name="message" required rows="5" placeholder="Tell us what you have in mind..."></textarea>
-          <span class="contact-form__error" data-error="message"></span>
+          <textarea class="contact-form__input contact-form__textarea" id="cf-message" name="message" required rows="5" placeholder="Tell us what you have in mind..." aria-describedby="cf-message-error"></textarea>
+          <span class="contact-form__error" id="cf-message-error" data-error="message"></span>
         </div>
 
         <div class="contact-form__actions">
@@ -92,7 +90,7 @@ const subjects = [
           </button>
         </div>
 
-        <p class="contact-form__success" id="contact-success" hidden>
+        <p class="contact-form__success" id="contact-success" role="status" hidden>
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
             <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
             <polyline points="22 4 12 14.01 9 11.01"/>
@@ -100,8 +98,7 @@ const subjects = [
           Message sent! We'll get back to you soon.
         </p>
 
-        <!-- Hidden anchor for WhatsApp -->
-        <a id="cf-whatsapp-anchor" hidden href="#" target="_blank" rel="noopener"></a>
+        <p class="contact-form__failure" id="contact-failure" role="alert" hidden>We couldn’t send your message. Please try again or <a href={`mailto:${contact.email}`}>email us directly</a>.</p>
       </form>
     </div>
 
@@ -287,6 +284,14 @@ const subjects = [
     font-weight: 600;
   }
 
+  .contact-form__success[hidden],
+  .contact-form__failure[hidden] { display: none; }
+
+  .contact-form__failure {
+    color: var(--cola);
+    font-size: var(--text-sm);
+  }
+
   /* ─── Enquiry Grid ─── */
   .contact-grid {
     display: grid;
@@ -374,11 +379,9 @@ const subjects = [
 </style>
 
 <script>
-  const CONTACT_WHATSAPP = '918270596210';
-
   const form = document.getElementById('contact-form') as HTMLFormElement;
   const successMsg = document.getElementById('contact-success');
-  const whatsappAnchor = document.getElementById('cf-whatsapp-anchor') as HTMLAnchorElement;
+  const failureMsg = document.getElementById('contact-failure');
 
   form?.addEventListener('submit', async (e) => {
     e.preventDefault();
@@ -387,10 +390,12 @@ const subjects = [
     const name = (data.get('name') as string).trim();
     const email = (data.get('email') as string).trim();
     const phone = (data.get('phone') as string).trim();
-    const subject = (data.get('subject') as string).trim();
+    const subject = String(data.get('subject') ?? '').trim();
     const message = (data.get('message') as string).trim();
 
     let valid = true;
+    if (successMsg) successMsg.hidden = true;
+    if (failureMsg) failureMsg.hidden = true;
     const fields = [
       { key: 'name', val: name },
       { key: 'email', val: email },
@@ -404,10 +409,12 @@ const subjects = [
       if (!val) {
         if (errEl) errEl.textContent = 'This field is required';
         inputEl?.classList.add('is-invalid');
+        inputEl?.setAttribute('aria-invalid', 'true');
         valid = false;
       } else {
         if (errEl) errEl.textContent = '';
         inputEl?.classList.remove('is-invalid');
+        inputEl?.removeAttribute('aria-invalid');
       }
     });
 
@@ -416,10 +423,14 @@ const subjects = [
       const inputEl = form.querySelector<HTMLElement>('[name="email"]');
       if (errEl) errEl.textContent = 'Please enter a valid email';
       inputEl?.classList.add('is-invalid');
+      inputEl?.setAttribute('aria-invalid', 'true');
       valid = false;
     }
 
-    if (!valid) return;
+    if (!valid) {
+      form.querySelector<HTMLElement>('.is-invalid')?.focus();
+      return;
+    }
 
     // Build the email body for Web3Forms
     const emailBody = [
@@ -434,19 +445,8 @@ const subjects = [
       .filter(Boolean)
       .join('\n');
 
-    // Set the hidden subject and message fields for Web3Forms
-    const subjectInput = form.querySelector<HTMLInputElement>('input[name="subject"]');
-    if (subjectInput) subjectInput.value = `[SPARK Contact] ${subject}`;
-
-    // Add a formatted message field for the email
-    let msgField = form.querySelector<HTMLInputElement>('input[name="message"]');
-    if (!msgField) {
-      msgField = document.createElement('input');
-      msgField.type = 'hidden';
-      msgField.name = 'message';
-      form.appendChild(msgField);
-    }
-    msgField.value = emailBody;
+    data.set('subject', `[SPARK Contact] ${subject}`);
+    data.set('message', emailBody);
 
     // 1. Send email via Web3Forms API
     const submitBtn = form.querySelector<HTMLButtonElement>('.contact-form__submit');
@@ -462,14 +462,14 @@ const subjects = [
       });
       const result = await response.json();
 
-      if (result.success) {
+      if (response.ok && result.success) {
         if (successMsg) successMsg.hidden = false;
         form.reset();
       } else {
-        alert('Something went wrong. Please try again.');
+        if (failureMsg) failureMsg.hidden = false;
       }
     } catch {
-      alert('Network error. Please try again.');
+      if (failureMsg) failureMsg.hidden = false;
     } finally {
       if (submitBtn) {
         submitBtn.disabled = false;
@@ -477,26 +477,12 @@ const subjects = [
       }
     }
 
-    // 2. Open WhatsApp with pre-filled message
-    const whatsappText = [
-      `Hi, I'm ${name}.`,
-      ``,
-      `Subject: ${subject}`,
-      message,
-      ``,
-      `Email: ${email}`,
-      phone ? `Phone: ${phone}` : null,
-    ]
-      .filter(Boolean)
-      .join('\n');
-
-    whatsappAnchor.href = `https://wa.me/${CONTACT_WHATSAPP}?text=${encodeURIComponent(whatsappText)}`;
-    whatsappAnchor.click();
   });
 
   form?.querySelectorAll('.contact-form__input').forEach((input) => {
     input.addEventListener('input', () => {
       input.classList.remove('is-invalid');
+      input.removeAttribute('aria-invalid');
       const key = input.getAttribute('name');
       const errEl = form.querySelector<HTMLElement>(`[data-error="${key}"]`);
       if (errEl) errEl.textContent = '';
