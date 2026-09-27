@@ -1,0 +1,43 @@
+{
+  "320": {
+    "scrollWidth": 320,
+    "logoFilter": "brightness(0)",
+    "heroControls": {
+      "x": 186.578125,
+      "y": 105.578125,
+      "right": 283.53125
+    },
+    "launcherDisplay": "none",
+    "optionsDisplay": "none",
+    "errors": []
+  },
+  "390": {
+    "scrollWidth": 390,
+    "logoFilter": "brightness(0)",
+    "heroControls": {
+      "x": 253.78125,
+      "y": 94.21875,
+      "right": 350.875
+    },
+    "launcherDisplay": "none",
+    "optionsDisplay": "none",
+    "aboutLauncher": true,
+    "opened": true,
+    "links": 3,
+    "closed": true,
+    "formLauncherHidden": true,
+    "errors": []
+  },
+  "1440": {
+    "scrollWidth": 1440,
+    "logoFilter": "brightness(0)",
+    "heroControls": {
+      "x": 1263.140625,
+      "y": 171.4375,
+      "right": 1362.171875
+    },
+    "launcherDisplay": "block",
+    "optionsDisplay": "flex",
+    "errors": []
+  }
+}

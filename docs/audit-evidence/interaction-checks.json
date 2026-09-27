@@ -1,0 +1,62 @@
+{
+  "hero": {
+    "rail": "none",
+    "active": "Orange",
+    "animations": 85,
+    "buttons": 0,
+    "cta": [
+      {
+        "text": "Explore Flavours",
+        "top": 677.25,
+        "bottom": 737.859375
+      },
+      {
+        "text": "Become a Distributor",
+        "top": 756.3125,
+        "bottom": 816.921875
+      }
+    ]
+  },
+  "menuOpen": {
+    "expanded": "true",
+    "active": "<button class=\"site-header__burger clay-sm\" data-menu-toggle=\"\" aria-expanded=\"true\" aria-controls=\"mobile-menu\" aria-label=\"Close menu\" data-astro-cid-mwoppcd7=\"\"> <svg class=\"sit"
+  },
+  "menuAfterTabs": {
+    "active": "<a href=\"/spark/flavours\" data-astro-cid-6ygtcg62=\"true\" class=\"btn btn--clay btn--md\"><span class=\"btn__label\" data-astro-cid-6ygtcg62=\"\">Explore All Flavours</span> <svg class=\"btn__arrow\" width=\"14\" height=\"14\" viewBo",
+    "inside": false
+  },
+  "menuClosed": false,
+  "distributor": {
+    "subject": "",
+    "formY": -1009.3073120117188,
+    "cardY": 190.77490234375
+  },
+  "emptyForm": {
+    "errors": [
+      "Please enter your full name",
+      "Please enter a valid email",
+      "Please enter a valid phone number",
+      "Please select a subject",
+      "Tell us something!"
+    ],
+    "focus": "cf-name"
+  },
+  "mockSuccess": true,
+  "internationalError": "Please enter a valid phone number",
+  "mockFailure": true,
+  "retainedMessage": "Local mocked audit only.",
+  "reducedMotionStable": true,
+  "reducedMenuHidden": false,
+  "contact320": {
+    "width": 320,
+    "scrollWidth": 347
+  },
+  "contact768": {
+    "width": 768,
+    "scrollWidth": 768
+  },
+  "contact1024": {
+    "width": 1024,
+    "scrollWidth": 1024
+  }
+}

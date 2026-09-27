@@ -116,7 +116,7 @@
   --space-2xl: clamp(4.5rem, 3.7rem + 4vw, 5.75rem);
   --space-3xl: clamp(6.75rem, 5.4rem + 6.75vw, 8.63rem);
 
-  --section-gap: clamp(4rem, 3.25rem + 4vw, 9rem);
+  --section-gap: clamp(3rem, 4vw, 6rem);
   --gutter: clamp(1.15rem, 0.5rem + 3.25vw, 4rem);
 
   --container: 90rem;          /* 1440px editorial measure */
@@ -176,4 +176,16 @@
      ---------------------------------------------------------- */
   --z-header: 100;
   --z-overlay: 200;
+}
+
+@property --active-flavour-primary {
+  syntax: '<color>';
+  inherits: true;
+  initial-value: #f47b00;
+}
+
+@property --active-flavour-soft {
+  syntax: '<color>';
+  inherits: true;
+  initial-value: #fde4cb;
 }

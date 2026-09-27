@@ -26,7 +26,7 @@ const jsonLd = {
   '@context': 'https://schema.org',
   '@type': 'Organization',
   name: site.brand,
-  url: site.url,
+  url: `${site.url}${site.base}/`,
   description: site.description,
 };
 ---
@@ -62,15 +62,29 @@ const jsonLd = {
     <link
       href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..900;1,9..144,300..900&family=Space+Grotesk:wght@300..700&display=swap"
       rel="stylesheet"
+      media="print"
+      id="google-fonts"
     />
+    <script is:inline>
+      const googleFonts = document.getElementById('google-fonts');
+      googleFonts?.addEventListener('load', () => { googleFonts.media = 'all'; });
+    </script>
+    <noscript>
+      <link
+        href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..900;1,9..144,300..900&family=Space+Grotesk:wght@300..700&display=swap"
+        rel="stylesheet"
+      />
+    </noscript>
 
     <link rel="icon" type="image/svg+xml" href="/spark/favicon.svg" />
 
     <script is:inline type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
+    <slot name="head" />
   </head>
   <body>
     <a class="skip-link" href="#main">Skip to content</a>
     <SiteHeader />
+    <noscript><nav class="fallback-nav" aria-label="Site pages"><a href="/spark/">Home</a><a href="/spark/flavours">Flavours</a><a href="/spark/about">Our Story</a><a href="/spark/contact">Contact</a></nav></noscript>
     <main id="main">
       <slot />
     </main>
@@ -104,6 +118,8 @@ const jsonLd = {
 </html>
 
 <style>
+  .fallback-nav { display: flex; flex-wrap: wrap; gap: 1rem; padding: 6rem var(--gutter) 1rem; }
+  .fallback-nav a { text-decoration: underline; }
   .skip-link {
     position: fixed;
     top: var(--space-2xs);

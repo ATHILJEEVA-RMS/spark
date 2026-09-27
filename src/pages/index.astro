@@ -11,16 +11,120 @@ import CollectionStrip from '../components/sections/CollectionStrip.astro';
 import Future from '../components/sections/Future.astro';
 import Craft from '../components/sections/Craft.astro';
 import CtaSection from '../components/sections/CtaSection.astro';
+
+const random = (seed: number) => {
+  const value = Math.sin(seed * 12.9898) * 43758.5453;
+  return value - Math.floor(value);
+};
+const fizzStreams = [12, 22, 34, 66, 78, 88];
+const fizz = Array.from({ length: 54 }, (_, index) => {
+  const duration = 19 + random(index + 31) * 13;
+  return {
+    x: Math.max(3, Math.min(97, fizzStreams[index % fizzStreams.length] + (random(index + 1) - .5) * 14)).toFixed(2),
+    size: (3 + random(index + 59) * 6).toFixed(1),
+    duration: duration.toFixed(2),
+    delay: (-(random(index + 97) * duration)).toFixed(2),
+    drift: Math.round((random(index + 137) - .5) * 90),
+    stillY: (5 + random(index + 211) * 90).toFixed(1),
+  };
+});
 ---
 
 <BaseLayout
-  title="Premium Sparkling Drinks from Tamil Nadu"
-  description="Discover SPARK — eight vibrant sparkling drink flavours crafted in Tamil Nadu. Real fruit flavours, premium sparkle, and bold packaging designed to refresh every moment."
+  title="Eight Sparkling Drink Flavours from Tamil Nadu"
+  description="Explore SPARK sparkling drinks: eight distinct flavours, from bright citrus and tropical favourites to classic cola."
 >
-  <Hero />
-  <Manifesto />
+  <div class="hero-story">
+    <span class="hero-story__atmosphere" aria-hidden="true"></span>
+    <Hero />
+    <Manifesto />
+    <div class="hero-story__fizz" aria-hidden="true">
+      {fizz.map((bubble) => (
+        <span
+          class="hero-story__bubble"
+          style={`--x:${bubble.x}%;--size:${bubble.size}px;--duration:${bubble.duration}s;--delay:${bubble.delay}s;--drift:${bubble.drift}px;--still-y:${bubble.stillY}%`}
+        />
+      ))}
+    </div>
+  </div>
   <CollectionStrip />
   <Future />
   <Craft />
   <CtaSection />
 </BaseLayout>
+
+<style>
+  .hero-story {
+    position: relative;
+    isolation: isolate;
+    overflow: clip;
+    background: var(--cream-50);
+    --fizz-travel: 2000px;
+  }
+
+  .hero-story__atmosphere {
+    position: absolute;
+    z-index: -1;
+    inset: 0;
+    pointer-events: none;
+    background:
+      radial-gradient(
+        60% 42% at 72% 16%,
+        color-mix(in oklab, var(--active-flavour-primary, #f47b00) 30%, transparent) 0%,
+        color-mix(in oklab, var(--active-flavour-soft, #fde4cb) 65%, transparent) 48%,
+        transparent 76%
+      ),
+      linear-gradient(
+        180deg,
+        var(--active-flavour-soft, #fde4cb) 0%,
+        var(--active-flavour-soft, #fde4cb) 30%,
+        var(--cream-50) 78%,
+        var(--cream-50) 100%
+      );
+  }
+
+  .hero-story__fizz {
+    position: absolute;
+    z-index: 3;
+    inset: 0;
+    pointer-events: none;
+    overflow: hidden;
+  }
+
+  .hero-story__bubble {
+    position: absolute;
+    left: var(--x);
+    bottom: -.75rem;
+    width: var(--size);
+    aspect-ratio: 1;
+    border: 1px solid rgb(255 255 255 / .72);
+    border-radius: 47% 53% 52% 48%;
+    background: radial-gradient(circle at 34% 30%, rgb(255 255 255 / .9) 0 12%, rgb(255 255 255 / .23) 35%, transparent 72%);
+    box-shadow: inset -1px -1px 2px color-mix(in oklab, var(--active-flavour-primary) 20%, transparent), 0 0 3px rgb(255 255 255 / .22);
+    opacity: 0;
+    will-change: transform, opacity;
+    animation: fizz-rise var(--duration) linear var(--delay) infinite;
+  }
+
+  @keyframes fizz-rise {
+    0% { transform: translate3d(0, 0, 0) scale(.65); opacity: 0; }
+    8% { opacity: .6; }
+    35% { transform: translate3d(calc(var(--drift) * -.35), calc(var(--fizz-travel) * -.35), 0) scale(1); opacity: .52; }
+    70% { transform: translate3d(calc(var(--drift) * .32), calc(var(--fizz-travel) * -.7), 0) scale(.9); opacity: .32; }
+    100% { transform: translate3d(var(--drift), calc(var(--fizz-travel) * -1), 0) scale(.7); opacity: 0; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .hero-story__bubble { animation: none; }
+    .hero-story__bubble { top: var(--still-y); bottom: auto; opacity: .24; }
+  }
+</style>
+
+<script>
+  const scene = document.querySelector<HTMLElement>('.hero-story');
+  if (scene) {
+    const syncFizzTravel = () => scene.style.setProperty('--fizz-travel', `${scene.offsetHeight + 24}px`);
+    syncFizzTravel();
+    new ResizeObserver(syncFizzTravel).observe(scene);
+  }
+</script>

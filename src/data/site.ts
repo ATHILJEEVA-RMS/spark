@@ -7,9 +7,9 @@
 
 export const site = {
   brand: 'SPARK',
-  tagline: 'Find your spark.',
+  tagline: 'Eight flavours. Find your spark.',
   description:
-    'SPARK is a new generation of sparkling refreshment — eight vibrant flavours, one unforgettable experience, crafted to refresh every moment.',
+    'Explore eight SPARK sparkling drink flavours, from bright citrus and tropical fruit to berries and classic cola. Proudly crafted in Tamil Nadu.',
   url: 'https://athiljeeva-rms.github.io',
   base: '/spark',
 };
@@ -17,8 +17,7 @@ export const site = {
 export const nav = [
   { label: 'Home', href: '/spark/' },
   { label: 'Flavours', href: '/spark/flavours' },
-  { label: 'About', href: '/spark/about' },
-  { label: 'Distributor', href: '/spark/contact#distributor' },
+  { label: 'Our Story', href: '/spark/about' },
   { label: 'Contact', href: '/spark/contact' },
 ];
 
@@ -30,7 +29,7 @@ export const cta = {
 /* ---------- Hero ---------- */
 export const hero = {
   title: ['FIND', 'YOUR', 'SPARK.'],
-  lede: 'Eight vibrant flavours. Crafted in Tamil Nadu. Made to refresh every moment.',
+  lede: 'Bright, bold flavour for every kind of break.',
   primaryCta: { label: 'Explore Flavours', href: '/spark/flavours' },
   secondaryCta: { label: 'Become a Distributor', href: '/spark/contact#distributor' },
   meta: 'Crafted in Tamil Nadu',
@@ -38,58 +37,56 @@ export const hero = {
 
 /* ---------- Why SPARK (brand argument) ---------- */
 export const manifesto = {
-  eyebrow: 'Why SPARK',
-  heading: ['Born to', 'stand out.'],
-  body: 'SPARK combines vibrant fruit flavours, refreshing sparkle, and distinctive packaging designed to brighten everyday moments.',
-  signature: '',
+  eyebrow: 'Made for your moment',
+  heading: ['Your taste.', 'Your SPARK.'],
+  body: 'Explore the range and find the flavour you’re in the mood for.',
 };
 
 /* ---------- Flavour collection intro (homepage strip) ---------- */
 export const collection = {
-  eyebrow: 'Our Collection',
-  heading: ['Our', 'Collection'],
-  lede: 'Eight signature flavours crafted for every mood.',
+  eyebrow: 'The SPARK range',
+  heading: ['Find your', 'flavour.'],
+  lede: 'Explore eight sparkling drinks, from bright citrus and tropical fruit to berries and cola.',
   cta: { label: 'Explore All Flavours', href: '/spark/flavours' },
 };
 
 /* ---------- Flavours page hero ---------- */
 export const flavoursPage = {
-  eyebrow: 'The Collection',
-  heading: ['Eight moods.', 'One experience.'],
-  lede: 'Every flavour tells its own story. Find the one that matches yours.',
+  eyebrow: 'Eight sparkling drink flavours',
+  heading: ['Which flavour', 'is yours?'],
+  lede: 'Meet the full SPARK range. Compare the tasting notes, choose a favourite, and ask us where to find it.',
 };
 
 /* ---------- Coming soon teaser ---------- */
 export const future = {
-  eyebrow: 'Coming next',
-  heading: ['More spark is', 'coming.'],
+  eyebrow: 'Choose your next sip',
+  heading: ['Pick a flavour.', 'Make it yours.'],
   body: [
-    'Eight flavours today.',
-    'More vibrant creations are already in the making.',
-    'Stay tuned for what’s next.',
+    'Go for bright Orange, tropical Mango, or the familiar taste of Cola.',
+    'Explore the range and find the SPARK you feel like today.',
   ],
-  cta: { label: 'Ask What’s Next', href: '/spark/contact' },
+  cta: { label: 'Explore the Flavours', href: '/spark/flavours' },
 };
 
 /* ---------- Our craft ---------- */
 export const craft = {
-  eyebrow: 'Our craft',
-  heading: ['Crafted with care.', 'Perfected for you.'],
-  cta: { label: 'Discover Our Craft', href: '/spark/about' },
+  eyebrow: 'A range with roots',
+  heading: ['From Tamil Nadu.', 'Eight ways to choose.'],
+  cta: { label: 'Read Our Story', href: '/spark/about' },
   items: [
     {
-      title: 'Real Fruit Flavours',
-      body: 'Made with carefully selected real fruit concentrates.',
+      title: 'Eight Flavours',
+      body: 'Choose from citrus, tropical fruit, berries, litchi, guava and classic cola.',
       icon: 'fruit',
     },
     {
-      title: 'Premium Sparkle',
-      body: 'Just the right amount of fizz for the perfect refresh.',
+      title: 'Find Your Taste',
+      body: 'Check each flavour’s tasting notes to find a bright, mellow, fruity or classic option.',
       icon: 'bubbles',
     },
     {
-      title: 'Quality Assured',
-      body: 'Hygienic production and strict quality standards.',
+      title: 'Know Where to Look',
+      body: 'Choose a flavour and tell us your city. We’ll help you check where SPARK is available.',
       icon: 'can',
     },
   ],
@@ -97,75 +94,75 @@ export const craft = {
 
 /* ---------- Featured flavour (spotlight) ---------- */
 export const spotlight = {
-  eyebrow: 'This week’s spark',
-  cta: 'Taste the notes',
+  eyebrow: 'Meet the flavour',
+  cta: 'Explore Orange',
 };
 
 /* ---------- Editorial story beats ---------- */
 export const story = {
   eyebrow: 'Our story',
-  heading: 'Crafted for everyday moments.',
-  lede: 'Whether it’s the first sip after a long day, a road trip with friends, or a celebration worth remembering, SPARK brings colour to every moment.',
-  body: 'Enough said — every flavour is made to be remembered.',
+  heading: 'Different tastes. One good moment.',
+  lede: 'SPARK began with a simple belief: a shared break feels better when everyone has a choice. Today, eight sparkling flavours each bring their own colour and character to the table.',
+  body: 'Find your flavour. Share the moment.',
 };
 
 /* ---------- About preview (home) ---------- */
 export const about = {
   eyebrow: 'About',
-  heading: ['We don’t just make drinks.', 'We create moments.'],
-  body: 'SPARK was created to bring colour, energy and joy into everyday life. Every flavour is crafted to surprise. Every bottle is designed to stand out. Every sip is made to be remembered.',
+  heading: ['Different tastes.', 'One good moment.'],
+  body: 'Crafted in Tamil Nadu, SPARK brings eight sparkling flavours to the shared breaks and catch-ups that make ordinary days feel brighter.',
   mission: {
-    heading: 'Our mission',
-    body: 'We believe refreshment isn’t just about taste. It’s about colour. Energy. Conversation. Laughter. And creating moments that stay with you.',
+    heading: 'Your taste, your SPARK',
+    body: 'Taste is personal. With eight flavours across citrus, tropical fruit, berries, litchi, guava and cola, everyone can choose a favourite and still share the moment.',
   },
 };
 
 /* ---------- Our Journey ---------- */
 export const journey = {
-  eyebrow: 'Our Journey',
-  heading: ['Built from scratch.', 'Stronger than ever.'],
-  body: 'Founded in 2022 in Coimbatore as Hogwarts Food & Beverages Pvt Ltd with a vision to create something different. When challenges tested us in 2024, we didn\'t stop — we rebuilt, rebranded, and came back stronger with SPARK. Today, with eight vibrant flavours and distribution across Tamil Nadu and international orders to Australia, we\'re just getting started.',
+  eyebrow: 'Our journey',
+  heading: ['Different tastes.', 'One shared moment.'],
+  body: 'The story began in Tamil Nadu in 2022 with Hogwarts Food & Beverages Pvt Ltd. In 2024, the team introduced SPARK. Today, eight sparkling flavours give everyone their own way to join the moment.',
   milestones: [
-    { year: '2022', label: 'Founded in Coimbatore' },
-    { year: '2024', label: 'Reborn as SPARK' },
-    { year: '2026', label: '10+ cities & growing' },
+    { year: '2022', label: 'The idea of more choice takes root' },
+    { year: '2024', label: 'SPARK brings the idea together' },
+    { year: 'Today', label: 'Eight flavours to share' },
   ],
 };
 
 /* ---------- CTA ---------- */
 export const ctaSection = {
-  eyebrow: 'Find SPARK',
-  heading: 'Your next favourite is waiting.',
-  copy: 'Explore eight vibrant flavours or talk to us about bringing SPARK to your shelves.',
-  primaryCta: { label: 'Explore Flavours', href: '/spark/flavours' },
-  secondaryCta: { label: 'Become a Distributor', href: '/spark/contact#distributor' },
+  eyebrow: 'Take the next step',
+  heading: 'Which SPARK will you try?',
+  copy: 'Tell us your city and the flavour you have in mind. Interested in stocking SPARK? Share your shop or territory with our team.',
+  primaryCta: { label: 'Check Availability', href: '/spark/contact#availability' },
+  secondaryCta: { label: 'Stock SPARK', href: '/spark/contact#distributor' },
 };
 
 /* ---------- Contact ---------- */
 export const contact = {
   eyebrow: 'Contact',
-  heading: 'Let\u2019s build something refreshing together.',
-  copy: 'Have a question, partnership idea, or just want to say hi? Fill out the form below and we\u2019ll get back to you.',
+  heading: 'How can we help?',
+  copy: 'Ask where to find a flavour, enquire about stocking SPARK, or send the team a general question. Choose an option and we’ll take it from there.',
   email: 'soundharyaramasamy1238@gmail.com',
   whatsapp: '918270596210',
   enquiries: [
-    { title: 'Business enquiries', id: 'business',
-      body: 'Partnerships, PR and collaborations with the SPARK brand team.', icon: 'spark' },
+    { title: 'Find a flavour', id: 'find-flavour',
+      body: 'Tell us your city and the flavour you’d like to try. We’ll help you check availability.', icon: 'spark' },
     { title: 'Distributor partnerships', id: 'distributor',
-      body: 'Bring SPARK to a new market, city or chain. We\u2019re building everywhere.', icon: 'globe' },
+      body: 'Tell us about your business and the territory you serve. Our team will follow up with you.', icon: 'globe' },
     { title: 'Retail opportunities', id: 'retail',
-      body: 'Shelf space for the colour burst. POs, ranging and display support.', icon: 'basket' },
+      body: 'Interested in carrying SPARK? Tell us about your shop and we’ll discuss the next steps.', icon: 'basket' },
     { title: 'Media & collaborations', id: 'media',
-      body: 'Editorial, events and creative collaborations with the SPARK crew.', icon: 'pen' },
+      body: 'For press, events and creative partnerships, send the team a note.', icon: 'pen' },
   ],
 };
 
 export const footer = {
   wordmark: { pre: 'Find your', accent: 'spark.' },
-  tagline: 'Bold flavours. Real refreshment. Made for every moment.',
+  tagline: 'Eight sparkling flavours, crafted in Tamil Nadu.',
   contact: {
     title: 'Let’s talk',
-    copy: 'Questions, retail enquiries, or a new partnership? We’d love to hear from you.',
+    copy: 'Questions about a flavour, stocking SPARK, or working together? Send our team a message.',
     cta: 'Get in touch',
     href: '/spark/contact',
   },
@@ -173,16 +170,16 @@ export const footer = {
     {
       title: 'Company',
       links: [
-        { label: 'About Us', href: '/spark/about' },
-        { label: 'Our Story', href: '/spark/#story' },
-        { label: 'Craft', href: '/spark/#craft' },
+        { label: 'Our Story', href: '/spark/about' },
+        { label: 'Why SPARK', href: '/spark/#story' },
+        { label: 'Flavours', href: '/spark/#collection' },
       ],
     },
     {
       title: 'Support',
       links: [
         { label: 'Contact Us', href: '/spark/contact' },
-        { label: 'Distributor Enquiry', href: '/spark/contact#distributor' },
+        { label: 'Distribution Enquiry', href: '/spark/contact#distributor' },
       ],
     },
   ],

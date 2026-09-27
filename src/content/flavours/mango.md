@@ -1,13 +1,13 @@
 ---
 name: Mango
-tagline: Tropical. Golden. Joyful.
-mood: Tropical Sunshine
-description: Sun-ripened mango with a soft honeyed body and a bright, tropical lift on the finish.
+tagline: Ripe mango. Tropical lift.
+mood: Tropical Mango
+description: Rounded mango flavour with a bright, tropical character.
 status: current
 featured: false
 order: 4
 volume: 250 ml
-notes: [Alphonso mango, Honey, Tropical zest]
+notes: [Mango, Tropical aroma, Bright finish]
 colors:
   primary: "#f5a11e"
   deep: "#d96a00"

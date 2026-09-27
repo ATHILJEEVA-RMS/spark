@@ -1,0 +1,24 @@
+{
+  "before": "Orange",
+  "pausedName": "Orange",
+  "playingName": "Blueberry",
+  "active": "1",
+  "labels": "Blueberry",
+  "boxes": {
+    "overlap": false,
+    "controls": {
+      "x": 39.125,
+      "y": 326.671875,
+      "w": 97.09375,
+      "h": 44
+    },
+    "caption": {
+      "x": 210.515625,
+      "y": 333.90625,
+      "w": 140.359375,
+      "h": 30.625
+    }
+  },
+  "reducedPauseVisible": false,
+  "errors": []
+}

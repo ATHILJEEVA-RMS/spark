@@ -44,12 +44,14 @@ const [h1, h2] = collection.heading;
     </div>
   </div>
 
+  <p class="strip-section__lede">{collection.lede}</p>
+
   <ul class="strip" role="list" data-strip tabindex="0" aria-label="All flavours">
     {
       flavours.map((flavour, i) => (
         <li class="strip__item">
           <a
-            href={`/spark/flavours#${flavour.id}`}
+            href={`/spark/flavours/${flavour.id}`}
             class="strip__tile"
             style={`--flavour-primary: ${flavour.data.colors.primary}; --flavour-soft: ${flavour.data.colors.soft}; --reveal-delay: ${i * 60}ms;`}
             data-reveal="up"
@@ -104,6 +106,11 @@ const [h1, h2] = collection.heading;
     align-items: center;
     gap: var(--space-s);
     flex-wrap: wrap;
+  }
+
+  .strip-section__lede {
+    margin-block: calc(var(--space-l) * -0.55) var(--space-m);
+    color: var(--color-text-muted);
   }
 
   .strip-section__arrows {
@@ -223,8 +230,8 @@ const [h1, h2] = collection.heading;
       flex-shrink: 0;
     }
     .strip-section__arrow {
-      width: 2.6rem;
-      height: 2.6rem;
+      width: 2.75rem;
+      height: 2.75rem;
     }
     /* Narrow the tile just enough to let the next flavour peek in. */
     .strip__tile {
@@ -250,12 +257,20 @@ const [h1, h2] = collection.heading;
   /* Arrow controls — progressive enhancement over native overflow
      scroll. One tile width per step, eased by the browser. */
   const strip = document.querySelector<HTMLElement>('[data-strip]');
-  const step = () => strip?.querySelector('.strip__item')?.clientWidth ?? 240;
+  const step = () => {
+    if (!strip) return 240;
+    const item = strip.querySelector<HTMLElement>('.strip__item');
+    return (item?.clientWidth ?? 240) + parseFloat(getComputedStyle(strip).columnGap || '0');
+  };
+  const scroll = (direction: number) => strip?.scrollBy({
+    left: step() * direction,
+    behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'instant' : 'smooth',
+  });
 
   document.querySelector('[data-strip-prev]')?.addEventListener('click', () => {
-    strip?.scrollBy({ left: -(step() + 16), behavior: 'smooth' });
+    scroll(-1);
   });
   document.querySelector('[data-strip-next]')?.addEventListener('click', () => {
-    strip?.scrollBy({ left: step() + 16, behavior: 'smooth' });
+    scroll(1);
   });
 </script>

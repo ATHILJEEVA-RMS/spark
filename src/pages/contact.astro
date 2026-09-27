@@ -3,71 +3,90 @@
    CONTACT — Enquiry form + enquiry cards.
    Enquiries submit to Web3Forms.
    ============================================================ */
-import { contact, cta } from '../data/site';
+import { contact } from '../data/site';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Section from '../components/ui/Section.astro';
 import Eyebrow from '../components/ui/Eyebrow.astro';
-import Button from '../components/ui/Button.astro';
-
-type IconName = 'spark' | 'globe' | 'basket' | 'pen' | 'mail';
-
-const icons = {
-  spark: '<path d="M12 3l2.4 6.6L21 12l-6.6 2.4L12 21l-2.4-6.6L3 12l6.6-2.4L12 3z"/>',
-  globe: '<circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c2.8 2.6 4.2 5.7 4.2 9S14.8 18.4 12 21c-2.8-2.6-4.2-5.7-4.2-9S9.2 5.6 12 3z"/>',
-  basket: '<path d="M4 9h16l-1.5 11h-13L4 9zM8 9l4-6 4 6"/>',
-  pen: '<path d="M4 20l1-4L16 5l3 3L8 19l-4 1zM14 7l3 3"/>',
-  mail: '<rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/>',
-};
+import { getCollection } from 'astro:content';
+const flavours = (await getCollection('flavours')).sort((a, b) => a.data.order - b.data.order);
 
 const subjects = [
-  'General Enquiry',
+  'General Question',
+  'Flavour Availability',
   'Business Partnership',
-  'Distributor Enquiry',
+  'Distribution Partnership',
   'Retail Opportunity',
-  'Media & Collaboration',
+  'Press & Collaboration',
   'Feedback',
   'Other',
 ];
 ---
 
 <BaseLayout title="Contact" description={contact.copy}>
-  <Section spacing="default">
+  <Section width="narrow" spacing="default">
     <div class="contact-hero">
       <Eyebrow>{contact.eyebrow}</Eyebrow>
       <h1 class="contact-hero__title" data-reveal="up">
-        Let's build something <em>refreshing</em><br />together.
+        Looking for SPARK? <em>Let&rsquo;s talk.</em>
       </h1>
-      <p class="contact-hero__copy" data-reveal="up" style="--reveal-delay: 140ms">
+      <p class="contact-hero__copy" data-reveal="up" style="--reveal-delay: 120ms">
         {contact.copy}
       </p>
+      <nav class="contact-direct-links" aria-label="Contact SPARK directly" data-reveal="up" style="--reveal-delay: 180ms">
+        <a href={`mailto:${contact.email}`}>
+          <span>Email the SPARK team</span>
+          <strong>{contact.email}</strong>
+          <span aria-hidden="true">↗</span>
+        </a>
+        <a href={`https://wa.me/${contact.whatsapp}`} target="_blank" rel="noreferrer">
+          <span>Have a quick question?</span>
+          <strong>Message us on WhatsApp</strong>
+          <span aria-hidden="true">↗</span>
+        </a>
+      </nav>
     </div>
 
     <!-- ─── Contact Form ─── -->
-    <div class="contact-form-wrap" data-reveal="up" style="--reveal-delay: 200ms">
-      <form class="contact-form clay" id="contact-form" action="https://api.web3forms.com/submit" method="POST" novalidate>
+    <div class="contact-form-wrap" id="availability" data-reveal="up" style="--reveal-delay: 200ms">
+      <form class="contact-form" id="contact-form" action="https://api.web3forms.com/submit" method="POST" novalidate>
         <input type="hidden" name="access_key" value="7adf6c4b-5692-4673-9f31-6bdf0d2d1370" />
         <input type="hidden" name="from_name" value="SPARK Website" />
         <input type="checkbox" name="botcheck" class="hidden" style="display:none" />
+        <div class="contact-form__intro">
+          <h2 id="contact-form-heading">Send the SPARK team a message</h2>
+          <p id="contact-form-copy">Choose an enquiry type and share the details we need to help.</p>
+        </div>
+        <div class="contact-form__field">
+          <label class="contact-form__label" for="cf-intent">I’d like to <span aria-hidden="true">*</span></label>
+          <select class="contact-form__input contact-form__select" id="cf-intent" name="intent" required aria-describedby="cf-intent-error">
+            <option value="general" selected>General question</option>
+            <option value="availability">Check flavour availability</option>
+            <option value="distributor">Distribution partnership</option>
+            <option value="retail">Stock SPARK in my shop</option>
+            <option value="media">Press or collaboration</option>
+          </select>
+          <span class="contact-form__error" id="cf-intent-error" data-error="intent"></span>
+        </div>
         <div class="contact-form__row">
           <div class="contact-form__field">
-            <label class="contact-form__label" for="cf-name">Full Name <span aria-hidden="true">*</span></label>
+            <label class="contact-form__label" for="cf-name">Your name <span aria-hidden="true">*</span></label>
             <input class="contact-form__input" type="text" id="cf-name" name="name" required placeholder="Your name" autocomplete="name" aria-describedby="cf-name-error" />
             <span class="contact-form__error" id="cf-name-error" data-error="name"></span>
           </div>
           <div class="contact-form__field">
-            <label class="contact-form__label" for="cf-email">Email Address <span aria-hidden="true">*</span></label>
-            <input class="contact-form__input" type="email" id="cf-email" name="email" required placeholder="you@example.com" autocomplete="email" aria-describedby="cf-email-error" />
+            <label class="contact-form__label" for="cf-email">Email address</label>
+            <input class="contact-form__input" type="email" id="cf-email" name="email" placeholder="you@example.com" autocomplete="email" aria-describedby="cf-email-error" />
             <span class="contact-form__error" id="cf-email-error" data-error="email"></span>
           </div>
         </div>
 
         <div class="contact-form__row">
           <div class="contact-form__field">
-            <label class="contact-form__label" for="cf-phone">Phone Number <span aria-hidden="true">*</span></label>
-            <input class="contact-form__input" type="tel" id="cf-phone" name="phone" required placeholder="+91 98765 43210" autocomplete="tel" aria-describedby="cf-phone-error" maxlength="20" />
+            <label class="contact-form__label" for="cf-phone">Phone number <span class="contact-form__hint">(provide an email or phone number)</span></label>
+            <input class="contact-form__input" type="tel" id="cf-phone" name="phone" placeholder="+91 98765 43210" autocomplete="tel" aria-describedby="cf-phone-error" maxlength="20" />
             <span class="contact-form__error" id="cf-phone-error" data-error="phone"></span>
           </div>
-          <div class="contact-form__field">
+          <div class="contact-form__field" data-intent-group="general">
             <label class="contact-form__label" for="cf-subject">Subject <span aria-hidden="true">*</span></label>
             <select class="contact-form__input contact-form__select" id="cf-subject" name="subject" required aria-describedby="cf-subject-error">
               <option value="" disabled selected>Select a subject</option>
@@ -77,21 +96,50 @@ const subjects = [
           </div>
         </div>
 
+        <div class="contact-form__row" data-intent-group="availability" hidden>
+          <div class="contact-form__field">
+            <label class="contact-form__label" for="cf-city">Your city <span aria-hidden="true">*</span></label>
+            <input class="contact-form__input" id="cf-city" name="city" autocomplete="address-level2" placeholder="Your city" aria-describedby="cf-city-error" />
+            <span class="contact-form__error" id="cf-city-error" data-error="city"></span>
+          </div>
+          <div class="contact-form__field">
+            <label class="contact-form__label" for="cf-flavour">Flavour <span aria-hidden="true">*</span></label>
+            <select class="contact-form__input contact-form__select" id="cf-flavour" name="flavour" aria-describedby="cf-flavour-error">
+              <option value="">Choose a flavour</option>
+              {flavours.map((flavour) => <option value={flavour.data.name}>{flavour.data.name}</option>)}
+            </select>
+            <span class="contact-form__error" id="cf-flavour-error" data-error="flavour"></span>
+          </div>
+        </div>
+
+        <div class="contact-form__row" data-intent-group="distributor retail" hidden>
+          <div class="contact-form__field">
+            <label class="contact-form__label" for="cf-business">Business or shop name <span aria-hidden="true">*</span></label>
+            <input class="contact-form__input" id="cf-business" name="business" autocomplete="organization" placeholder="Your business" aria-describedby="cf-business-error" />
+            <span class="contact-form__error" id="cf-business-error" data-error="business"></span>
+          </div>
+          <div class="contact-form__field">
+            <label class="contact-form__label" for="cf-territory">City or territory <span aria-hidden="true">*</span></label>
+            <input class="contact-form__input" id="cf-territory" name="territory" autocomplete="address-level2" placeholder="City or territory you serve" aria-describedby="cf-territory-error" />
+            <span class="contact-form__error" id="cf-territory-error" data-error="territory"></span>
+          </div>
+        </div>
+
         <div class="contact-form__field">
           <label class="contact-form__label" for="cf-message">Message <span aria-hidden="true">*</span></label>
-          <textarea class="contact-form__input contact-form__textarea" id="cf-message" name="message" required rows="5" placeholder="Tell us what you have in mind..." aria-describedby="cf-message-error"></textarea>
+          <textarea class="contact-form__input contact-form__textarea" id="cf-message" name="message" required rows="5" placeholder="Add any details that will help us respond..." aria-describedby="cf-message-error"></textarea>
           <span class="contact-form__error" id="cf-message-error" data-error="message"></span>
         </div>
 
         <div class="contact-form__actions">
+          <p class="contact-form__privacy">We&rsquo;ll use your details only to reply to this enquiry.</p>
           <button type="submit" class="contact-form__submit">
-            Send Message
+            Send enquiry
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
               <path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/>
             </svg>
           </button>
         </div>
-
         <div class="contact-form__status contact-form__status--success" id="contact-success" role="status" hidden>
           <span class="contact-form__status-icon" aria-hidden="true">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
@@ -100,8 +148,8 @@ const subjects = [
             </svg>
           </span>
           <span class="contact-form__status-body">
-            <strong>Message sent!</strong>
-            <span>We&rsquo;ll get back to you soon.</span>
+            <strong>Thanks for getting in touch.</strong>
+            <span>Your enquiry has been sent to the SPARK team.</span>
           </span>
         </div>
 
@@ -114,209 +162,234 @@ const subjects = [
             </svg>
           </span>
           <span class="contact-form__status-body">
-            <strong>We couldn&rsquo;t send your message.</strong>
-            <span>Please try again or <a href={`mailto:${contact.email}`}>email us directly</a>.</span>
+            <strong>Your enquiry could not be sent.</strong>
+            <span>Please try again or <a href={`mailto:${contact.email}`}>email the SPARK team</a>.</span>
           </span>
         </div>
       </form>
     </div>
 
-    <!-- ─── Enquiry Cards ─── -->
-    <div class="contact-grid">
-      {
-        contact.enquiries.map((q, i) => (
-          <article
-            id={q.id}
-            class="contact-card clay"
-            data-reveal="up"
-            style={`--reveal-delay: ${(i % 2) * 110}ms; scroll-margin-top: 8rem;`}
-          >
-            <span class="contact-card__icon" aria-hidden="true">
-              <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" set:html={icons[q.icon as IconName] ?? icons.spark} />
-            </span>
-            <h2 class="contact-card__title">{q.title}</h2>
-            <p class="contact-card__body">{q.body}</p>
-            <a class="contact-card__link" href={`mailto:${contact.email}?subject=${encodeURIComponent(q.title)}`}>
-              {contact.email}
-            </a>
-          </article>
-        ))
-      }
-    </div>
-
-    <div class="contact-cta">
-      <Button href={cta.href} variant="ink" size="lg">{cta.label}</Button>
-    </div>
   </Section>
 </BaseLayout>
 
 <style>
-  /* ─── Hero ─── */
   .contact-hero {
     display: grid;
     gap: var(--space-s);
-    justify-items: start;
-    max-width: 52rem;
-    margin-bottom: var(--space-xl);
+    max-width: 58rem;
+    margin: 0 auto var(--space-xl);
     padding-top: calc(var(--space-2xl) + 1rem);
   }
 
   .contact-hero__title {
-    font-size: var(--text-2xl);
-    line-height: var(--leading-tight);
+    max-width: 17ch;
+    font-size: clamp(2.75rem, 5.8vw, 5.5rem);
+    line-height: 0.98;
   }
 
   .contact-hero__title em {
-    font-style: italic;
     color: var(--orange);
+    font-style: italic;
+    font-weight: 400;
   }
 
   .contact-hero__copy {
+    max-width: 48ch;
     color: var(--color-text-muted);
     font-size: var(--text-md);
-    max-width: 52ch;
   }
 
-  /* ─── Form ─── */
+  .contact-direct-links {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    max-width: 55rem;
+    margin-top: var(--space-s);
+    border-block: 1px solid var(--color-line);
+  }
+
+  .contact-direct-links a {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-content: center;
+    column-gap: var(--space-s);
+    min-width: 0;
+    min-height: 5.25rem;
+    padding-block: var(--space-s);
+    color: var(--ink-700);
+    transition: color var(--duration-fast) ease;
+  }
+
+  .contact-direct-links a:first-child {
+    padding-inline-end: var(--space-m);
+    border-inline-end: 1px solid var(--color-line);
+  }
+
+  .contact-direct-links a:last-child {
+    padding-inline-start: var(--space-m);
+  }
+
+  .contact-direct-links a > span:first-child {
+    color: var(--color-text-muted);
+    font-size: var(--text-xs);
+  }
+
+  .contact-direct-links strong {
+    min-width: 0;
+    font-size: var(--text-sm);
+    font-weight: 600;
+    overflow-wrap: anywhere;
+  }
+
+  .contact-direct-links a > span:last-child {
+    grid-column: 2;
+    grid-row: 1 / span 2;
+    align-self: center;
+    color: var(--orange-deep);
+    transition: translate var(--duration-fast) var(--ease-out-expo);
+  }
+
+  .contact-direct-links a:hover { color: var(--orange-deep); }
+  .contact-direct-links a:hover > span:last-child { translate: 2px -2px; }
+
   .contact-form-wrap {
-    max-width: 52rem;
-    margin-bottom: var(--space-2xl);
+    max-width: 58rem;
+    margin-inline: auto;
+    scroll-margin-top: 7rem;
   }
 
   .contact-form {
     display: grid;
-    gap: var(--space-m);
-    padding: var(--space-l);
+    gap: var(--space-s);
+    padding: clamp(var(--space-m), 4vw, var(--space-l));
+    border: 1px solid color-mix(in oklab, var(--ink-900) 9%, transparent);
+    border-radius: var(--radius-lg);
+    background: linear-gradient(145deg, var(--cream-50), var(--cream-100));
+    box-shadow: 0 1.1rem 3rem rgb(26 20 16 / 0.08);
   }
+
+  .contact-form__intro {
+    display: grid;
+    gap: var(--space-2xs);
+    padding-bottom: var(--space-s);
+    border-bottom: 1px solid var(--color-line);
+  }
+
+  .contact-form__intro h2 { font-size: var(--text-lg); }
+  .contact-form__intro p { color: var(--color-text-muted); font-size: var(--text-sm); }
 
   .contact-form__row {
     display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: var(--space-m);
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--space-s);
   }
 
   .contact-form__field {
     display: grid;
     gap: var(--space-3xs);
+    min-width: 0;
   }
+
+  .contact-form__row[hidden] { display: none; }
+  .contact-form__hint { color: var(--color-text-muted) !important; font-weight: 400; }
 
   .contact-form__label {
+    color: var(--ink-700);
     font-size: var(--text-sm);
     font-weight: 600;
-    color: var(--ink-700);
   }
 
-  .contact-form__label span {
-    color: var(--orange);
-  }
+  .contact-form__label span { color: var(--orange); }
 
   .contact-form__input {
     width: 100%;
-    padding: var(--space-xs) var(--space-s);
+    min-height: 3.2rem;
+    padding: 0.7rem 0.9rem;
+    border: 1px solid var(--ink-300);
     border-radius: var(--radius-sm);
-    border: 1.5px solid var(--ink-300);
     background: var(--cream-50);
     color: var(--ink-900);
     font-family: var(--font-sans);
     font-size: var(--text-sm);
-    outline: none;
-    transition:
-      border-color var(--duration-fast) ease,
-      box-shadow var(--duration-fast) ease;
+    transition: border-color var(--duration-fast) ease, box-shadow var(--duration-fast) ease;
   }
 
-  .contact-form__input::placeholder {
-    color: var(--ink-300);
-  }
+  .contact-form__input::placeholder { color: var(--ink-500); opacity: 0.72; }
 
   .contact-form__input:focus {
-    border-color: var(--orange);
-    box-shadow: 0 0 0 3px color-mix(in oklab, var(--orange) 20%, transparent);
+    border-color: var(--orange-deep);
+    box-shadow: 0 0 0 3px color-mix(in oklab, var(--orange) 16%, transparent);
   }
 
-  .contact-form__input.is-invalid {
-    border-color: var(--cola);
-  }
+  .contact-form__input.is-invalid { border-color: var(--cola); }
 
   .contact-form__select {
     appearance: none;
+    padding-inline-end: 2.75rem;
     background-image: url("data:image/svg+xml,%3Csvg width='12' height='8' viewBox='0 0 12 8' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1.5L6 6.5L11 1.5' stroke='%233e352b' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
     background-repeat: no-repeat;
-    background-position: right var(--space-s) center;
-    padding-right: var(--space-xl);
+    background-position: right 1rem center;
     cursor: pointer;
   }
 
   .contact-form__textarea {
+    min-height: 9rem;
     resize: vertical;
-    min-height: 8rem;
   }
 
   .contact-form__error {
-    font-size: var(--text-xs);
+    min-height: 0.8em;
     color: var(--cola);
-    min-height: 1em;
+    font-size: var(--text-xs);
   }
 
   .contact-form__actions {
     display: flex;
-    justify-content: flex-end;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-s);
+    padding-top: var(--space-2xs);
+  }
+
+  .contact-form__privacy {
+    color: var(--color-text-muted);
+    font-size: var(--text-xs);
   }
 
   .contact-form__submit {
     display: inline-flex;
     align-items: center;
+    justify-content: center;
     gap: var(--space-2xs);
-    padding: var(--space-xs) var(--space-l);
-    border: none;
+    min-height: 3rem;
+    padding: 0.7rem 1.4rem;
+    border: 0;
     border-radius: var(--radius-pill);
-    background: linear-gradient(145deg, var(--orange), var(--orange-deep));
+    background: var(--orange-deep);
     color: var(--cream-50);
     font-family: var(--font-sans);
     font-size: var(--text-sm);
     font-weight: 600;
-    cursor: pointer;
-    box-shadow: var(--shadow-clay-sm);
-    transition:
-      translate var(--duration-fast) var(--ease-out-expo),
-      box-shadow var(--duration-fast) var(--ease-out-expo);
+    box-shadow: 0 0.4rem 1.1rem color-mix(in oklab, var(--orange-deep) 25%, transparent);
+    transition: translate var(--duration-fast) var(--ease-out-expo), background-color var(--duration-fast) ease;
   }
 
-  .contact-form__submit:hover {
-    translate: 0 -3px;
-    box-shadow: var(--shadow-clay);
-  }
-
-  .contact-form__submit:active {
-    translate: 0 0;
-  }
+  .contact-form__submit:hover { background: var(--cola); translate: 0 -2px; }
+  .contact-form__submit:disabled { cursor: wait; opacity: 0.72; }
 
   .contact-form__status {
     display: flex;
     align-items: center;
     gap: var(--space-xs);
-    margin-top: var(--space-s);
     padding: var(--space-xs) var(--space-s);
     border: 1px solid transparent;
     border-radius: var(--radius-md);
     font-size: var(--text-sm);
     line-height: 1.45;
-    animation: contact-status-in 0.45s var(--ease-out-expo) both;
   }
 
   .contact-form__status[hidden] { display: none; }
-
-  .contact-form__status--success {
-    background: var(--green-apple-soft);
-    border-color: color-mix(in oklab, var(--green-apple) 45%, transparent);
-    color: var(--green-apple-deep);
-  }
-
-  .contact-form__status--failure {
-    background: var(--cola-soft);
-    border-color: color-mix(in oklab, var(--cola) 40%, transparent);
-    color: var(--cola-deep);
-  }
+  .contact-form__status--success { background: var(--green-apple-soft); border-color: color-mix(in oklab, var(--green-apple) 45%, transparent); color: var(--green-apple-deep); }
+  .contact-form__status--failure { background: var(--cola-soft); border-color: color-mix(in oklab, var(--cola) 40%, transparent); color: var(--cola-deep); }
 
   .contact-form__status-icon {
     display: grid;
@@ -324,121 +397,29 @@ const subjects = [
     flex: none;
     width: 2.1rem;
     height: 2.1rem;
+    border: 1px solid color-mix(in oklab, currentColor 35%, transparent);
     border-radius: var(--radius-pill);
     background: color-mix(in oklab, var(--cream-50) 75%, transparent);
-    border: 1px solid color-mix(in oklab, currentColor 35%, transparent);
   }
 
-  .contact-form__status-body {
-    display: grid;
-    gap: 0.1em;
-  }
+  .contact-form__status-body { display: grid; gap: 0.1em; }
+  .contact-form__status-body strong { font-weight: 700; }
+  .contact-form__status-body a { color: inherit; font-weight: 600; text-decoration: underline; text-underline-offset: 0.2em; }
 
-  .contact-form__status-body strong {
-    font-weight: 700;
-  }
-
-  .contact-form__status-body a {
-    color: inherit;
-    font-weight: 600;
-    text-decoration: underline;
-    text-underline-offset: 0.2em;
-  }
-
-  @keyframes contact-status-in {
-    from {
-      opacity: 0;
-      translate: 0 -6px;
-    }
-    to {
-      opacity: 1;
-      translate: 0 0;
-    }
-  }
-
-  /* ─── Enquiry Grid ─── */
-  .contact-grid {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: var(--space-m);
-  }
-
-  .contact-card {
-    display: grid;
-    gap: var(--space-s);
-    align-content: start;
-    padding: var(--space-l);
-    transition:
-      box-shadow var(--duration-med) var(--ease-out-expo),
-      translate var(--duration-med) var(--ease-out-expo);
-  }
-
-  .contact-card:hover {
-    box-shadow: var(--shadow-clay-hover);
-    translate: 0 -6px;
-  }
-
-  .contact-card__icon {
-    display: grid;
-    place-items: center;
-    width: 3.5rem;
-    height: 3.5rem;
-    border-radius: var(--radius-pill);
-    background: linear-gradient(145deg, var(--cream-50), var(--cream-300));
-    box-shadow: var(--shadow-clay-sm);
-    color: var(--ink-700);
-  }
-
-  .contact-card__title {
-    font-size: var(--text-lg);
-  }
-
-  .contact-card__body {
-    color: var(--color-text-muted);
-    font-size: var(--text-sm);
-    max-width: 36ch;
-  }
-
-  .contact-card__link {
-    justify-self: start;
-    font-size: var(--text-sm);
-    font-weight: 600;
-    color: var(--ink-900);
-    border-bottom: 1.5px solid var(--orange);
-    padding-bottom: 0.1em;
-    transition: opacity var(--duration-fast) ease;
-  }
-
-  .contact-card__link:hover {
-    opacity: 0.65;
-  }
-
-  .contact-cta {
-    display: flex;
-    justify-content: center;
-    margin-top: var(--space-xl);
-  }
-
-  /* ─── Responsive ─── */
   @media (max-width: 48rem) {
-    .contact-grid { grid-template-columns: 1fr; }
-    .contact-form__row { grid-template-columns: 1fr; }
+    .contact-hero { padding-top: calc(var(--space-xl) + 1rem); }
+    .contact-hero__title { max-width: 15ch; font-size: clamp(2.5rem, 8vw, 4rem); }
+    .contact-direct-links { grid-template-columns: 1fr; }
+    .contact-direct-links a:first-child { padding-inline: 0; border-inline-end: 0; border-bottom: 1px solid var(--color-line); }
+    .contact-direct-links a:last-child { padding-inline: 0; }
   }
 
-  @media (max-width: 30rem) {
-    .contact-hero__title {
-      font-size: var(--text-xl);
-    }
-    .contact-card {
-      padding: var(--space-m);
-    }
-    .contact-card__icon {
-      width: 3rem;
-      height: 3rem;
-    }
-    .contact-form {
-      padding: var(--space-m);
-    }
+  @media (max-width: 36rem) {
+    .contact-hero__title { font-size: var(--text-2xl); }
+    .contact-form { padding: var(--space-m); }
+    .contact-form__row { grid-template-columns: 1fr; }
+    .contact-form__actions { align-items: stretch; flex-direction: column-reverse; }
+    .contact-form__submit { width: 100%; }
   }
 </style>
 
@@ -446,70 +427,106 @@ const subjects = [
   const form = document.getElementById('contact-form') as HTMLFormElement;
   const successMsg = document.getElementById('contact-success');
   const failureMsg = document.getElementById('contact-failure');
+  const intentInput = document.getElementById('cf-intent') as HTMLSelectElement;
+  const subjectInput = document.getElementById('cf-subject') as HTMLSelectElement;
+  const introHeading = document.getElementById('contact-form-heading');
+  const introCopy = document.getElementById('contact-form-copy');
+  const intents = ['availability', 'distributor', 'retail', 'media', 'general'];
+
+  const setIntent = (intent: string) => {
+    const chosen = intents.includes(intent) ? intent : 'general';
+    intentInput.value = chosen;
+    form.querySelectorAll<HTMLElement>('[data-intent-group]').forEach((group) => {
+      group.hidden = !group.dataset.intentGroup?.split(/\s+/).includes(chosen);
+    });
+    const headings: Record<string, string> = {
+      availability: 'Check flavour availability',
+      distributor: 'Discuss a distribution partnership',
+      retail: 'Stock SPARK in your shop',
+      media: 'Press and collaborations',
+      general: 'Send the SPARK team a message',
+    };
+    const descriptions: Record<string, string> = {
+      availability: 'Tell us your city and the flavour you want to try. We’ll help you check availability.',
+      distributor: 'Tell us about your business and the territory you serve.',
+      retail: 'Tell us about your shop and the SPARK range you’re interested in.',
+      media: 'Tell us about your publication, event or collaboration idea.',
+      general: 'Share your question and the team will get back to you.',
+    };
+    if (introHeading) introHeading.textContent = headings[chosen];
+    if (introCopy) introCopy.textContent = descriptions[chosen];
+    const subjectsByIntent: Record<string, string> = {
+      availability: 'Flavour Availability',
+      distributor: 'Distribution Partnership',
+      retail: 'Retail Opportunity',
+      media: 'Press & Collaboration',
+      general: 'General Question',
+    };
+    subjectInput.value = subjectsByIntent[chosen];
+  };
+
+  const setIntentFromUrl = () => {
+    const url = new URL(window.location.href);
+    const hashIntents: Record<string, string> = {
+      '#availability': 'availability',
+      '#distributor': 'distributor',
+      '#retail': 'retail',
+      '#media': 'media',
+      '#general': 'general',
+    };
+    const queryIntent = url.searchParams.get('intent');
+    const intent = queryIntent && intents.includes(queryIntent)
+      ? queryIntent
+      : hashIntents[url.hash] ?? (url.searchParams.has('flavour') ? 'availability' : 'general');
+    setIntent(intent);
+    const slug = url.searchParams.get('flavour');
+    const option = [...(document.getElementById('cf-flavour') as HTMLSelectElement).options].find((item) => item.value.toLowerCase().replaceAll(' ', '-') === slug);
+    if (option) (document.getElementById('cf-flavour') as HTMLSelectElement).value = option.value;
+    if (['#distributor', '#retail', '#media', '#general'].includes(url.hash)) {
+      window.setTimeout(() => document.getElementById('availability')?.scrollIntoView({ behavior: 'instant' }), 60);
+    }
+  };
+  setIntentFromUrl();
+  window.addEventListener('hashchange', setIntentFromUrl);
+  window.addEventListener('popstate', setIntentFromUrl);
+  intentInput?.addEventListener('change', () => setIntent(intentInput.value));
+
+  const error = (key: string, message: string) => {
+    const field = form.elements.namedItem(key) as HTMLElement | null;
+    const output = form.querySelector<HTMLElement>(`[data-error="${key}"]`);
+    if (output) output.textContent = message;
+    field?.classList.toggle('is-invalid', !!message);
+    if (message) field?.setAttribute('aria-invalid', 'true');
+    else field?.removeAttribute('aria-invalid');
+    return !!message;
+  };
 
   form?.addEventListener('submit', async (e) => {
     e.preventDefault();
 
     const data = new FormData(form);
-    const name = (data.get('name') as string).trim();
-    const email = (data.get('email') as string).trim();
-    const phone = (data.get('phone') as string).trim();
-    const subject = String(data.get('subject') ?? '').trim();
-    const message = (data.get('message') as string).trim();
+    const value = (key: string) => String(data.get(key) ?? '').trim();
+    const email = value('email');
+    const phone = value('phone');
+    const subject = value('subject');
+    const intent = value('intent');
 
     let valid = true;
     if (successMsg) successMsg.hidden = true;
     if (failureMsg) failureMsg.hidden = true;
-    const fields = [
-      { key: 'name', val: name, msg: 'Please enter your full name' },
-      { key: 'email', val: email, msg: 'Please enter a valid email' },
-      { key: 'phone', val: phone, msg: 'Please enter a valid phone number' },
-      { key: 'subject', val: subject, msg: 'Please select a subject' },
-      { key: 'message', val: message, msg: 'Tell us something!' },
-    ];
-
-    fields.forEach(({ key, val, msg }) => {
-      const errEl = form.querySelector<HTMLElement>(`[data-error="${key}"]`);
-      const inputEl = form.querySelector<HTMLElement>(`[name="${key}"]`);
-      if (!val) {
-        if (errEl) errEl.textContent = msg;
-        inputEl?.classList.add('is-invalid');
-        inputEl?.setAttribute('aria-invalid', 'true');
-        valid = false;
-      } else {
-        if (errEl) errEl.textContent = '';
-        inputEl?.classList.remove('is-invalid');
-        inputEl?.removeAttribute('aria-invalid');
-      }
-    });
-
-    if (email && !/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email)) {
-      const errEl = form.querySelector<HTMLElement>('[data-error="email"]');
-      const inputEl = form.querySelector<HTMLElement>('[name="email"]');
-      if (errEl) errEl.textContent = 'Please enter a valid email';
-      inputEl?.classList.add('is-invalid');
-      inputEl?.setAttribute('aria-invalid', 'true');
-      valid = false;
-    }
-
-    if (phone) {
-      let digits = phone.replace(/\D/g, '');
-      if (digits.length === 12 && digits.startsWith('91')) digits = digits.slice(2);
-      else if (digits.length === 11 && digits.startsWith('0')) digits = digits.slice(1);
-      const looksValid = /^\+?[\d\s\-()]+$/.test(phone) && digits.length === 10;
-      const errEl = form.querySelector<HTMLElement>('[data-error="phone"]');
-      const inputEl = form.querySelector<HTMLElement>('[name="phone"]');
-      if (!looksValid) {
-        if (errEl) errEl.textContent = 'Please enter a valid phone number';
-        inputEl?.classList.add('is-invalid');
-        inputEl?.setAttribute('aria-invalid', 'true');
-        valid = false;
-      } else {
-        if (errEl) errEl.textContent = '';
-        inputEl?.classList.remove('is-invalid');
-        inputEl?.removeAttribute('aria-invalid');
-      }
-    }
+    valid = !error('name', value('name') ? '' : 'Please enter your full name') && valid;
+    valid = !error('subject', subject ? '' : 'Please select a subject') && valid;
+    valid = !error('message', value('message') ? '' : 'Please enter your message') && valid;
+    const emailValid = !email || /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email);
+    const digits = phone.replace(/\D/g, '');
+    const phoneValid = !phone || (/^\+?[\d\s\-()]+$/.test(phone) && (digits.length === 10 || (phone.startsWith('+') && digits.length >= 8 && digits.length <= 15)));
+    valid = !error('email', !email && !phone ? 'Enter an email or phone number' : emailValid ? '' : 'Please enter a valid email') && valid;
+    valid = !error('phone', phoneValid ? '' : 'Please enter a valid phone number') && valid;
+    valid = !error('city', intent === 'availability' && !value('city') ? 'Please enter your city' : '') && valid;
+    valid = !error('flavour', intent === 'availability' && !value('flavour') ? 'Please choose a flavour' : '') && valid;
+    const businessIntent = intent === 'distributor' || intent === 'retail';
+    valid = !error('business', businessIntent && !value('business') ? 'Please enter your business name' : '') && valid;
+    valid = !error('territory', businessIntent && !value('territory') ? 'Please enter your city or territory' : '') && valid;
 
     if (!valid) {
       form.querySelector<HTMLElement>('.is-invalid')?.focus();
@@ -519,7 +536,8 @@ const subjects = [
     // Greeting leads the email body; Web3Forms renders each field
     // (Name/Email/Phone/Subject/Message) as its own section in the email.
     data.set('subject', `[SPARK Contact from website] ${subject}`);
-    data.set('message', `${message}`);
+    data.set('message', value('message'));
+    for (const key of intent === 'availability' ? ['business', 'territory'] : businessIntent ? ['city', 'flavour'] : intent === 'general' || intent === 'media' ? ['city', 'flavour', 'business', 'territory'] : []) data.delete(key);
 
     // 1. Send email via Web3Forms API
     const submitBtn = form.querySelector<HTMLButtonElement>('.contact-form__submit');
@@ -538,6 +556,7 @@ const subjects = [
       if (response.ok && result.success) {
         if (successMsg) successMsg.hidden = false;
         form.reset();
+        setIntent(intent);
       } else {
         if (failureMsg) failureMsg.hidden = false;
       }

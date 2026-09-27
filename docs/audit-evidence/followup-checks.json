@@ -1,0 +1,38 @@
+{
+  "no-preference": {
+    "hidden": true,
+    "opacity": "0",
+    "pointerEvents": "none"
+  },
+  "reduce": {
+    "hidden": true,
+    "opacity": "0",
+    "pointerEvents": "none"
+  },
+  "overflow": [
+    {
+      "tag": "ARTICLE",
+      "cls": "contact-card clay",
+      "text": "Business enquiries Partnerships, PR and collaborations with ",
+      "right": 347.0625
+    },
+    {
+      "tag": "ARTICLE",
+      "cls": "contact-card clay",
+      "text": "Distributor partnerships Bring SPARK to a new market, city o",
+      "right": 347.0625
+    },
+    {
+      "tag": "ARTICLE",
+      "cls": "contact-card clay",
+      "text": "Retail opportunities Shelf space for the colour burst. POs, ",
+      "right": 347.0625
+    },
+    {
+      "tag": "ARTICLE",
+      "cls": "contact-card clay",
+      "text": "Media & collaborations Editorial, events and creative collab",
+      "right": 347.0625
+    }
+  ]
+}

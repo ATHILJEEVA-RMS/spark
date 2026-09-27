@@ -1,245 +1,190 @@
 ---
-/* ============================================================
-   ABOUT — the brand story.
-   We don't just make drinks. We create moments.
-   ============================================================ */
-import { about, journey } from '../data/site';
+import { getCollection } from 'astro:content';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Section from '../components/ui/Section.astro';
 import Eyebrow from '../components/ui/Eyebrow.astro';
 import Button from '../components/ui/Button.astro';
-import FlavourSpotlight from '../components/sections/FlavourSpotlight.astro';
+import FlavourCan from '../components/FlavourCan.astro';
 
-const [a1, a2] = about.heading;
-const [j1, j2] = journey.heading;
+const flavours = (await getCollection('flavours')).sort((a, b) => a.data.order - b.data.order);
+const heroCans = ['mango', 'orange', 'blueberry'].map((slug) => flavours.find((flavour) => flavour.id === slug)!).filter(Boolean);
+const storyBeats = [
+  { year: '2022', title: 'A little more choice', body: 'Hogwarts Food & Beverages Pvt Ltd begins with an ambition to make a distinctive range of sparkling drinks.' },
+  { year: '2024', title: 'A name for the feeling', body: 'SPARK is introduced, bringing the idea of more choice and colour under one name.' },
+  { year: 'Today', title: 'Different tastes, together', body: 'Eight sparkling flavours bring their own character to the table, so everyone can find a favourite.' },
+];
 ---
 
-<BaseLayout title="About" description={about.body}>
-  <Section spacing="default" width="narrow">
-    <div class="about-hero">
-      <Eyebrow>{about.eyebrow}</Eyebrow>
-      <h1 class="about-hero__title" data-reveal="up">
-        <span>{a1}</span>
-        <span class="about-hero__line--accent"><em>{a2}</em></span>
-      </h1>
-      <p class="about-hero__body" data-reveal="up" style="--reveal-delay: 160ms">
-        {about.body}
-      </p>
-    </div>
-  </Section>
-
-  <Section spacing="tight">
-    <div class="about-mission">
-      <div class="about-mission__aside">
-        <Eyebrow class="about-mission__eyebrow">{about.mission.heading}</Eyebrow>
-        <span class="about-mission__mark" aria-hidden="true">◈</span>
-      </div>
-      <p class="about-mission__body" data-reveal="up">
-        {about.mission.body}
-      </p>
-    </div>
-  </Section>
-
-  <Section spacing="tight">
-    <div class="about-journey">
-      <div class="about-journey__header">
-        <Eyebrow>{journey.eyebrow}</Eyebrow>
-        <h2 class="about-journey__title" data-reveal="up">
-          <span>{j1}</span>
-          <span class="about-journey__line--accent"><em>{j2}</em></span>
-        </h2>
-        <p class="about-journey__body" data-reveal="up" style="--reveal-delay: 120ms">
-          {journey.body}
+<BaseLayout
+  title="Our Story"
+  description="Rooted in Tamil Nadu, SPARK brings eight sparkling flavours to the everyday moments we share. Discover the story behind the range."
+>
+  <Section spacing="tight" class="story-intro">
+    <div class="story-hero">
+      <div class="story-hero__copy">
+        <Eyebrow>Rooted in Tamil Nadu</Eyebrow>
+        <h1 class="story-hero__title" data-reveal="up">Different tastes.<br /><em>One good moment.</em></h1>
+        <p class="story-hero__lede" data-reveal="up" style="--reveal-delay: 120ms">
+          A shared break feels better when everyone has a choice. Crafted in Tamil Nadu, SPARK’s eight sparkling flavours bring their own colour and character to the table—so everyone can find a favourite and enjoy the moment together.
         </p>
+        <a class="story-hero__scroll" href="#the-journey" aria-label="Read the SPARK story">
+          <span class="story-hero__scroll-mark" aria-hidden="true">↓</span>
+          <span>The story so far</span>
+        </a>
       </div>
-      <div class="about-journey__milestones" data-reveal="up" style="--reveal-delay: 200ms">
-        {journey.milestones.map((m) => (
-          <div class="milestone">
-            <span class="milestone__year">{m.year}</span>
-            <span class="milestone__label">{m.label}</span>
+
+      <div class="story-hero__art" aria-label="Mango, Orange and Blueberry SPARK cans, from the eight-flavour range" role="img" data-reveal="scale" style="--reveal-delay: 160ms">
+        <span class="story-hero__art-glow" aria-hidden="true"></span>
+        <span class="story-hero__art-label" aria-hidden="true"><strong>08</strong><span>flavours<br />one SPARK</span></span>
+        <span class="story-hero__art-ground" aria-hidden="true"></span>
+        {heroCans.map((flavour, index) => (
+          <div class:list={['story-hero__can', `story-hero__can--${flavour.id}`]} style={`--can-order:${index}`}>
+            <FlavourCan flavour={flavour} width={420} sizes="(max-width: 48rem) 30vw, 18rem" loading="eager" />
           </div>
         ))}
       </div>
     </div>
   </Section>
 
-  <FlavourSpotlight />
+  <Section id="the-journey" spacing="loose" class="journey-section">
+    <div class="journey">
+      <div class="journey__intro">
+        <Eyebrow>The SPARK journey</Eyebrow>
+        <h2 data-reveal="up">One idea.<br /><em>More to share.</em></h2>
+        <p data-reveal="up" style="--reveal-delay: 100ms">The idea is simple: everyone chooses a flavour that feels like them, then shares the break. That spirit still runs through every part of the range.</p>
+        <span class="journey__signature">Proudly crafted in Tamil Nadu</span>
+      </div>
 
-  <Section width="narrow">
-    <div class="about-cta">
-      <h2 class="about-cta__title" data-reveal="up">
-        Taste the <em>moods.</em>
-      </h2>
-      <div data-reveal="up" style="--reveal-delay: 140ms">
-        <Button href="/spark/flavours" variant="ink" size="lg">Explore Flavours</Button>
+      <ol class="timeline">
+        {storyBeats.map((beat, index) => (
+          <li class="timeline__item" data-reveal="up" style={`--reveal-delay:${index * 110}ms`}>
+            <span class="timeline__year">{beat.year}</span>
+            <span class="timeline__node" aria-hidden="true"></span>
+            <div class="timeline__copy">
+              <h3>{beat.title}</h3>
+              <p>{beat.body}</p>
+            </div>
+          </li>
+        ))}
+      </ol>
+    </div>
+  </Section>
+
+  <Section spacing="loose" width="narrow">
+    <div class="story-cta">
+      <div class="story-cta__copy">
+        <Eyebrow>Choose your SPARK</Eyebrow>
+        <h2 data-reveal="up">Find your flavour.<br /><em>Share the moment.</em></h2>
+        <p data-reveal="up" style="--reveal-delay:100ms">Meet all eight, pick the one that feels like you, and make it part of your next catch-up. Want SPARK on your shelves? Let’s talk.</p>
+      </div>
+      <div class="story-cta__actions">
+        <Button href="/spark/flavours" variant="ink" size="lg">Explore all flavours</Button>
+        <a class="story-cta__partner" href="/spark/contact#distributor">Bring SPARK to your shelves <span aria-hidden="true">↗</span></a>
       </div>
     </div>
   </Section>
 </BaseLayout>
 
 <style>
-  .about-hero {
+  .story-intro { padding-top: clamp(6rem, 8vw, 7.5rem); }
+  .story-hero {
     display: grid;
-    gap: var(--space-m);
-    justify-items: start;
-    padding-top: calc(var(--space-2xl) + 1rem);
+    grid-template-columns: minmax(0, .9fr) minmax(0, 1.1fr);
+    gap: clamp(2rem, 5vw, 5rem);
+    align-items: center;
+    min-height: 43rem;
+    isolation: isolate;
   }
+  .story-hero__copy { position: relative; z-index: 2; display: grid; justify-items: start; gap: var(--space-m); padding-block: var(--space-xl); }
+  .story-hero__title { max-width: 13ch; font-size: clamp(3.15rem, 5.7vw, 5.5rem); line-height: .93; }
+  .story-hero__title em { color: var(--orange-deep); }
+  .story-hero__lede { max-width: 42ch; color: var(--ink-700); font-size: var(--text-md); line-height: 1.65; }
+  .story-hero__scroll { display: inline-flex; align-items: center; gap: .7rem; margin-top: var(--space-xs); color: var(--ink-700); font-size: var(--text-xs); font-weight: 700; letter-spacing: .08em; text-transform: uppercase; }
+  .story-hero__scroll-mark { display: grid; place-items: center; width: 2.5rem; aspect-ratio: 1; border: 1px solid color-mix(in oklab, var(--orange-deep) 45%, transparent); border-radius: 50%; color: var(--orange-deep); font-size: 1.25rem; transition: transform .25s var(--ease-out-expo), background .25s; }
+  .story-hero__scroll:hover .story-hero__scroll-mark { transform: translateY(3px); background: var(--orange-soft); }
 
-  .about-hero__title {
-    font-size: var(--text-2xl);
-    line-height: var(--leading-tight);
-    max-width: 22ch;
+  .story-hero__art { position: relative; align-self: center; width: 100%; min-height: 39rem; overflow: visible; isolation: isolate; }
+  .story-hero__art::before { position: absolute; z-index: -2; top: 13%; left: 10%; width: 80%; aspect-ratio: 1.15; border-radius: 48% 52% 50% 50% / 43% 45% 55% 57%; background: linear-gradient(145deg, color-mix(in oklab, var(--mango-soft) 76%, white), color-mix(in oklab, var(--orange-soft) 50%, white) 54%, color-mix(in oklab, var(--litchi-soft) 54%, white)); content: ''; }
+  .story-hero__art-glow { position: absolute; z-index: -1; top: 17%; left: 19%; width: 62%; aspect-ratio: 1; border-radius: 50%; background: radial-gradient(circle, color-mix(in oklab, var(--mango) 26%, white) 0%, color-mix(in oklab, var(--orange-soft) 42%, transparent) 48%, transparent 72%); }
+  .story-hero__art-label { position: absolute; z-index: 3; top: 8%; left: 4%; display: flex; align-items: center; gap: .7rem; color: var(--ink-800); }
+  .story-hero__art-label strong { color: var(--orange-deep); font-family: var(--font-display); font-size: clamp(2.5rem, 4vw, 4rem); font-weight: 650; letter-spacing: -.06em; line-height: .8; }
+  .story-hero__art-label span { font-size: var(--text-xs); font-weight: 700; line-height: 1.1; letter-spacing: .08em; text-transform: uppercase; }
+  .story-hero__art-ground { position: absolute; z-index: 0; right: 12%; bottom: 10%; left: 12%; height: 5%; border-radius: 50%; background: radial-gradient(ellipse, rgb(66 33 4 / .22), rgb(66 33 4 / 0%) 70%); filter: blur(9px); }
+  .story-hero__can { position: absolute; z-index: 1; bottom: 12%; width: 25%; filter: drop-shadow(0 1.15rem 1rem rgb(66 33 4 / .2)); animation: can-rise .85s var(--ease-out-expo) both; animation-delay: calc(var(--can-order) * 120ms); }
+  .story-hero__can--mango { left: 10%; transform: rotate(-6deg); }
+  .story-hero__can--orange { z-index: 2; left: 35.5%; width: 29%; transform: rotate(0); }
+  .story-hero__can--blueberry { right: 10%; transform: rotate(6deg); }
+  .story-hero__can :global(img) { width: 100%; }
+  @keyframes can-rise { from { opacity: 0; translate: 0 1.5rem; } to { opacity: 1; translate: 0 0; } }
+
+  .journey { display: grid; grid-template-columns: minmax(15rem, .72fr) minmax(0, 1.28fr); gap: clamp(2rem, 5vw, 4.5rem); align-items: center; }
+  .journey__intro { display: grid; justify-items: start; gap: var(--space-m); max-width: 27rem; }
+  .journey__intro h2, .story-cta h2 { font-size: clamp(2.6rem, 4.5vw, 4.4rem); line-height: .98; }
+  .journey__intro h2 em, .story-cta h2 em { color: var(--orange-deep); }
+  .journey__intro > p, .story-cta > p { color: var(--color-text-muted); font-size: var(--text-md); line-height: 1.65; }
+  .journey__signature { display: inline-flex; align-items: center; gap: .65rem; margin-top: var(--space-2xs); color: var(--orange-deep); font-size: var(--text-xs); font-weight: 750; letter-spacing: .08em; text-transform: uppercase; }
+  .journey__signature::before { width: 1.8rem; height: 1px; background: currentColor; content: ''; }
+  .timeline { position: relative; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: clamp(.75rem, 1.5vw, 1.2rem); padding: 0; list-style: none; }
+  .timeline__item { position: relative; display: grid; align-content: start; gap: var(--space-s); min-height: 17rem; padding: clamp(1.15rem, 2vw, 1.65rem); overflow: hidden; border: 1px solid rgb(62 53 43 / .07); border-radius: var(--radius-lg); background: linear-gradient(150deg, var(--cream-50), var(--beat-tint)); box-shadow: var(--shadow-clay-sm); }
+  .timeline__item:nth-child(1) { --beat-tint: var(--mango-soft); }
+  .timeline__item:nth-child(2) { --beat-tint: var(--litchi-soft); }
+  .timeline__item:nth-child(3) { --beat-tint: var(--blueberry-soft); }
+  .timeline__year { color: var(--orange-deep); font-family: var(--font-display); font-size: var(--text-xl); font-weight: 650; line-height: 1; }
+  .timeline__node { position: absolute; top: 1.55rem; right: 1.45rem; width: .62rem; aspect-ratio: 1; border-radius: 50%; background: var(--orange); box-shadow: 0 0 0 .33rem color-mix(in oklab, var(--orange) 14%, white); }
+  .timeline__item:nth-child(2) .timeline__node { background: var(--litchi-deep); box-shadow: 0 0 0 .33rem var(--litchi-soft); }
+  .timeline__item:nth-child(3) .timeline__node { background: var(--blueberry-deep); box-shadow: 0 0 0 .33rem var(--blueberry-soft); }
+  .timeline__copy { display: grid; align-content: start; gap: .65rem; }
+  .timeline__copy h3 { max-width: 14ch; font-family: var(--font-display); font-size: var(--text-lg); font-weight: 560; line-height: 1.1; }
+  .timeline__copy p { color: var(--color-text-muted); font-size: var(--text-sm); line-height: 1.6; }
+
+  .story-cta { position: relative; display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: clamp(2rem, 5vw, 4rem); overflow: hidden; padding: clamp(2.25rem, 5vw, 4rem); border: 1px solid rgb(62 53 43 / .05); border-radius: var(--radius-clay); background: radial-gradient(ellipse at 8% 10%, var(--mango-soft), transparent 46%), radial-gradient(ellipse at 88% 82%, var(--litchi-soft), transparent 44%), var(--cream-100); box-shadow: var(--shadow-clay-sm); }
+  .story-cta__copy { position: relative; z-index: 1; display: grid; justify-items: start; gap: var(--space-s); }
+  .story-cta h2 { max-width: 13ch; }
+  .story-cta__copy > p { max-width: 42ch; color: var(--color-text-muted); font-size: var(--text-md); line-height: 1.6; }
+  .story-cta__actions { position: relative; z-index: 1; display: grid; justify-items: start; gap: var(--space-s); }
+  .story-cta__partner { display: inline-flex; align-items: center; gap: .6rem; padding: .4rem 0; color: var(--ink-800); font-size: var(--text-sm); font-weight: 650; }
+  .story-cta__partner span { color: var(--orange-deep); transition: translate var(--duration-fast) var(--ease-out-expo); }
+  .story-cta__partner:hover span { translate: 3px -3px; }
+
+  @media (max-width: 68rem) {
+    .story-hero { grid-template-columns: minmax(0, .9fr) minmax(0, 1.1fr); gap: 2rem; min-height: 38rem; }
+    .story-hero__art { min-height: 34rem; }
+    .journey { grid-template-columns: 1fr; gap: var(--space-xl); }
+    .journey__intro { max-width: 42rem; }
   }
-
-  .about-hero__title span {
-    display: block;
+  @media (max-width: 58rem) {
+    .story-hero { grid-template-columns: 1fr; gap: 0; min-height: 0; }
+    .story-hero__copy { max-width: 44rem; padding-block: var(--space-l) var(--space-m); }
+    .story-hero__title { max-width: 15ch; }
+    .story-hero__art { width: min(100%, 39rem); min-height: 42rem; margin: var(--space-s) auto 0; }
+    .journey { grid-template-columns: 1fr; gap: var(--space-xl); }
+    .journey__intro { max-width: 42rem; }
   }
-
-  .about-hero__line--accent em {
-    font-style: italic;
-    font-weight: 400;
-    color: var(--orange);
+  @media (max-width: 42rem) {
+    .story-intro { padding-top: 5.5rem; }
+    .story-hero__copy { gap: var(--space-s); padding-block: var(--space-m) var(--space-s); }
+    .story-hero__title { max-width: 12ch; font-size: clamp(2.8rem, 11vw, 4.25rem); }
+    .story-hero__lede { font-size: var(--text-base); }
+    .story-hero__scroll { margin-top: .3rem; }
+    .story-hero__art { width: 100%; min-height: 27rem; max-height: 31rem; margin-top: var(--space-s); }
+    .story-hero__art-label { top: 8%; left: 6%; }
+    .story-hero__art-label strong { font-size: 2.5rem; }
+    .story-hero__can { bottom: 14%; width: 22%; }
+    .story-hero__can--mango { left: 10%; }
+    .story-hero__can--orange { left: 36%; width: 28%; }
+    .story-hero__can--blueberry { right: 10%; }
+    .journey { gap: var(--space-l); }
+    .journey__intro { gap: var(--space-s); }
+    .timeline { grid-template-columns: 1fr; gap: var(--space-s); }
+    .timeline__item { min-height: 0; padding: 1.5rem; }
+    .timeline__copy h3 { max-width: none; font-size: var(--text-md); }
+    .timeline__copy p { max-width: 45ch; font-size: var(--text-sm); }
+    .story-cta { grid-template-columns: 1fr; gap: var(--space-l); padding: clamp(1.6rem, 7vw, 2.5rem); }
+    .story-cta__actions { gap: var(--space-s); }
+    .story-cta__actions :global(.btn) { width: fit-content; }
   }
-
-  .about-hero__body {
-    font-size: var(--text-md);
-    color: var(--color-text-muted);
-    max-width: 56ch;
-  }
-
-  .about-mission {
-    display: grid;
-    grid-template-columns: 0.6fr 2.2fr;
-    gap: var(--space-xl);
-    align-items: start;
-  }
-
-  .about-mission__aside {
-    position: sticky;
-    top: 8rem;
-    display: grid;
-    gap: var(--space-m);
-    justify-items: start;
-  }
-
-  .about-mission__mark {
-    font-family: var(--font-display);
-    font-size: var(--text-xl);
-    color: var(--orange);
-    font-style: italic;
-  }
-
-  .about-mission__body {
-    font-family: var(--font-display);
-    font-size: var(--text-lg);
-    line-height: 1.4;
-    color: var(--ink-700);
-    max-width: 42ch;
-  }
-
-  .about-cta {
-    display: grid;
-    justify-items: center;
-    gap: var(--space-m);
-    text-align: center;
-  }
-
-  .about-cta__title {
-    font-size: var(--text-2xl);
-  }
-
-  .about-cta__title em {
-    font-style: italic;
-    color: var(--orange);
-  }
-
-  @media (max-width: 48rem) {
-    .about-mission { grid-template-columns: 1fr; }
-    .about-mission__aside { position: static; }
-    .about-mission__mark { display: none; }
-  }
-
-  .about-journey {
-    display: grid;
-    gap: var(--space-xl);
-    padding: var(--space-xl) 0;
-  }
-
-  .about-journey__header {
-    display: grid;
-    gap: var(--space-m);
-    justify-items: start;
-  }
-
-  .about-journey__title {
-    font-size: var(--text-2xl);
-    line-height: var(--leading-tight);
-    max-width: 28ch;
-  }
-
-  .about-journey__title span {
-    display: block;
-  }
-
-  .about-journey__line--accent em {
-    font-style: italic;
-    font-weight: 400;
-    color: var(--orange);
-  }
-
-  .about-journey__body {
-    font-size: var(--text-md);
-    color: var(--color-text-muted);
-    max-width: 56ch;
-    line-height: 1.6;
-  }
-
-  .about-journey__milestones {
-    display: flex;
-    gap: var(--space-l);
-    flex-wrap: wrap;
-  }
-
-  .milestone {
-    display: flex;
-    flex-direction: column;
-    gap: var(--space-xs);
-    padding: var(--space-m) var(--space-l);
-    background: var(--surface);
-    border-radius: var(--radius-lg);
-    box-shadow: var(--clay-shadow);
-    min-width: 160px;
-    flex: 1;
-  }
-
-  .milestone__year {
-    font-family: var(--font-display);
-    font-size: var(--text-xl);
-    font-weight: 600;
-    color: var(--orange);
-  }
-
-  .milestone__label {
-    font-size: var(--text-sm);
-    color: var(--color-text-muted);
-    letter-spacing: 0.01em;
-  }
-
-  @media (max-width: 48rem) {
-    .about-journey__milestones {
-      flex-direction: column;
-    }
-  }
-
-  @media (max-width: 30rem) {
-    .about-hero__title {
-      font-size: var(--text-xl);
-    }
-    .about-mission__body {
-      font-size: var(--text-md);
-    }
-    .about-cta__title {
-      font-size: var(--text-xl);
-    }
+  @media (prefers-reduced-motion: reduce) {
+    .story-hero__can { animation: none; }
+    .story-hero__scroll-mark, .story-cta__partner span { transition: none; }
   }
 </style>

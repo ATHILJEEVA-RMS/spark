@@ -1,0 +1,15 @@
+{
+  "stripArrow": {
+    "before": 0,
+    "after": 164
+  },
+  "colaLazyImage": {
+    "complete": true,
+    "width": 144
+  },
+  "noJs": {
+    "headingOpacity": "1",
+    "menuVisible": "none",
+    "burgerVisible": "grid"
+  }
+}

@@ -8,6 +8,11 @@
    ============================================================ */
 import { nav, cta, site } from '../../data/site';
 import Button from '../ui/Button.astro';
+const currentPath = Astro.url.pathname.replace(/\/$/, '') || '/';
+const isCurrent = (href: string) => {
+  const path = href.replace(/\/$/, '') || '/';
+  return currentPath === path || (path === '/spark/flavours' && currentPath.startsWith('/spark/flavours/'));
+};
 ---
 
 <header class="site-header" data-header>
@@ -15,10 +20,10 @@ import Button from '../ui/Button.astro';
     <a href={`${site.base}/`} class="site-header__logo" aria-label={`${site.brand} — home`}>
       <img
         class="site-header__logo-img"
-        src={`${site.base}/spark-logo.png`}
+        src={`${site.base}/spark-logo.webp`}
         alt={site.brand}
-        width="140"
-        height="56"
+        width="336"
+        height="189"
         decoding="async"
       />
     </a>
@@ -27,7 +32,7 @@ import Button from '../ui/Button.astro';
       {
         nav.map((item) => (
           <li>
-            <a href={item.href} class="site-header__link">
+            <a href={item.href} class="site-header__link" aria-current={isCurrent(item.href) ? 'page' : undefined}>
               {item.label}
             </a>
           </li>
@@ -64,7 +69,7 @@ import Button from '../ui/Button.astro';
       {
         nav.map((item, i) => (
           <li>
-            <a href={item.href} class="mobile-menu__link" style={`--i: ${i}`}>
+            <a href={item.href} class="mobile-menu__link" style={`--i: ${i}`} aria-current={isCurrent(item.href) ? 'page' : undefined}>
               {item.label}
             </a>
           </li>
@@ -85,6 +90,25 @@ import Button from '../ui/Button.astro';
     display: flex;
     justify-content: center;
     padding-inline: var(--gutter);
+    pointer-events: none;
+    transform: translateY(0);
+    opacity: 1;
+    transition:
+      transform 280ms var(--ease-out-expo),
+      opacity 180ms ease;
+    will-change: transform, opacity;
+  }
+
+  .site-header.is-hidden {
+    transform: translateY(calc(-100% - var(--space-m)));
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  .site-header.is-hidden:focus-within,
+  :global(html[data-menu-open]) .site-header {
+    transform: translateY(0);
+    opacity: 1;
     pointer-events: none;
   }
 
@@ -120,7 +144,7 @@ import Button from '../ui/Button.astro';
     display: block;
     height: clamp(2.1rem, 4.5vw, 2.6rem);
     width: auto;
-    mix-blend-mode: multiply;
+    filter: brightness(0);
     transition: opacity var(--duration-fast) ease;
   }
 
@@ -156,6 +180,7 @@ import Button from '../ui/Button.astro';
   .site-header__link:hover::after {
     scale: 1 1;
   }
+  .site-header__link[aria-current='page']::after { scale: 1 1; }
 
   .site-header__actions {
     display: inline-flex;
@@ -252,6 +277,7 @@ import Button from '../ui/Button.astro';
   .mobile-menu__link:hover {
     color: var(--orange);
   }
+  .mobile-menu__link[aria-current='page'] { color: var(--orange-deep); }
 
   /* ---------- Responsive ---------- */
   @media (max-width: 56rem) {
@@ -277,26 +303,49 @@ import Button from '../ui/Button.astro';
 
 <script>
   const header = document.querySelector('[data-header]');
-  const onScroll = () => header?.classList.toggle('is-scrolled', window.scrollY > 24);
-  onScroll();
-  window.addEventListener('scroll', onScroll, { passive: true });
+  let lastScrollY = window.scrollY;
+  let scrollFrame = 0;
+  const updateHeader = () => {
+    scrollFrame = 0;
+    const currentY = Math.max(0, window.scrollY);
+    header?.classList.toggle('is-scrolled', currentY > 24);
+
+    if (currentY <= 48 || document.documentElement.hasAttribute('data-menu-open')) {
+      header?.classList.remove('is-hidden');
+    } else if (currentY - lastScrollY > 6 && currentY > 96 && !header?.contains(document.activeElement)) {
+      header?.classList.add('is-hidden');
+    } else if (lastScrollY - currentY > 4) {
+      header?.classList.remove('is-hidden');
+    }
+
+    lastScrollY = currentY;
+  };
+  window.addEventListener('scroll', () => {
+    if (!scrollFrame) scrollFrame = window.requestAnimationFrame(updateHeader);
+  }, { passive: true });
+  updateHeader();
 
   /* ---------- Mobile menu ---------- */
   const toggle = document.querySelector<HTMLButtonElement>('[data-menu-toggle]');
   const menu = document.querySelector<HTMLElement>('[data-menu]');
+  let closeTimer: number | undefined;
 
   const setMenu = (open: boolean) => {
     if (!toggle || !menu) return;
+    window.clearTimeout(closeTimer);
     toggle.setAttribute('aria-expanded', String(open));
     toggle.setAttribute('aria-label', open ? 'Close menu' : 'Open menu');
     document.body.style.overflow = open ? 'hidden' : '';
     document.documentElement.toggleAttribute('data-menu-open', open);
+    for (const element of document.querySelectorAll<HTMLElement>('main, footer, .floating-contact')) element.inert = open;
     if (open) {
       menu.hidden = false;
       requestAnimationFrame(() => menu.classList.add('is-open'));
+      menu.querySelector<HTMLElement>('a')?.focus();
     } else {
       menu.classList.remove('is-open');
-      menu.addEventListener('transitionend', () => (menu.hidden = true), { once: true });
+      toggle.focus();
+      closeTimer = window.setTimeout(() => { menu.hidden = true; }, 250);
     }
   };
 
@@ -308,5 +357,14 @@ import Button from '../ui/Button.astro';
 
   document.addEventListener('keydown', (e) => {
     if (e.key === 'Escape' && toggle?.getAttribute('aria-expanded') === 'true') setMenu(false);
+    if (e.key === 'Tab' && toggle?.getAttribute('aria-expanded') === 'true' && menu) {
+      const items = [toggle, ...menu.querySelectorAll<HTMLAnchorElement>('a')];
+      const current = items.indexOf(document.activeElement as HTMLButtonElement);
+      e.preventDefault();
+      items[(current + (e.shiftKey ? items.length - 1 : 1)) % items.length]?.focus();
+    }
+  });
+  window.matchMedia('(min-width: 56.01rem)').addEventListener('change', (event) => {
+    if (event.matches && toggle?.getAttribute('aria-expanded') === 'true') setMenu(false);
   });
 </script>

@@ -1,0 +1,188 @@
+{
+  "320": {
+    "home": {
+      "scroll": 320,
+      "viewport": 320,
+      "title": "Eight Sparkling Drink Flavours from Tamil Nadu — SPARK",
+      "images": 0,
+      "status": 200,
+      "errors": []
+    },
+    "flavours": {
+      "scroll": 320,
+      "viewport": 320,
+      "title": "Explore Eight Sparkling Drink Flavours — SPARK",
+      "images": 0,
+      "status": 200,
+      "errors": []
+    },
+    "about": {
+      "scroll": 320,
+      "viewport": 320,
+      "title": "About — SPARK",
+      "images": 0,
+      "status": 200,
+      "errors": []
+    },
+    "contact": {
+      "scroll": 320,
+      "viewport": 320,
+      "title": "Contact — SPARK",
+      "images": 0,
+      "status": 200,
+      "errors": []
+    },
+    "flavours/lemon": {
+      "scroll": 320,
+      "viewport": 320,
+      "title": "Lemon Sparkling Drink — SPARK",
+      "images": 0,
+      "status": 200,
+      "errors": []
+    }
+  },
+  "390": {
+    "home": {
+      "scroll": 390,
+      "viewport": 390,
+      "title": "Eight Sparkling Drink Flavours from Tamil Nadu — SPARK",
+      "images": 0,
+      "status": 200,
+      "errors": []
+    },
+    "flavours": {
+      "scroll": 390,
+      "viewport": 390,
+      "title": "Explore Eight Sparkling Drink Flavours — SPARK",
+      "images": 0,
+      "status": 200,
+      "errors": []
+    },
+    "about": {
+      "scroll": 390,
+      "viewport": 390,
+      "title": "About — SPARK",
+      "images": 0,
+      "status": 200,
+      "errors": []
+    },
+    "contact": {
+      "scroll": 390,
+      "viewport": 390,
+      "title": "Contact — SPARK",
+      "images": 0,
+      "status": 200,
+      "errors": []
+    },
+    "flavours/lemon": {
+      "scroll": 390,
+      "viewport": 390,
+      "title": "Lemon Sparkling Drink — SPARK",
+      "images": 0,
+      "status": 200,
+      "errors": []
+    }
+  },
+  "768": {
+    "home": {
+      "scroll": 768,
+      "viewport": 768,
+      "title": "Eight Sparkling Drink Flavours from Tamil Nadu — SPARK",
+      "images": 0,
+      "status": 200,
+      "errors": []
+    },
+    "flavours": {
+      "scroll": 768,
+      "viewport": 768,
+      "title": "Explore Eight Sparkling Drink Flavours — SPARK",
+      "images": 0,
+      "status": 200,
+      "errors": []
+    },
+    "about": {
+      "scroll": 768,
+      "viewport": 768,
+      "title": "About — SPARK",
+      "images": 0,
+      "status": 200,
+      "errors": []
+    },
+    "contact": {
+      "scroll": 768,
+      "viewport": 768,
+      "title": "Contact — SPARK",
+      "images": 0,
+      "status": 200,
+      "errors": []
+    },
+    "flavours/lemon": {
+      "scroll": 768,
+      "viewport": 768,
+      "title": "Lemon Sparkling Drink — SPARK",
+      "images": 0,
+      "status": 200,
+      "errors": []
+    }
+  },
+  "1440": {
+    "home": {
+      "scroll": 1440,
+      "viewport": 1440,
+      "title": "Eight Sparkling Drink Flavours from Tamil Nadu — SPARK",
+      "images": 0,
+      "status": 200,
+      "errors": []
+    },
+    "flavours": {
+      "scroll": 1440,
+      "viewport": 1440,
+      "title": "Explore Eight Sparkling Drink Flavours — SPARK",
+      "images": 0,
+      "status": 200,
+      "errors": []
+    },
+    "about": {
+      "scroll": 1440,
+      "viewport": 1440,
+      "title": "About — SPARK",
+      "images": 0,
+      "status": 200,
+      "errors": []
+    },
+    "contact": {
+      "scroll": 1440,
+      "viewport": 1440,
+      "title": "Contact — SPARK",
+      "images": 0,
+      "status": 200,
+      "errors": []
+    },
+    "flavours/lemon": {
+      "scroll": 1440,
+      "viewport": 1440,
+      "title": "Lemon Sparkling Drink — SPARK",
+      "images": 0,
+      "status": 200,
+      "errors": []
+    }
+  },
+  "hero": {
+    "name": "Blueberry",
+    "link": "/spark/flavours/blueberry"
+  },
+  "menuFocus": "Home",
+  "menuTabInside": true,
+  "menuClosed": false,
+  "availability": {
+    "intent": "availability",
+    "flavour": "Lemon",
+    "cityShown": true
+  },
+  "trade": {
+    "intent": "distributor",
+    "subject": "Distributor Enquiry",
+    "formY": 96.421875,
+    "businessShown": true
+  }
+}

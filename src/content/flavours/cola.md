@@ -1,13 +1,13 @@
 ---
 name: Cola
-tagline: Classic. Rich. Timeless.
-mood: Classic Spark
-description: A limited-edition take on cola — dark, spiced and intensely smooth under a red label.
+tagline: Classic cola. Warm spice.
+mood: Classic Cola
+description: Familiar cola flavour with warm spice notes and a smooth finish.
 status: limited
 featured: false
 order: 8
 volume: 250 ml
-notes: [Kola nut, Warm spice, Vanilla]
+notes: [Classic cola, Warm spice, Smooth finish]
 colors:
   primary: "#e23312"
   deep: "#3d110a"

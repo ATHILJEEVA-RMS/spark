@@ -1,13 +1,13 @@
 ---
 name: Red Guava
-tagline: Exotic. Vibrant. Unexpected.
-mood: Exotic Twist
-description: Pink-fleshed guava with a coral glow — lush tropical body sharpened by a cranberry-like tang.
+tagline: Tropical guava. Gentle tang.
+mood: Tangy Tropical
+description: Tropical guava flavour balanced by a gentle tang.
 status: current
 featured: false
 order: 7
 volume: 250 ml
-notes: [Pink guava, Cranberry tang, Lush tropics]
+notes: [Guava, Tropical aroma, Gentle tang]
 colors:
   primary: "#f26076"
   deep: "#c22840"

@@ -1,13 +1,13 @@
 ---
 name: Litchi
-tagline: Floral. Soft. Elegant.
-mood: Smooth & Floral
-description: Fragrant litchi nectar over a silky, mellow sparkle. Floral, creamy and quietly extravagant.
+tagline: Soft litchi. Floral finish.
+mood: Soft & Floral
+description: Soft litchi flavour with a fragrant, floral character.
 status: current
 featured: false
 order: 6
 volume: 250 ml
-notes: [Litchi nectar, Rose water, Creamy sparkle]
+notes: [Litchi, Floral aroma, Mellow finish]
 colors:
   primary: "#ee9fc2"
   deep: "#c34a85"

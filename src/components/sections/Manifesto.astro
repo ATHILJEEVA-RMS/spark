@@ -1,26 +1,58 @@
 ---
 /* ============================================================
    MANIFESTO — the brand's opening argument.
-   Big editorial type, a single image-free beat of conviction.
-   The whole band between hero and collection is a full-bleed
-   claymorphic "video" — a looping morphing gradient, drifting
-   clay orbs and a light shimmer sweep. Data from site.ts.
+   Editorial type over a flavour-matched, carbonated juice pool.
+   Copy comes from site.ts.
    ============================================================ */
 import { manifesto } from '../../data/site';
 import Eyebrow from '../ui/Eyebrow.astro';
 
 const [l1, l2] = manifesto.heading;
+const random = (seed: number) => {
+  const value = Math.sin(seed * 78.233) * 43758.5453;
+  return value - Math.floor(value);
+};
+const bubbleStreams = [8, 17, 29, 43, 57, 71, 83, 92];
+const liquidBubbles = Array.from({ length: 112 }, (_, index) => {
+  const size = 2 + Math.pow(random(index + 91), 1.7) * 8;
+  const duration = 12.5 - size * .55 + random(index + 51) * 2.5;
+  return {
+    x: Math.max(2, Math.min(98, bubbleStreams[index % bubbleStreams.length] + (random(index + 4) - .5) * 13)).toFixed(1),
+    size: size.toFixed(1),
+    duration: duration.toFixed(2),
+    delay: (-(random(index + 127) * duration)).toFixed(2),
+    drift: Math.round((random(index + 173) - .5) * 28),
+    stillY: (4 + random(index + 219) * 90).toFixed(1),
+  };
+});
 ---
 
 <section class="manifesto" id="story">
-  {/* full-bleed animated claymorphic background — loops like a video */}
-  <span class="manifesto__bg" aria-hidden="true"></span>
-  <span class="manifesto__orb manifesto__orb--1" aria-hidden="true"></span>
-  <span class="manifesto__orb manifesto__orb--2" aria-hidden="true"></span>
-  <span class="manifesto__orb manifesto__orb--3" aria-hidden="true"></span>
-  <span class="manifesto__orb manifesto__orb--4" aria-hidden="true"></span>
-  <span class="manifesto__shimmer" aria-hidden="true"></span>
-
+  {/* A natural continuation of the hero's soft flavour fade */}
+  <div class="manifesto__juice-stage" aria-hidden="true">
+    <svg class="manifesto__juice-wave" viewBox="0 0 4320 800" preserveAspectRatio="none">
+      <defs>
+        <linearGradient id="manifesto-juice-gradient" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stop-color="color-mix(in oklab, var(--active-flavour-primary) 43%, var(--active-flavour-soft))" />
+          <stop offset="40%" stop-color="color-mix(in oklab, var(--active-flavour-primary) 62%, var(--active-flavour-soft))" />
+          <stop offset="100%" stop-color="color-mix(in oklab, var(--active-flavour-primary) 78%, var(--active-flavour-soft))" />
+        </linearGradient>
+        <pattern id="manifesto-juice-pattern" width="720" height="800" patternUnits="userSpaceOnUse">
+          <path class="manifesto__juice-fill" d="M0 245 C120 229 240 229 360 245 S600 261 720 245 L720 800 L0 800Z" />
+        </pattern>
+      </defs>
+      <rect width="4320" height="800" fill="url(#manifesto-juice-pattern)" />
+    </svg>
+    <div class="manifesto__liquid-light"></div>
+    <div class="manifesto__liquid-bubbles">
+      {liquidBubbles.map((bubble) => (
+        <span
+          class="manifesto__liquid-bubble"
+          style={`--x:${bubble.x}%;--size:${bubble.size}px;--duration:${bubble.duration}s;--delay:${bubble.delay}s;--drift:${bubble.drift}px;--still-y:${bubble.stillY}%`}
+        />
+      ))}
+    </div>
+  </div>
   <div class="manifesto__content">
     <div class="manifesto__inner" data-reveal="up">
       <Eyebrow class="manifesto__eyebrow">{manifesto.eyebrow}</Eyebrow>
@@ -38,122 +70,187 @@ const [l1, l2] = manifesto.heading;
         {manifesto.body}
       </p>
 
-      <p class="manifesto__signature" data-reveal="fade" style="--reveal-delay: 260ms">
-        {manifesto.signature}
-      </p>
     </div>
   </div>
+  <button class="manifesto__tilt" type="button" data-tilt-enable hidden>
+    Enable tilt
+  </button>
 </section>
+
+<script>
+  type OrientationEventWithPermission = typeof DeviceOrientationEvent & {
+    requestPermission?: () => Promise<'granted' | 'denied'>;
+  };
+
+  const section = document.querySelector<HTMLElement>('#story');
+  const tiltButton = section?.querySelector<HTMLButtonElement>('[data-tilt-enable]');
+  const orientationApi = window.DeviceOrientationEvent as OrientationEventWithPermission | undefined;
+  const mobileViewport = window.matchMedia('(max-width: 48rem)').matches;
+  const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  if (section && mobileViewport && !reducedMotion && window.isSecureContext && orientationApi) {
+    let baselineGamma: number | undefined;
+    let baselineBeta: number | undefined;
+    let frame = 0;
+    let targetX = 0;
+    let targetY = 0;
+    let currentX = 0;
+    let currentY = 0;
+
+    const clamp = (value: number) => Math.max(-1, Math.min(1, value));
+    const easeTilt = () => {
+      currentX += (targetX - currentX) * 0.12;
+      currentY += (targetY - currentY) * 0.12;
+      section.style.setProperty('--tilt-x', currentX.toFixed(3));
+      section.style.setProperty('--tilt-y', currentY.toFixed(3));
+
+      if (Math.abs(targetX - currentX) > 0.002 || Math.abs(targetY - currentY) > 0.002) {
+        frame = requestAnimationFrame(easeTilt);
+      } else {
+        frame = 0;
+      }
+    };
+
+    const onOrientation = (event: DeviceOrientationEvent) => {
+      if (event.gamma === null || event.beta === null) return;
+      baselineGamma ??= event.gamma;
+      baselineBeta ??= event.beta;
+      targetX = clamp((event.gamma - baselineGamma) / 22);
+      targetY = clamp((event.beta - baselineBeta) / 25);
+
+      if (!frame) frame = requestAnimationFrame(easeTilt);
+    };
+
+    const enableTilt = () => {
+      window.addEventListener('deviceorientation', onOrientation, { passive: true });
+      section.dataset.tiltEnabled = 'true';
+      if (tiltButton) tiltButton.hidden = true;
+    };
+
+    if (typeof orientationApi.requestPermission === 'function') {
+      if (tiltButton) {
+        tiltButton.hidden = false;
+        tiltButton.addEventListener('click', async () => {
+          try {
+            if (await orientationApi.requestPermission?.() === 'granted') enableTilt();
+            else tiltButton.hidden = true;
+          } catch {
+            tiltButton.hidden = true;
+          }
+        }, { once: true });
+      }
+    } else {
+      enableTilt();
+    }
+  }
+</script>
 
 <style>
   .manifesto {
     position: relative;
-    overflow: hidden;
+    overflow: visible;
     isolation: isolate;
-    padding-block: calc(var(--section-gap) * 1.35);
-    background: var(--cream-50);
+    perspective: 1100px;
+    transform-style: preserve-3d;
+    --tilt-x: 0;
+    --tilt-y: 0;
+    min-height: clamp(36rem, 48vw, 40rem);
+    padding-block: calc(var(--section-gap) * .55) calc(var(--section-gap) * 1.1);
+    background: transparent;
   }
 
-  /* ---------- Full-bleed animated gradient base (loops like video) ---------- */
-  .manifesto__bg {
+  /* ---------- A responsive pool of flavour-matched juice ---------- */
+  .manifesto__juice-stage {
     position: absolute;
+    z-index: 0;
     inset: 0;
-    z-index: -3;
-    background:
-      radial-gradient(38% 46% at 18% 28%, color-mix(in oklab, var(--mango-soft) 85%, transparent) 0%, transparent 60%),
-      radial-gradient(42% 50% at 82% 22%, color-mix(in oklab, var(--litchi-soft) 80%, transparent) 0%, transparent 62%),
-      radial-gradient(48% 56% at 72% 88%, color-mix(in oklab, var(--red-guava-soft) 75%, transparent) 0%, transparent 64%),
-      radial-gradient(34% 42% at 22% 82%, color-mix(in oklab, var(--orange-soft) 85%, transparent) 0%, transparent 60%),
-      radial-gradient(30% 38% at 52% 52%, color-mix(in oklab, var(--blueberry-soft) 70%, transparent) 0%, transparent 58%),
-      linear-gradient(140deg, var(--cream-50) 0%, var(--cream-100) 50%, var(--cream-200) 100%);
-    background-size: 220% 220%, 240% 240%, 260% 260%, 230% 230%, 250% 250%, 100% 100%;
-    animation: manifesto-flow 26s var(--ease-out-expo) infinite alternate;
-  }
-
-  /* ---------- Drifting clay orbs ---------- */
-  .manifesto__orb {
-    position: absolute;
-    z-index: -2;
-    border-radius: 46% 54% 58% 42% / 52% 46% 54% 48%;
-    background: linear-gradient(145deg, var(--cream-50), var(--cream-200));
-    box-shadow: var(--shadow-clay-sm);
-    opacity: 0.65;
-    animation: manifesto-drift 16s ease-in-out infinite alternate;
-  }
-
-  .manifesto__orb--1 {
-    width: clamp(9rem, 22vw, 18rem);
-    aspect-ratio: 1;
-    top: -10%;
-    left: -8%;
-    animation-duration: 20s;
-  }
-
-  .manifesto__orb--2 {
-    width: clamp(7rem, 16vw, 12rem);
-    aspect-ratio: 1;
-    bottom: -12%;
-    right: -6%;
-    background: linear-gradient(145deg, var(--orange-soft), color-mix(in oklab, var(--orange) 30%, var(--cream-100)));
-    animation-delay: -6s;
-    animation-duration: 15s;
-  }
-
-  .manifesto__orb--3 {
-    width: clamp(4.5rem, 10vw, 7rem);
-    aspect-ratio: 1;
-    top: 24%;
-    right: 6%;
-    background: linear-gradient(145deg, var(--litchi-soft), color-mix(in oklab, var(--litchi) 35%, var(--cream-100)));
-    animation-delay: -10s;
-    animation-duration: 13s;
-    opacity: 0.5;
-  }
-
-  .manifesto__orb--4 {
-    width: clamp(3rem, 7vw, 5rem);
-    aspect-ratio: 1;
-    bottom: 18%;
-    left: 12%;
-    background: linear-gradient(145deg, var(--mango-soft), color-mix(in oklab, var(--mango) 32%, var(--cream-100)));
-    animation-delay: -3s;
-    animation-duration: 11s;
-    opacity: 0.45;
-  }
-
-  /* ---------- Shimmer sweep (light catching the clay) ---------- */
-  .manifesto__shimmer {
-    position: absolute;
-    inset: 0;
-    z-index: -1;
-    background: linear-gradient(
-      105deg,
-      transparent 0%,
-      transparent 38%,
-      rgb(255 255 255 / 0.14) 47%,
-      rgb(255 255 255 / 0.28) 50%,
-      rgb(255 255 255 / 0.14) 53%,
-      transparent 62%,
-      transparent 100%
-    );
-    background-size: 280% 100%;
-    animation: manifesto-shimmer 11s ease-in-out infinite;
+    overflow: hidden;
     pointer-events: none;
+    transform-style: preserve-3d;
+  }
+
+  .manifesto__juice-wave {
+    position: absolute;
+    z-index: 1;
+    top: 0;
+    left: 0;
+    width: 300vw;
+    max-width: none;
+    height: 100%;
+    overflow: visible;
+    will-change: transform;
+    animation: juice-wave-roll 28s linear infinite;
+    translate: calc(var(--tilt-x) * 10px) calc(var(--tilt-y) * -4px) -16px;
+  }
+
+  .manifesto__juice-fill {
+    fill: url(#manifesto-juice-gradient);
+  }
+
+  .manifesto__liquid-light {
+    position: absolute;
+    z-index: 1;
+    inset: 31% 0 0;
+    pointer-events: none;
+    background:
+      radial-gradient(ellipse 34% 55% at 10% 20%, rgb(255 255 255 / .2), transparent 80%),
+      radial-gradient(ellipse 30% 70% at 88% 35%, rgb(255 255 255 / .16), transparent 85%),
+      linear-gradient(180deg, rgb(255 255 255 / .12), transparent 34%, rgb(0 0 0 / .08));
+    mix-blend-mode: soft-light;
+    transform: translate3d(calc(var(--tilt-x) * 5px), calc(var(--tilt-y) * 4px), 0);
+  }
+
+  .manifesto__liquid-bubbles {
+    position: absolute;
+    z-index: 2;
+    inset: 31% 0 0;
+    overflow: hidden;
+    pointer-events: none;
+    -webkit-mask-image: linear-gradient(to bottom, transparent, #000 10%);
+    mask-image: linear-gradient(to bottom, transparent, #000 10%);
+  }
+
+  .manifesto__liquid-bubble {
+    position: absolute;
+    left: var(--x);
+    bottom: -.75rem;
+    width: var(--size);
+    aspect-ratio: 1;
+    border: 1px solid rgb(255 255 255 / .64);
+    border-radius: 50%;
+    background: radial-gradient(circle at 29% 26%, rgb(255 255 255 / .88) 0 10%, rgb(255 255 255 / .1) 30%, transparent 75%);
+    box-shadow: inset -1px -1px 2px rgb(33 27 20 / .13), 0 0 5px rgb(255 255 255 / .19);
+    opacity: 0;
+    will-change: transform, opacity;
+    animation: liquid-rise var(--duration) linear var(--delay) infinite;
+  }
+
+  @keyframes liquid-rise {
+    0% { transform: translate3d(0, 0, 0) scale(.7); opacity: 0; }
+    10% { opacity: .72; }
+    45% { transform: translate3d(calc(var(--drift) * -.35), -18rem, 0) scale(1); opacity: .7; }
+    75% { transform: translate3d(calc(var(--drift) * .3), -31rem, 0) scale(.9); opacity: .54; }
+    100% { transform: translate3d(var(--drift), -44rem, 0) scale(.72); opacity: 0; }
   }
 
   /* ---------- Content ---------- */
   .manifesto__content {
     position: relative;
-    z-index: 1;
-    max-width: var(--container-narrow);
+    z-index: 3;
+    max-width: 72rem;
     margin-inline: auto;
     padding-inline: var(--gutter);
+    transform-style: preserve-3d;
   }
 
   .manifesto__inner {
     display: grid;
     justify-items: center;
-    gap: var(--space-m);
+    gap: clamp(.65rem, 1.5vw, 1.15rem);
+    width: 100%;
+    max-width: 66rem;
+    margin-inline: auto;
+    padding-block: clamp(1.8rem, 4vw, 3.4rem) 0;
     text-align: center;
   }
 
@@ -162,10 +259,12 @@ const [l1, l2] = manifesto.heading;
   }
 
   .manifesto__title {
-    font-size: var(--text-3xl);
+    font-size: clamp(3.8rem, 7.4vw, 6.75rem);
     line-height: var(--leading-none);
     text-transform: uppercase;
     letter-spacing: var(--tracking-tight);
+    text-wrap: balance;
+    transform: translate3d(calc(var(--tilt-x) * -4px), calc(var(--tilt-y) * -3px), 30px);
   }
 
   .manifesto__line {
@@ -176,10 +275,8 @@ const [l1, l2] = manifesto.heading;
     font-size: 1.32em;
     font-weight: 400;
     text-transform: none;
-    background: linear-gradient(100deg, var(--orange) 0%, var(--red-guava) 55%, var(--litchi-deep) 100%);
-    -webkit-background-clip: text;
-    background-clip: text;
-    color: transparent;
+    color: white;
+    text-shadow: 0 .12em .42em rgb(0 0 0 / .14);
   }
 
   .manifesto__line em {
@@ -188,56 +285,64 @@ const [l1, l2] = manifesto.heading;
 
   .manifesto__body {
     font-size: var(--text-md);
-    color: var(--color-text-muted);
-    max-width: 46ch;
+    color: var(--ink-900);
+    max-width: 42ch;
+    text-shadow: 0 1px rgb(255 255 255 / .22);
   }
 
-  .manifesto__signature {
-    font-family: var(--font-display);
-    font-style: italic;
-    font-size: var(--text-lg);
-    color: var(--orange);
+  .manifesto__tilt {
+    position: absolute;
+    z-index: 5;
+    left: 50%;
+    bottom: 1.15rem;
+    padding: .55rem .8rem;
+    border: 1px solid rgb(255 255 255 / .62);
+    border-radius: 999px;
+    background: rgb(255 255 255 / .62);
+    box-shadow: 0 5px 18px rgb(0 0 0 / .08);
+    color: var(--ink-900);
+    font: 600 .72rem/1 var(--font-body);
+    letter-spacing: .02em;
+    backdrop-filter: blur(10px);
+    cursor: pointer;
+    transform: translateX(-50%);
   }
 
-  /* ---------- Motion ---------- */
-  @keyframes manifesto-flow {
-    0%   { background-position: 0% 0%, 100% 0%, 100% 100%, 0% 100%, 50% 50%, 0% 0%; }
-    33%  { background-position: 50% 30%, 50% 60%, 40% 70%, 60% 30%, 70% 20%, 0% 0%; }
-    66%  { background-position: 70% 60%, 30% 70%, 20% 30%, 80% 70%, 30% 80%, 0% 0%; }
-    100% { background-position: 100% 100%, 0% 100%, 0% 0%, 100% 0%, 50% 50%, 0% 0%; }
-  }
+  .manifesto__tilt[hidden] { display: none; }
 
-  @keyframes manifesto-drift {
-    0%   { transform: translateY(0) rotate(0deg) scale(1); border-radius: 46% 54% 58% 42% / 52% 46% 54% 48%; }
-    50%  { transform: translateY(-24px) rotate(10deg) scale(1.06); border-radius: 55% 45% 44% 56% / 45% 56% 44% 55%; }
-    100% { transform: translateY(-12px) rotate(-6deg) scale(1.03); border-radius: 50% 50% 60% 40% / 60% 40% 50% 50%; }
-  }
-
-  @keyframes manifesto-shimmer {
-    0%, 100% { background-position: 140% 0; opacity: 0; }
-    20%, 80%  { opacity: 1; }
-    50%       { background-position: -40% 0; }
+  @keyframes juice-wave-roll {
+    from { transform: translateX(0); }
+    to { transform: translateX(-33.333333%); }
   }
 
   @media (prefers-reduced-motion: reduce) {
-    .manifesto__bg,
-    .manifesto__orb,
-    .manifesto__shimmer {
-      animation: none;
-    }
-    .manifesto__shimmer { display: none; }
+    .manifesto__juice-wave,
+    .manifesto__liquid-bubble { animation: none; }
+    .manifesto__liquid-bubble { top: var(--still-y); bottom: auto; opacity: .48; }
   }
 
   /* ---------- Responsive ---------- */
   @media (max-width: 48rem) {
     .manifesto {
-      padding-block: calc(var(--section-gap) * 1.15);
+      padding-block: calc(var(--section-gap) * .4);
+      min-height: 32rem;
+    }
+    .manifesto__juice-wave { top: calc(-18.5% + var(--tilt-y) * -4px); height: calc(125% + 8px); }
+    .manifesto__liquid-light,
+    .manifesto__liquid-bubbles { top: 20%; }
+    .manifesto__tilt {
+      top: .8rem;
+      right: var(--gutter);
+      bottom: auto;
+      left: auto;
+      transform: none;
     }
   }
 
   @media (max-width: 30rem) {
     .manifesto {
-      padding-block: calc(var(--section-gap) * 0.95);
+      padding-block: calc(var(--section-gap) * .4);
+      min-height: 31rem;
     }
     .manifesto__inner {
       gap: var(--space-s);
@@ -248,9 +353,7 @@ const [l1, l2] = manifesto.heading;
     .manifesto__body {
       font-size: var(--text-base);
     }
-    .manifesto__orb--1 { width: 8rem; }
-    .manifesto__orb--2 { width: 6rem; }
-    .manifesto__orb--3 { display: none; }
-    .manifesto__orb--4 { display: none; }
+    .manifesto { padding-bottom: 8rem; }
+    .manifesto__inner { width: calc(100% - 1rem); padding-top: 1.25rem; }
   }
 </style>

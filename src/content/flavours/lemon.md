@@ -1,13 +1,13 @@
 ---
 name: Lemon
-tagline: Clean. Bright. Refreshing.
-mood: Bright Refreshment
-description: Cold-pressed lemon snap balanced by a gentle sparkle. The palate cleanser of the line-up.
+tagline: Bright lemon. Clean finish.
+mood: Bright Citrus
+description: Bright lemon notes lead into a clean citrus finish.
 status: current
 featured: false
 order: 5
 volume: 250 ml
-notes: [Sicilian lemon, Citrus peel, Dry finish]
+notes: [Lemon, Citrus peel, Clean finish]
 colors:
   primary: "#eccf0d"
   deep: "#b89200"

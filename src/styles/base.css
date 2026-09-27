@@ -10,6 +10,9 @@
 html {
   -webkit-text-size-adjust: 100%;
   scroll-behavior: smooth;
+  transition:
+    --active-flavour-primary var(--duration-med) var(--ease-out-expo),
+    --active-flavour-soft var(--duration-med) var(--ease-out-expo);
   /* offset anchor targets so the fixed header doesn't cover them */
   scroll-padding-top: 6rem;
 }
@@ -101,6 +104,11 @@ p { max-width: var(--measure); }
 .js [data-reveal="up"]    { translate: 0 2.5rem; }
 .js [data-reveal="scale"] { scale: 0.92; }
 
+@media (prefers-reduced-motion: no-preference) {
+  .js [data-reveal] { transition-duration: 0.5s; }
+  .js [data-reveal="up"] { translate: 0 1.1rem; }
+}
+
 .js [data-reveal].is-visible {
   opacity: 1;
   translate: 0 0;
@@ -117,5 +125,5 @@ p { max-width: var(--measure); }
     transition-duration: 0.01ms !important;
   }
 
-  .js [data-reveal] { opacity: 1; }
+  .js [data-reveal] { opacity: 1; translate: 0 0; scale: 1; }
 }
