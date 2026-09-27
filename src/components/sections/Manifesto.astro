@@ -72,25 +72,18 @@ const liquidBubbles = Array.from({ length: 112 }, (_, index) => {
 
     </div>
   </div>
-  <button class="manifesto__tilt" type="button" data-tilt-enable hidden>
-    Enable tilt
-  </button>
 </section>
 
 <script>
-  type OrientationEventWithPermission = typeof DeviceOrientationEvent & {
-    requestPermission?: () => Promise<'granted' | 'denied'>;
-  };
-
   const section = document.querySelector<HTMLElement>('#story');
-  const tiltButton = section?.querySelector<HTMLButtonElement>('[data-tilt-enable]');
-  const orientationApi = window.DeviceOrientationEvent as OrientationEventWithPermission | undefined;
+  const orientationApi = window.DeviceOrientationEvent;
   const mobileViewport = window.matchMedia('(max-width: 48rem)').matches;
   const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-  if (section && mobileViewport && !reducedMotion && window.isSecureContext && orientationApi) {
+  if (section && mobileViewport && !reducedMotion) {
     let baselineGamma: number | undefined;
     let baselineBeta: number | undefined;
+    let lastSensorEvent = 0;
     let frame = 0;
     let targetX = 0;
     let targetY = 0;
@@ -111,37 +104,47 @@ const liquidBubbles = Array.from({ length: 112 }, (_, index) => {
       }
     };
 
+    const animateLiquid = () => {
+      if (!frame) frame = requestAnimationFrame(easeTilt);
+    };
+
     const onOrientation = (event: DeviceOrientationEvent) => {
       if (event.gamma === null || event.beta === null) return;
+      lastSensorEvent = performance.now();
       baselineGamma ??= event.gamma;
       baselineBeta ??= event.beta;
       targetX = clamp((event.gamma - baselineGamma) / 22);
       targetY = clamp((event.beta - baselineBeta) / 25);
-
-      if (!frame) frame = requestAnimationFrame(easeTilt);
+      animateLiquid();
     };
 
-    const enableTilt = () => {
+    const onPointerMove = (event: PointerEvent) => {
+      // Use direct touch/pen/mouse movement when motion sensors are blocked
+      // or unavailable. Sensor data takes priority whenever it is flowing.
+      if (performance.now() - lastSensorEvent < 1000 || !section) return;
+      const bounds = section.getBoundingClientRect();
+      targetX = clamp(((event.clientX - bounds.left) / bounds.width - 0.5) * 1.6);
+      targetY = clamp(((event.clientY - bounds.top) / bounds.height - 0.5) * 1.2);
+      animateLiquid();
+    };
+
+    const settleLiquid = () => {
+      if (performance.now() - lastSensorEvent < 1000) return;
+      targetX = 0;
+      targetY = 0;
+      animateLiquid();
+    };
+
+    if (window.isSecureContext && orientationApi) {
+      // Browsers that have already granted motion access deliver events
+      // automatically. No permission prompt or on-page enable button.
       window.addEventListener('deviceorientation', onOrientation, { passive: true });
-      section.dataset.tiltEnabled = 'true';
-      if (tiltButton) tiltButton.hidden = true;
-    };
-
-    if (typeof orientationApi.requestPermission === 'function') {
-      if (tiltButton) {
-        tiltButton.hidden = false;
-        tiltButton.addEventListener('click', async () => {
-          try {
-            if (await orientationApi.requestPermission?.() === 'granted') enableTilt();
-            else tiltButton.hidden = true;
-          } catch {
-            tiltButton.hidden = true;
-          }
-        }, { once: true });
-      }
-    } else {
-      enableTilt();
     }
+
+    section.addEventListener('pointermove', onPointerMove, { passive: true });
+    section.addEventListener('pointerup', settleLiquid, { passive: true });
+    section.addEventListener('pointerleave', settleLiquid, { passive: true });
+    section.addEventListener('pointercancel', settleLiquid, { passive: true });
   }
 </script>
 
@@ -180,7 +183,9 @@ const liquidBubbles = Array.from({ length: 112 }, (_, index) => {
     overflow: visible;
     will-change: transform;
     animation: juice-wave-roll 28s linear infinite;
-    translate: calc(var(--tilt-x) * 10px) calc(var(--tilt-y) * -4px) -16px;
+    transform-origin: 50% 28%;
+    rotate: calc(var(--tilt-x) * -2.4deg);
+    translate: calc(var(--tilt-x) * 28px) calc(var(--tilt-y) * -12px) -16px;
   }
 
   .manifesto__juice-fill {
@@ -197,7 +202,7 @@ const liquidBubbles = Array.from({ length: 112 }, (_, index) => {
       radial-gradient(ellipse 30% 70% at 88% 35%, rgb(255 255 255 / .16), transparent 85%),
       linear-gradient(180deg, rgb(255 255 255 / .12), transparent 34%, rgb(0 0 0 / .08));
     mix-blend-mode: soft-light;
-    transform: translate3d(calc(var(--tilt-x) * 5px), calc(var(--tilt-y) * 4px), 0);
+    transform: translate3d(calc(var(--tilt-x) * 12px), calc(var(--tilt-y) * 8px), 0);
   }
 
   .manifesto__liquid-bubbles {
@@ -206,6 +211,8 @@ const liquidBubbles = Array.from({ length: 112 }, (_, index) => {
     inset: 31% 0 0;
     overflow: hidden;
     pointer-events: none;
+    transform: translate3d(calc(var(--tilt-x) * 16px), calc(var(--tilt-y) * 10px), 0);
+    transition: transform 120ms linear;
     -webkit-mask-image: linear-gradient(to bottom, transparent, #000 10%);
     mask-image: linear-gradient(to bottom, transparent, #000 10%);
   }
@@ -290,26 +297,6 @@ const liquidBubbles = Array.from({ length: 112 }, (_, index) => {
     text-shadow: 0 1px rgb(255 255 255 / .22);
   }
 
-  .manifesto__tilt {
-    position: absolute;
-    z-index: 5;
-    left: 50%;
-    bottom: 1.15rem;
-    padding: .55rem .8rem;
-    border: 1px solid rgb(255 255 255 / .62);
-    border-radius: 999px;
-    background: rgb(255 255 255 / .62);
-    box-shadow: 0 5px 18px rgb(0 0 0 / .08);
-    color: var(--ink-900);
-    font: 600 .72rem/1 var(--font-body);
-    letter-spacing: .02em;
-    backdrop-filter: blur(10px);
-    cursor: pointer;
-    transform: translateX(-50%);
-  }
-
-  .manifesto__tilt[hidden] { display: none; }
-
   @keyframes juice-wave-roll {
     from { transform: translateX(0); }
     to { transform: translateX(-33.333333%); }
@@ -326,17 +313,11 @@ const liquidBubbles = Array.from({ length: 112 }, (_, index) => {
     .manifesto {
       padding-block: calc(var(--section-gap) * .4);
       min-height: 32rem;
+      touch-action: pan-y;
     }
     .manifesto__juice-wave { top: calc(-18.5% + var(--tilt-y) * -4px); height: calc(125% + 8px); }
     .manifesto__liquid-light,
     .manifesto__liquid-bubbles { top: 20%; }
-    .manifesto__tilt {
-      top: .8rem;
-      right: var(--gutter);
-      bottom: auto;
-      left: auto;
-      transform: none;
-    }
   }
 
   @media (max-width: 30rem) {
