@@ -101,26 +101,9 @@ const links = [
     color: var(--cream-50);
   }
 
-  /* Phones/tablets: a compact horizontal dock at the bottom-right,
-     clear of the home-indicator safe area. */
-  @media (max-width: 48rem) {
-    .floating-contact {
-      flex-direction: row;
-      bottom: calc(1rem + env(safe-area-inset-bottom, 0px));
-      right: 1rem;
-      gap: var(--space-3xs);
-    }
-
-    .floating-contact__btn {
-      width: 2.75rem;
-      height: 2.75rem;
-    }
-
-    .floating-contact__btn svg {
-      width: 19px;
-      height: 19px;
-    }
-  }
+  /* Phones/tablets: intentionally no override — the stack keeps the
+     exact large-screen geometry (bottom: 2rem, right: 1.5rem, 3rem
+     buttons, --space-2xs gap) so the icons line up identically. */
 
   /* Stay out of the way while the mobile menu overlay is open. */
   :global(html[data-menu-open]) .floating-contact {
