@@ -135,7 +135,11 @@ const [h1, h2] = collection.heading;
     margin-inline: calc(var(--space-2xs) * -1);
     list-style: none;
     overflow-x: auto;
+    overflow-y: hidden;
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior-x: contain;
     scroll-snap-type: x mandatory;
+    scroll-padding-inline: var(--space-2xs);
     scrollbar-width: none;
   }
 
@@ -211,12 +215,20 @@ const [h1, h2] = collection.heading;
     .strip-section__controls {
       justify-content: space-between;
       width: 100%;
+      gap: var(--space-xs);
     }
+    /* Arrows stay visible on phones — they are the affordance that
+       tells visitors the flavour tiles scroll sideways. */
     .strip-section__arrows {
-      display: none;
+      flex-shrink: 0;
     }
+    .strip-section__arrow {
+      width: 2.6rem;
+      height: 2.6rem;
+    }
+    /* Narrow the tile just enough to let the next flavour peek in. */
     .strip__tile {
-      width: 10.5rem;
+      width: min(10.5rem, calc((100vw - 2 * var(--gutter) - 1.75rem) / 2.2));
       padding: var(--space-xs) var(--space-2xs) var(--space-s);
     }
     .strip {
@@ -229,7 +241,7 @@ const [h1, h2] = collection.heading;
       font-size: var(--text-xl);
     }
     .strip__tile {
-      width: 10rem;
+      width: min(9.75rem, calc((100vw - 2 * var(--gutter) - 1.5rem) / 2.1));
     }
   }
 </style>

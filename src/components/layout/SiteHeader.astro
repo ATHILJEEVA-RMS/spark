@@ -12,8 +12,15 @@ import Button from '../ui/Button.astro';
 
 <header class="site-header" data-header>
   <nav class="site-header__pill" aria-label="Primary">
-    <a href="/spark/" class="site-header__logo" aria-label={`${site.brand} — home`}>
-      {site.brand}<span class="site-header__logo-dot">.</span>
+    <a href={`${site.base}/`} class="site-header__logo" aria-label={`${site.brand} — home`}>
+      <img
+        class="site-header__logo-img"
+        src={`${site.base}/spark-logo.png`}
+        alt={site.brand}
+        width="140"
+        height="56"
+        decoding="async"
+      />
     </a>
 
     <ul class="site-header__links" role="list">
@@ -104,14 +111,21 @@ import Button from '../ui/Button.astro';
   }
 
   .site-header__logo {
-    font-family: var(--font-display);
-    font-weight: 700;
-    font-size: var(--text-md);
-    letter-spacing: var(--tracking-tight);
+    display: inline-flex;
+    align-items: center;
+    flex-shrink: 0;
   }
 
-  .site-header__logo-dot {
-    color: var(--orange);
+  .site-header__logo-img {
+    display: block;
+    height: clamp(2.1rem, 4.5vw, 2.6rem);
+    width: auto;
+    mix-blend-mode: multiply;
+    transition: opacity var(--duration-fast) ease;
+  }
+
+  .site-header__logo:hover .site-header__logo-img {
+    opacity: 0.78;
   }
 
   .site-header__links {
@@ -171,6 +185,17 @@ import Button from '../ui/Button.astro';
   .site-header__burger[aria-expanded='true'] .site-header__burger-bot { transform: translateY(-3.5px) rotate(-45deg); }
 
   /* ---------- Mobile menu overlay ---------- */
+  /* Author `display: grid` would otherwise beat the UA rule for the
+     [hidden] attribute and leave an invisible full-screen layer
+     stealing every tap/swipe while the menu is closed. */
+  .mobile-menu[hidden] {
+    display: none;
+  }
+
+  .mobile-menu:not(.is-open) {
+    pointer-events: none;
+  }
+
   .mobile-menu {
     position: fixed;
     inset: 0;
@@ -265,6 +290,7 @@ import Button from '../ui/Button.astro';
     toggle.setAttribute('aria-expanded', String(open));
     toggle.setAttribute('aria-label', open ? 'Close menu' : 'Open menu');
     document.body.style.overflow = open ? 'hidden' : '';
+    document.documentElement.toggleAttribute('data-menu-open', open);
     if (open) {
       menu.hidden = false;
       requestAnimationFrame(() => menu.classList.add('is-open'));
