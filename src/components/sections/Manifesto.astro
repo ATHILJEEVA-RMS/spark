@@ -33,13 +33,15 @@ const liquidBubbles = Array.from({ length: 112 }, (_, index) => {
     <svg class="manifesto__juice-wave" viewBox="0 0 4320 800" preserveAspectRatio="none">
       <defs>
         <linearGradient id="manifesto-juice-gradient" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0%" stop-color="color-mix(in oklab, var(--active-flavour-primary) 43%, var(--active-flavour-soft))" />
-          <stop offset="40%" stop-color="color-mix(in oklab, var(--active-flavour-primary) 62%, var(--active-flavour-soft))" />
-          <stop offset="100%" stop-color="color-mix(in oklab, var(--active-flavour-primary) 78%, var(--active-flavour-soft))" />
+          <stop offset="0%" stop-color="color-mix(in oklab, var(--active-flavour-primary) 52%, var(--active-flavour-soft))" />
+          <stop offset="40%" stop-color="color-mix(in oklab, var(--active-flavour-primary) 68%, var(--active-flavour-soft))" />
+          <stop offset="100%" stop-color="color-mix(in oklab, var(--active-flavour-primary) 86%, var(--active-flavour-soft))" />
         </linearGradient>
       </defs>
-      <path class="manifesto__juice-fill" d="M0 310 C360 294 720 326 1080 310 S1800 294 2160 310 S2880 326 3240 310 S3960 294 4320 310 L4320 800 L0 800Z" />
-      <path class="manifesto__surface-glint" d="M0 310 C360 294 720 326 1080 310 S1800 294 2160 310 S2880 326 3240 310 S3960 294 4320 310" />
+      <path class="manifesto__juice-fill" d="M0 310 C720 296 1440 324 2160 310 S3600 296 4320 310 L4320 800 L0 800Z" />
+      <path class="manifesto__surface-glint" d="M0 310 C720 296 1440 324 2160 310 S3600 296 4320 310" />
+      <path class="manifesto__surface-ripple" d="M0 354 C710 344 1420 363 2160 352 S3600 344 4320 354" />
+      <path class="manifesto__surface-ripple manifesto__surface-ripple--low" d="M0 390 C720 382 1440 397 2160 389 S3600 383 4320 390" />
     </svg>
     <div class="manifesto__liquid-light"></div>
     <div class="manifesto__liquid-bubbles">
@@ -78,13 +80,13 @@ const liquidBubbles = Array.from({ length: 112 }, (_, index) => {
   const mobileViewport = window.matchMedia('(max-width: 48rem)').matches;
   const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-  if (section && mobileViewport && !reducedMotion) {
+  if (section && !reducedMotion) {
     const liquidSurface = section.querySelector<SVGPathElement>('.manifesto__juice-fill');
     const surfaceGlint = section.querySelector<SVGPathElement>('.manifesto__surface-glint');
     const baseSurface = 310;
     const surfaceSegments = 72;
     const surfaceHeights = Array.from({ length: surfaceSegments + 1 }, (_, index) =>
-      baseSurface + Math.sin((index / surfaceSegments) * Math.PI * 12) * 16,
+      baseSurface - Math.sin((index / surfaceSegments) * Math.PI * 4) * 14,
     );
     const surfaceVelocities = Array.from({ length: surfaceSegments + 1 }, () => 0);
     let baselineGamma: number | undefined;
@@ -102,7 +104,7 @@ const liquidBubbles = Array.from({ length: 112 }, (_, index) => {
       const step = Math.min(2, lastFrameTime ? (time - lastFrameTime) / 16.667 : 1);
       lastFrameTime = time;
       const center = baseSurface - currentY * 34;
-      const slope = currentX * 280;
+      const slope = currentX * 105;
       let moving = false;
       const previousHeights = [...surfaceHeights];
 
@@ -125,9 +127,13 @@ const liquidBubbles = Array.from({ length: 112 }, (_, index) => {
       for (let index = 0; index < surfaceSegments; index += 1) {
         const startX = index * segmentWidth;
         const endX = (index + 1) * segmentWidth;
-        const startY = surfaceHeights[index].toFixed(2);
-        const endY = surfaceHeights[index + 1].toFixed(2);
-        line += ` C ${(startX + segmentWidth / 3).toFixed(2)} ${startY} ${(endX - segmentWidth / 3).toFixed(2)} ${endY} ${endX.toFixed(2)} ${endY}`;
+        const before = surfaceHeights[Math.max(0, index - 1)];
+        const start = surfaceHeights[index];
+        const end = surfaceHeights[index + 1];
+        const after = surfaceHeights[Math.min(surfaceSegments, index + 2)];
+        const firstControl = start + (end - before) / 6;
+        const secondControl = end - (after - start) / 6;
+        line += ` C ${(startX + segmentWidth / 3).toFixed(2)} ${firstControl.toFixed(2)} ${(endX - segmentWidth / 3).toFixed(2)} ${secondControl.toFixed(2)} ${endX.toFixed(2)} ${end.toFixed(2)}`;
       }
 
       liquidSurface?.setAttribute('d', `${line} L 4320 800 L 0 800 Z`);
@@ -181,7 +187,7 @@ const liquidBubbles = Array.from({ length: 112 }, (_, index) => {
       animateLiquid();
     };
 
-    if (window.isSecureContext && orientationApi) {
+    if (mobileViewport && window.isSecureContext && orientationApi) {
       // Browsers that have already granted motion access deliver events
       // automatically. No permission prompt or on-page enable button.
       window.addEventListener('deviceorientation', onOrientation, { passive: true });
@@ -218,6 +224,34 @@ const liquidBubbles = Array.from({ length: 112 }, (_, index) => {
     transform-style: preserve-3d;
   }
 
+  .manifesto__juice-stage::before,
+  .manifesto__juice-stage::after {
+    content: '';
+    position: absolute;
+    z-index: 2;
+    left: -8%;
+    width: 116%;
+    pointer-events: none;
+  }
+
+  /* Broad ellipse and front lip make the full-width liquid read as a pool. */
+  .manifesto__juice-stage::before {
+    top: 39%;
+    bottom: -8%;
+    border: 2px solid rgb(255 255 255 / .72);
+    border-bottom: 0;
+    border-radius: 50% 50% 0 0 / 11% 11% 0 0;
+    background: linear-gradient(180deg, rgb(255 255 255 / .14), transparent 23%);
+    box-shadow: inset 0 22px 28px rgb(255 255 255 / .2), 0 -5px 16px rgb(255 255 255 / .34), 0 8px 22px rgb(67 42 18 / .12);
+  }
+
+  .manifesto__juice-stage::after {
+    bottom: 0;
+    height: 14px;
+    background: linear-gradient(180deg, rgb(255 255 255 / .2), rgb(46 31 16 / .1));
+    box-shadow: 0 -8px 28px rgb(69 43 13 / .08);
+  }
+
   .manifesto__juice-wave {
     position: absolute;
     z-index: 1;
@@ -228,7 +262,6 @@ const liquidBubbles = Array.from({ length: 112 }, (_, index) => {
     height: 100%;
     overflow: visible;
     will-change: transform;
-    animation: juice-wave-roll 28s linear infinite;
     translate: calc(var(--tilt-x) * 4px) calc(var(--tilt-y) * -3px) -16px;
   }
 
@@ -238,11 +271,35 @@ const liquidBubbles = Array.from({ length: 112 }, (_, index) => {
 
   .manifesto__surface-glint {
     fill: none;
-    stroke: rgb(255 255 255 / .5);
-    stroke-width: 7;
+    stroke: rgb(255 255 255 / .72);
+    stroke-width: 9;
     stroke-linecap: round;
     filter: drop-shadow(0 2px 5px rgb(255 255 255 / .35));
     pointer-events: none;
+  }
+
+  .manifesto__surface-ripple {
+    fill: none;
+    stroke: rgb(255 255 255 / .23);
+    stroke-width: 3;
+    stroke-linecap: round;
+    stroke-dasharray: 120 45 280 80;
+    opacity: .8;
+    animation: pool-reflection 9s ease-in-out infinite alternate;
+    pointer-events: none;
+  }
+
+  .manifesto__surface-ripple--low {
+    stroke: rgb(67 42 18 / .12);
+    stroke-width: 2;
+    stroke-dasharray: 260 95 140 170;
+    animation-duration: 13s;
+    animation-direction: alternate-reverse;
+  }
+
+  @keyframes pool-reflection {
+    from { stroke-dashoffset: 0; opacity: .42; }
+    to { stroke-dashoffset: -560; opacity: .9; }
   }
 
   .manifesto__liquid-light {
@@ -251,10 +308,11 @@ const liquidBubbles = Array.from({ length: 112 }, (_, index) => {
     inset: 31% 0 0;
     pointer-events: none;
     background:
-      radial-gradient(ellipse 34% 55% at 10% 20%, rgb(255 255 255 / .2), transparent 80%),
-      radial-gradient(ellipse 30% 70% at 88% 35%, rgb(255 255 255 / .16), transparent 85%),
-      linear-gradient(180deg, rgb(255 255 255 / .12), transparent 34%, rgb(0 0 0 / .08));
-    mix-blend-mode: soft-light;
+      radial-gradient(ellipse 42% 42% at 48% 0%, rgb(255 255 255 / .3), transparent 88%),
+      radial-gradient(ellipse 30% 68% at 8% 22%, rgb(255 255 255 / .2), transparent 82%),
+      radial-gradient(ellipse 34% 75% at 92% 28%, rgb(255 255 255 / .16), transparent 84%),
+      linear-gradient(180deg, rgb(255 255 255 / .18), transparent 36%, rgb(48 30 12 / .12));
+    mix-blend-mode: screen;
     transform: translate3d(calc(var(--tilt-x) * 12px), calc(var(--tilt-y) * 8px), 0);
   }
 
@@ -350,13 +408,8 @@ const liquidBubbles = Array.from({ length: 112 }, (_, index) => {
     text-shadow: 0 1px rgb(255 255 255 / .22);
   }
 
-  @keyframes juice-wave-roll {
-    from { transform: translateX(0); }
-    to { transform: translateX(-33.333333%); }
-  }
-
   @media (prefers-reduced-motion: reduce) {
-    .manifesto__juice-wave,
+    .manifesto__surface-ripple,
     .manifesto__liquid-bubble { animation: none; }
     .manifesto__liquid-bubble { top: var(--still-y); bottom: auto; opacity: .48; }
   }
@@ -369,6 +422,10 @@ const liquidBubbles = Array.from({ length: 112 }, (_, index) => {
       touch-action: pan-y;
     }
     .manifesto__juice-wave { top: calc(-12% + var(--tilt-y) * -4px); height: calc(118% + 8px); }
+    .manifesto__juice-stage::before { top: 33%; left: -12%; width: 124%; border-radius: 50% 50% 0 0 / 14% 14% 0 0; }
+    .manifesto__juice-stage::after { height: 9px; }
+    .manifesto__surface-ripple { stroke-width: 2; }
+    .manifesto__liquid-bubble:nth-child(3n) { display: none; }
     .manifesto__liquid-light,
     .manifesto__liquid-bubbles { top: 20%; }
   }
