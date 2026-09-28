@@ -220,8 +220,8 @@ for (let index = 0; index < 72; index += 1) {
     const drawSurface = (time: number) => {
       const step = Math.min(2, lastFrameTime ? (time - lastFrameTime) / 16.667 : 1);
       lastFrameTime = time;
-      const center = baseSurface - currentY * 34;
-      const slope = currentX * 105;
+      const center = baseSurface - currentY * (mobileViewport ? 8 : 34);
+      const slope = currentX * (mobileViewport ? 30 : 105);
       let moving = false;
       const previousHeights = [...surfaceHeights];
 
@@ -512,10 +512,16 @@ for (let index = 0; index < 72; index += 1) {
   @media (max-width: 48rem) {
     .manifesto {
       padding-block: calc(var(--section-gap) * .4);
-      min-height: 29rem;
+      min-height: clamp(19rem, 60vw, 22rem);
       touch-action: pan-y;
     }
-    .manifesto__juice-wave { top: calc(-12% + var(--tilt-y) * -4px); height: calc(118% + 8px); }
+    .manifesto__juice-wave {
+      top: calc(-17% + var(--tilt-y) * -4px);
+      left: -16px;
+      width: calc(300vw + 32px);
+      height: calc(124% + 8px);
+    }
+    .manifesto__line--accent { margin-top: 1.25rem; }
     .manifesto__liquid-bubble:nth-child(5n) { display: none; }
     .manifesto__liquid-light { top: 33%; }
     .manifesto__liquid-bubbles { top: 33%; }
@@ -524,7 +530,7 @@ for (let index = 0; index < 72; index += 1) {
   @media (max-width: 30rem) {
     .manifesto {
       padding-block: calc(var(--section-gap) * .4);
-      min-height: 27rem;
+      padding-bottom: 2rem;
     }
     .manifesto__inner {
       gap: var(--space-s);
@@ -535,7 +541,6 @@ for (let index = 0; index < 72; index += 1) {
     .manifesto__body {
       font-size: var(--text-base);
     }
-    .manifesto { padding-bottom: 8rem; }
     .manifesto__inner { width: calc(100% - 1rem); padding-top: 1.25rem; }
   }
 </style>
