@@ -12,6 +12,7 @@ html {
   scroll-behavior: smooth;
   transition:
     --active-flavour-primary var(--duration-med) var(--ease-out-expo),
+    --active-flavour-deep var(--duration-med) var(--ease-out-expo),
     --active-flavour-soft var(--duration-med) var(--ease-out-expo);
   /* offset anchor targets so the fixed header doesn't cover them */
   scroll-padding-top: 6rem;

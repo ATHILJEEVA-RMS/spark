@@ -556,9 +556,10 @@ const flavourData = flavours.map((f) => ({
     const switchDuration = 620;
     const switchEasing = 'cubic-bezier(0.22, 0.61, 0.36, 1)';
     let index = Math.max(0, Number(hero.dataset.startIndex || 0));
-    const syncPageFlavour = (flavour: { colors: { primary: string; soft: string } } | undefined) => {
+    const syncPageFlavour = (flavour: { colors: { primary: string; deep: string; soft: string } } | undefined) => {
       if (!flavour) return;
       document.documentElement.style.setProperty('--active-flavour-primary', flavour.colors.primary);
+      document.documentElement.style.setProperty('--active-flavour-deep', flavour.colors.deep);
       document.documentElement.style.setProperty('--active-flavour-soft', flavour.colors.soft);
     };
     syncPageFlavour(flavours[index]);

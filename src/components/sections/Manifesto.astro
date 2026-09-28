@@ -13,9 +13,9 @@ const random = (seed: number) => {
   return value - Math.floor(value);
 };
 const bubbleStreams = [8, 17, 29, 43, 57, 71, 83, 92];
-const liquidBubbles = Array.from({ length: 112 }, (_, index) => {
-  const size = 2 + Math.pow(random(index + 91), 1.7) * 8;
-  const duration = 12.5 - size * .55 + random(index + 51) * 2.5;
+const liquidBubbles = Array.from({ length: 120 }, (_, index) => {
+  const size = 1.4 + Math.pow(random(index + 91), 1.8) * 7;
+  const duration = 9.5 - size * .4 + random(index + 51) * 3;
   return {
     x: Math.max(2, Math.min(98, bubbleStreams[index % bubbleStreams.length] + (random(index + 4) - .5) * 13)).toFixed(1),
     size: size.toFixed(1),
@@ -25,6 +25,18 @@ const liquidBubbles = Array.from({ length: 112 }, (_, index) => {
     stillY: (4 + random(index + 219) * 90).toFixed(1),
   };
 });
+const initialSurfaceHeights = Array.from({ length: 73 }, (_, index) =>
+  310 - Math.sin((index / 72) * Math.PI * 6) * 18,
+);
+let initialSurfaceLine = `M 0 ${initialSurfaceHeights[0].toFixed(2)}`;
+for (let index = 0; index < 72; index += 1) {
+  const x = index * 60;
+  const before = initialSurfaceHeights[Math.max(0, index - 1)];
+  const start = initialSurfaceHeights[index];
+  const end = initialSurfaceHeights[index + 1];
+  const after = initialSurfaceHeights[Math.min(72, index + 2)];
+  initialSurfaceLine += ` C ${x + 20} ${(start + (end - before) / 6).toFixed(2)} ${x + 40} ${(end - (after - start) / 6).toFixed(2)} ${x + 60} ${end.toFixed(2)}`;
+}
 ---
 
 <section class="manifesto" id="story">
@@ -33,16 +45,15 @@ const liquidBubbles = Array.from({ length: 112 }, (_, index) => {
     <svg class="manifesto__juice-wave" viewBox="0 0 4320 800" preserveAspectRatio="none">
       <defs>
         <linearGradient id="manifesto-juice-gradient" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0%" stop-color="color-mix(in oklab, var(--active-flavour-primary) 52%, var(--active-flavour-soft))" />
-          <stop offset="40%" stop-color="color-mix(in oklab, var(--active-flavour-primary) 68%, var(--active-flavour-soft))" />
-          <stop offset="100%" stop-color="color-mix(in oklab, var(--active-flavour-primary) 86%, var(--active-flavour-soft))" />
+          <stop offset="0%" stop-color="color-mix(in oklab, var(--active-flavour-primary) 58%, var(--active-flavour-soft))" />
+          <stop offset="16%" stop-color="color-mix(in oklab, var(--active-flavour-primary) 82%, var(--active-flavour-soft))" />
+          <stop offset="55%" stop-color="color-mix(in oklab, var(--active-flavour-primary) 88%, var(--active-flavour-deep))" />
+          <stop offset="100%" stop-color="color-mix(in oklab, var(--active-flavour-primary) 65%, var(--active-flavour-deep))" />
         </linearGradient>
       </defs>
-      <path class="manifesto__juice-fill" d="M0 310 C720 296 1440 324 2160 310 S3600 296 4320 310 L4320 800 L0 800Z" />
-      <path class="manifesto__surface-glint" d="M0 310 C720 296 1440 324 2160 310 S3600 296 4320 310" />
-      <path class="manifesto__surface-ripple" d="M0 354 C710 344 1420 363 2160 352 S3600 344 4320 354" />
-      <path class="manifesto__surface-ripple manifesto__surface-ripple--low" d="M0 390 C720 382 1440 397 2160 389 S3600 383 4320 390" />
+      <path class="manifesto__juice-fill" d={`${initialSurfaceLine} L 4320 800 L 0 800 Z`} />
     </svg>
+    <canvas class="manifesto__liquid-caustics" aria-hidden="true"></canvas>
     <div class="manifesto__liquid-light"></div>
     <div class="manifesto__liquid-bubbles">
       {liquidBubbles.map((bubble) => (
@@ -79,14 +90,14 @@ const liquidBubbles = Array.from({ length: 112 }, (_, index) => {
   const orientationApi = window.DeviceOrientationEvent;
   const mobileViewport = window.matchMedia('(max-width: 48rem)').matches;
   const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const causticCanvas = section?.querySelector<HTMLCanvasElement>('.manifesto__liquid-caustics');
 
   if (section && !reducedMotion) {
     const liquidSurface = section.querySelector<SVGPathElement>('.manifesto__juice-fill');
-    const surfaceGlint = section.querySelector<SVGPathElement>('.manifesto__surface-glint');
     const baseSurface = 310;
     const surfaceSegments = 72;
     const surfaceHeights = Array.from({ length: surfaceSegments + 1 }, (_, index) =>
-      baseSurface - Math.sin((index / surfaceSegments) * Math.PI * 4) * 14,
+      baseSurface - Math.sin((index / surfaceSegments) * Math.PI * 6) * 18,
     );
     const surfaceVelocities = Array.from({ length: surfaceSegments + 1 }, () => 0);
     let baselineGamma: number | undefined;
@@ -94,10 +105,116 @@ const liquidBubbles = Array.from({ length: 112 }, (_, index) => {
     let lastSensorEvent = 0;
     let lastFrameTime = 0;
     let frame = 0;
+    let sectionVisible = false;
     let targetX = 0;
     let targetY = 0;
     let currentX = 0;
     let currentY = 0;
+
+    const gl = causticCanvas?.getContext('webgl', { alpha: true, antialias: false, powerPreference: 'low-power', preserveDrawingBuffer: true });
+    let causticProgram: WebGLProgram | null = null;
+    let causticTime: WebGLUniformLocation | null = null;
+    let causticTilt: WebGLUniformLocation | null = null;
+    let causticResolution: WebGLUniformLocation | null = null;
+    let lastCausticTime = 0;
+
+    if (gl && causticCanvas) {
+      const compileShader = (type: number, source: string) => {
+        const shader = gl.createShader(type);
+        if (!shader) return null;
+        gl.shaderSource(shader, source);
+        gl.compileShader(shader);
+        if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS)) {
+          gl.deleteShader(shader);
+          return null;
+        }
+        return shader;
+      };
+
+      const vertexShader = compileShader(gl.VERTEX_SHADER, `
+        attribute vec2 aPosition;
+        varying vec2 vUv;
+        void main() {
+          vUv = aPosition * .5 + .5;
+          gl_Position = vec4(aPosition, 0., 1.);
+        }
+      `);
+      const fragmentShader = compileShader(gl.FRAGMENT_SHADER, `
+        precision highp float;
+        varying vec2 vUv;
+        uniform float uTime;
+        uniform vec2 uTilt;
+        uniform vec2 uResolution;
+
+        float hash(vec2 p) {
+          return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453);
+        }
+        float noise(vec2 p) {
+          vec2 i = floor(p);
+          vec2 f = fract(p);
+          f = f * f * (3. - 2. * f);
+          return mix(mix(hash(i), hash(i + vec2(1., 0.)), f.x),
+                     mix(hash(i + vec2(0., 1.)), hash(i + vec2(1., 1.)), f.x), f.y);
+        }
+        void main() {
+          vec2 uv = vec2(vUv.x, 1. - vUv.y);
+          float surface = .3875 - .0225 * sin(uv.x * 6.283185)
+            - uTilt.y * .042 - uTilt.x * (uv.x - .5) * .043;
+          float liquid = smoothstep(surface + .012, surface + .065, uv.y);
+          vec2 p = uv * uResolution / 60.;
+          float folded = noise(p * 1.8 + vec2(-uTime * .022, uTime * .014));
+          float detail = noise(p * 3.2 + vec2(uTime * .018, uTime * .011));
+          float sparkle = smoothstep(.68, .86, folded) * smoothstep(.54, .8, detail);
+          float alpha = liquid * sparkle * .13;
+          gl_FragColor = vec4(vec3(alpha), alpha);
+        }
+      `);
+
+      if (vertexShader && fragmentShader) {
+        causticProgram = gl.createProgram();
+        if (causticProgram) {
+          gl.attachShader(causticProgram, vertexShader);
+          gl.attachShader(causticProgram, fragmentShader);
+          gl.linkProgram(causticProgram);
+          if (!gl.getProgramParameter(causticProgram, gl.LINK_STATUS)) causticProgram = null;
+        }
+      }
+
+      if (causticProgram) {
+        const vertices = gl.createBuffer();
+        gl.bindBuffer(gl.ARRAY_BUFFER, vertices);
+        gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, 1, -1, -1, 1, 1, 1]), gl.STATIC_DRAW);
+        gl.useProgram(causticProgram);
+        const position = gl.getAttribLocation(causticProgram, 'aPosition');
+        gl.enableVertexAttribArray(position);
+        gl.vertexAttribPointer(position, 2, gl.FLOAT, false, 0, 0);
+        causticTime = gl.getUniformLocation(causticProgram, 'uTime');
+        causticTilt = gl.getUniformLocation(causticProgram, 'uTilt');
+        causticResolution = gl.getUniformLocation(causticProgram, 'uResolution');
+      }
+    }
+
+    const drawCaustics = (time: number) => {
+      if (!gl || !causticCanvas || !causticProgram) return;
+      if (time - lastCausticTime < 33) return;
+      lastCausticTime = time;
+      const bounds = section.getBoundingClientRect();
+      const ratio = Math.min(window.devicePixelRatio || 1, 1.25, 1200 / Math.max(bounds.width, 1));
+      const width = Math.max(1, Math.round(bounds.width * ratio));
+      const height = Math.max(1, Math.round(bounds.height * ratio));
+      if (causticCanvas.width !== width || causticCanvas.height !== height) {
+        causticCanvas.width = width;
+        causticCanvas.height = height;
+        gl.viewport(0, 0, width, height);
+      }
+      gl.useProgram(causticProgram);
+      if (causticTime) gl.uniform1f(causticTime, time * .001);
+      if (causticTilt) gl.uniform2f(causticTilt, currentX, currentY);
+      if (causticResolution) gl.uniform2f(causticResolution, width, height);
+      gl.clearColor(0, 0, 0, 0);
+      gl.clear(gl.COLOR_BUFFER_BIT);
+      gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
+    };
 
     const clamp = (value: number) => Math.max(-1, Math.min(1, value));
     const drawSurface = (time: number) => {
@@ -110,7 +227,10 @@ const liquidBubbles = Array.from({ length: 112 }, (_, index) => {
 
       for (let index = 0; index <= surfaceSegments; index += 1) {
         const fraction = index / surfaceSegments;
-        const desired = center - (fraction - 0.5) * slope;
+        const baseWave = -Math.sin(fraction * Math.PI * 6) * 18;
+        const ambientWave = Math.sin(time * 0.00035 - fraction * 4.5) * 3.2
+          + Math.sin(time * 0.00022 + fraction * 8.5) * 1.4;
+        const desired = center + baseWave - (fraction - 0.5) * slope + ambientWave;
         const height = surfaceHeights[index];
         const left = previousHeights[Math.max(0, index - 1)];
         const right = previousHeights[Math.min(surfaceSegments, index + 1)];
@@ -137,7 +257,7 @@ const liquidBubbles = Array.from({ length: 112 }, (_, index) => {
       }
 
       liquidSurface?.setAttribute('d', `${line} L 4320 800 L 0 800 Z`);
-      surfaceGlint?.setAttribute('d', line);
+      drawCaustics(time);
       return moving;
     };
 
@@ -148,7 +268,7 @@ const liquidBubbles = Array.from({ length: 112 }, (_, index) => {
       section.style.setProperty('--tilt-y', currentY.toFixed(3));
       const surfaceMoving = drawSurface(performance.now());
 
-      if (Math.abs(targetX - currentX) > 0.002 || Math.abs(targetY - currentY) > 0.002 || surfaceMoving) {
+      if (Math.abs(targetX - currentX) > 0.002 || Math.abs(targetY - currentY) > 0.002 || surfaceMoving || sectionVisible) {
         frame = requestAnimationFrame(easeTilt);
       } else {
         frame = 0;
@@ -197,6 +317,22 @@ const liquidBubbles = Array.from({ length: 112 }, (_, index) => {
     section.addEventListener('pointerup', settleLiquid, { passive: true });
     section.addEventListener('pointerleave', settleLiquid, { passive: true });
     section.addEventListener('pointercancel', settleLiquid, { passive: true });
+
+    if ('IntersectionObserver' in window) {
+      const liquidObserver = new IntersectionObserver(([entry]) => {
+        sectionVisible = entry.isIntersecting;
+        if (sectionVisible) animateLiquid();
+        else if (frame) {
+          cancelAnimationFrame(frame);
+          frame = 0;
+          lastFrameTime = 0;
+        }
+      }, { rootMargin: '80px' });
+      liquidObserver.observe(section);
+    } else {
+      sectionVisible = true;
+      animateLiquid();
+    }
   }
 </script>
 
@@ -224,34 +360,6 @@ const liquidBubbles = Array.from({ length: 112 }, (_, index) => {
     transform-style: preserve-3d;
   }
 
-  .manifesto__juice-stage::before,
-  .manifesto__juice-stage::after {
-    content: '';
-    position: absolute;
-    z-index: 2;
-    left: -8%;
-    width: 116%;
-    pointer-events: none;
-  }
-
-  /* Broad ellipse and front lip make the full-width liquid read as a pool. */
-  .manifesto__juice-stage::before {
-    top: 39%;
-    bottom: -8%;
-    border: 2px solid rgb(255 255 255 / .72);
-    border-bottom: 0;
-    border-radius: 50% 50% 0 0 / 11% 11% 0 0;
-    background: linear-gradient(180deg, rgb(255 255 255 / .14), transparent 23%);
-    box-shadow: inset 0 22px 28px rgb(255 255 255 / .2), 0 -5px 16px rgb(255 255 255 / .34), 0 8px 22px rgb(67 42 18 / .12);
-  }
-
-  .manifesto__juice-stage::after {
-    bottom: 0;
-    height: 14px;
-    background: linear-gradient(180deg, rgb(255 255 255 / .2), rgb(46 31 16 / .1));
-    box-shadow: 0 -8px 28px rgb(69 43 13 / .08);
-  }
-
   .manifesto__juice-wave {
     position: absolute;
     z-index: 1;
@@ -269,57 +377,31 @@ const liquidBubbles = Array.from({ length: 112 }, (_, index) => {
     fill: url(#manifesto-juice-gradient);
   }
 
-  .manifesto__surface-glint {
-    fill: none;
-    stroke: rgb(255 255 255 / .72);
-    stroke-width: 9;
-    stroke-linecap: round;
-    filter: drop-shadow(0 2px 5px rgb(255 255 255 / .35));
-    pointer-events: none;
-  }
-
-  .manifesto__surface-ripple {
-    fill: none;
-    stroke: rgb(255 255 255 / .23);
-    stroke-width: 3;
-    stroke-linecap: round;
-    stroke-dasharray: 120 45 280 80;
-    opacity: .8;
-    animation: pool-reflection 9s ease-in-out infinite alternate;
-    pointer-events: none;
-  }
-
-  .manifesto__surface-ripple--low {
-    stroke: rgb(67 42 18 / .12);
-    stroke-width: 2;
-    stroke-dasharray: 260 95 140 170;
-    animation-duration: 13s;
-    animation-direction: alternate-reverse;
-  }
-
-  @keyframes pool-reflection {
-    from { stroke-dashoffset: 0; opacity: .42; }
-    to { stroke-dashoffset: -560; opacity: .9; }
-  }
-
   .manifesto__liquid-light {
     position: absolute;
     z-index: 1;
-    inset: 31% 0 0;
+    inset: 38% 0 0;
     pointer-events: none;
     background:
-      radial-gradient(ellipse 42% 42% at 48% 0%, rgb(255 255 255 / .3), transparent 88%),
-      radial-gradient(ellipse 30% 68% at 8% 22%, rgb(255 255 255 / .2), transparent 82%),
-      radial-gradient(ellipse 34% 75% at 92% 28%, rgb(255 255 255 / .16), transparent 84%),
-      linear-gradient(180deg, rgb(255 255 255 / .18), transparent 36%, rgb(48 30 12 / .12));
-    mix-blend-mode: screen;
+      radial-gradient(ellipse 54% 34% at 48% 0%, rgb(255 255 255 / .1), transparent 92%),
+      linear-gradient(180deg, rgb(255 255 255 / .06), transparent 36%, rgb(42 30 18 / .04));
+    mix-blend-mode: soft-light;
+    -webkit-mask-image: linear-gradient(180deg, transparent 0%, #000 16%);
+    mask-image: linear-gradient(180deg, transparent 0%, #000 16%);
+    background-size: 118% 120%, 100% 100%;
+    animation: liquid-caustics 18s ease-in-out infinite alternate;
     transform: translate3d(calc(var(--tilt-x) * 12px), calc(var(--tilt-y) * 8px), 0);
+  }
+
+  @keyframes liquid-caustics {
+    from { background-position: 0 0, 0 0; }
+    to { background-position: 100% 30%, 0 0; }
   }
 
   .manifesto__liquid-bubbles {
     position: absolute;
     z-index: 2;
-    inset: 31% 0 0;
+    inset: 38% 0 0;
     overflow: hidden;
     pointer-events: none;
     transform: translate3d(calc(var(--tilt-x) * 16px), calc(var(--tilt-y) * 10px), 0);
@@ -328,16 +410,28 @@ const liquidBubbles = Array.from({ length: 112 }, (_, index) => {
     mask-image: linear-gradient(to bottom, transparent, #000 10%);
   }
 
+  .manifesto__liquid-caustics {
+    position: absolute;
+    z-index: 2;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    opacity: .42;
+    pointer-events: none;
+    mix-blend-mode: screen;
+    filter: blur(3px);
+  }
+
   .manifesto__liquid-bubble {
     position: absolute;
     left: var(--x);
     bottom: -.75rem;
     width: var(--size);
     aspect-ratio: 1;
-    border: 1px solid rgb(255 255 255 / .64);
+    border: 1px solid rgb(255 255 255 / .32);
     border-radius: 50%;
-    background: radial-gradient(circle at 29% 26%, rgb(255 255 255 / .88) 0 10%, rgb(255 255 255 / .1) 30%, transparent 75%);
-    box-shadow: inset -1px -1px 2px rgb(33 27 20 / .13), 0 0 5px rgb(255 255 255 / .19);
+    background: radial-gradient(circle at 31% 26%, rgb(255 255 255 / .42) 0 8%, rgb(255 255 255 / .08) 32%, transparent 75%);
+    box-shadow: inset -1px -1px 2px rgb(33 27 20 / .1), 0 0 5px rgb(255 255 255 / .1);
     opacity: 0;
     will-change: transform, opacity;
     animation: liquid-rise var(--duration) linear var(--delay) infinite;
@@ -409,7 +503,7 @@ const liquidBubbles = Array.from({ length: 112 }, (_, index) => {
   }
 
   @media (prefers-reduced-motion: reduce) {
-    .manifesto__surface-ripple,
+    .manifesto__liquid-light,
     .manifesto__liquid-bubble { animation: none; }
     .manifesto__liquid-bubble { top: var(--still-y); bottom: auto; opacity: .48; }
   }
@@ -422,12 +516,9 @@ const liquidBubbles = Array.from({ length: 112 }, (_, index) => {
       touch-action: pan-y;
     }
     .manifesto__juice-wave { top: calc(-12% + var(--tilt-y) * -4px); height: calc(118% + 8px); }
-    .manifesto__juice-stage::before { top: 33%; left: -12%; width: 124%; border-radius: 50% 50% 0 0 / 14% 14% 0 0; }
-    .manifesto__juice-stage::after { height: 9px; }
-    .manifesto__surface-ripple { stroke-width: 2; }
-    .manifesto__liquid-bubble:nth-child(3n) { display: none; }
-    .manifesto__liquid-light,
-    .manifesto__liquid-bubbles { top: 20%; }
+    .manifesto__liquid-bubble:nth-child(5n) { display: none; }
+    .manifesto__liquid-light { top: 33%; }
+    .manifesto__liquid-bubbles { top: 33%; }
   }
 
   @media (max-width: 30rem) {

@@ -184,6 +184,12 @@
   initial-value: #f47b00;
 }
 
+@property --active-flavour-deep {
+  syntax: '<color>';
+  inherits: true;
+  initial-value: #cf4b00;
+}
+
 @property --active-flavour-soft {
   syntax: '<color>';
   inherits: true;
