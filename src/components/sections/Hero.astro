@@ -567,12 +567,15 @@ const flavourData = flavours.map((f) => ({
     let hoverPaused = false;
     let focusPaused = false;
     const motion = window.matchMedia('(prefers-reduced-motion: reduce)');
+    const mobilePalette = window.matchMedia('(max-width: 56rem)');
     let reduceMotion = motion.matches;
 
     const transitionColors = (target: FlavourColors) => {
       window.cancelAnimationFrame(colorFrame);
       const destination = toHslPalette(target);
-      if (reduceMotion) {
+      // On compact screens, switch directly between real flavour palettes.
+      // Sweeping the hue wheel makes orange-to-blue pass through green.
+      if (reduceMotion || mobilePalette.matches) {
         currentColors = destination;
         setColors(target);
         return;
@@ -714,6 +717,9 @@ const flavourData = flavours.map((f) => ({
         transitionColors(flavours[index].colors);
       }
       schedule();
+    });
+    mobilePalette.addEventListener('change', (event) => {
+      if (event.matches) transitionColors(flavours[index].colors);
     });
     if ('IntersectionObserver' in window) {
       const observer = new IntersectionObserver(([entry]) => {

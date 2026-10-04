@@ -331,6 +331,16 @@ const sizes = {
     to   { transform: translateY(-14px); }
   }
 
+  @media (max-width: 56rem) {
+    .stage--hero .stage__float :global(.stage__can) {
+      filter: drop-shadow(0 10px 16px rgb(26 20 16 / 0.18));
+    }
+    .stage--hero .stage__mirror,
+    .stage--hero .stage__shadow {
+      display: none;
+    }
+  }
+
   @media (prefers-reduced-motion: reduce) {
     .stage__float,
     .stage__shadow,

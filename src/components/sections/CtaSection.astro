@@ -178,12 +178,19 @@ const paths = [
   @media (max-width: 46rem) {
     .cta { padding: var(--space-l) var(--space-s); }
     .cta__inner { grid-template-columns: 1fr; gap: var(--space-l); }
-    .cta__title { font-size: clamp(2.8rem, 11vw, 4.2rem); }
+    .cta__title {
+      font-family: var(--font-sans);
+      font-size: clamp(2.2rem, 8vw, 3.4rem);
+      font-weight: 700;
+      line-height: 1.03;
+      letter-spacing: -0.055em;
+    }
+    .cta__title-accent em { font-style: normal; font-weight: 700; }
   }
   @media (max-width: 30rem) {
     .cta { padding: var(--space-m) var(--space-s); border-radius: var(--radius-lg); }
     .cta__inner { gap: var(--space-m); }
-    .cta__title { font-size: clamp(2.55rem, 11vw, 3.25rem); }
+    .cta__title { font-size: clamp(2rem, 8.8vw, 2.7rem); }
     .cta__choice { min-height: 5.5rem; padding: var(--space-xs); }
     .cta__choice-description { max-width: 29ch; }
   }

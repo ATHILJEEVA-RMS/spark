@@ -86,7 +86,6 @@ const storyBeats = [
 </BaseLayout>
 
 <style>
-  .story-intro { padding-top: clamp(6rem, 8vw, 7.5rem); }
   .story-hero {
     display: grid;
     grid-template-columns: minmax(0, .9fr) minmax(0, 1.1fr);
@@ -155,6 +154,7 @@ const storyBeats = [
     .journey__intro { max-width: 42rem; }
   }
   @media (max-width: 58rem) {
+    :global(.story-intro.section--tight) { padding-top: calc(var(--space-s) + 4.5rem); }
     .story-hero { grid-template-columns: 1fr; gap: 0; min-height: 0; }
     .story-hero__copy { max-width: 44rem; padding-block: var(--space-l) var(--space-m); }
     .story-hero__title { max-width: 15ch; }
@@ -163,7 +163,6 @@ const storyBeats = [
     .journey__intro { max-width: 42rem; }
   }
   @media (max-width: 42rem) {
-    .story-intro { padding-top: 5.5rem; }
     .story-hero__copy { gap: var(--space-s); padding-block: var(--space-m) var(--space-s); }
     .story-hero__title { max-width: 12ch; font-size: clamp(2.8rem, 11vw, 4.25rem); }
     .story-hero__lede { font-size: var(--text-base); }
