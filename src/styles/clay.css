@@ -37,14 +37,3 @@
   --clay-shadow: var(--shadow-clay-hover);
   translate: 0 -6px;
 }
-
-/* Deep full-bleed flavour gradient (immersive blocks) */
-.deep-gradient {
-  background:
-    radial-gradient(120% 90% at 20% 0%,
-      color-mix(in oklab, var(--flavour-primary, var(--ink-700)) 65%, white) 0%,
-      transparent 55%),
-    linear-gradient(158deg,
-      var(--flavour-primary, var(--ink-700)) 0%,
-      var(--flavour-deep, var(--ink-900)) 78%);
-}

@@ -6,14 +6,14 @@
    generated from the content collection; arrow controls are
    progressive enhancement over native scroll.
    ============================================================ */
-import { getCollection } from 'astro:content';
 import { collection } from '../../data/site';
+import { getFlavours } from '../../data/flavours';
 import Section from '../ui/Section.astro';
 import Eyebrow from '../ui/Eyebrow.astro';
 import Button from '../ui/Button.astro';
 import CanStage from '../CanStage.astro';
 
-const flavours = (await getCollection('flavours')).sort((a, b) => a.data.order - b.data.order);
+const flavours = await getFlavours();
 const [h1, h2] = collection.heading;
 ---
 

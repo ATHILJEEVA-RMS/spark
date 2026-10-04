@@ -4,7 +4,7 @@
    Every flavour as a mini advertising poster, generated from
    the content collection.
    ============================================================ */
-import { getCollection } from 'astro:content';
+import { getFlavours } from '../../data/flavours';
 import { flavoursPage } from '../../data/site';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import Section from '../../components/ui/Section.astro';
@@ -13,7 +13,7 @@ import Marquee from '../../components/ui/Marquee.astro';
 import FlavourCard from '../../components/cards/FlavourCard.astro';
 import CtaSection from '../../components/sections/CtaSection.astro';
 
-const flavours = (await getCollection('flavours')).sort((a, b) => a.data.order - b.data.order);
+const flavours = await getFlavours();
 const [h1, h2] = flavoursPage.heading;
 const flavourNames = flavours.map((f) => f.data.name);
 ---

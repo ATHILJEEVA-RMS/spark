@@ -3,13 +3,13 @@
    FLAVOUR CAN — the single place every can image on the site
    is rendered.
 
-   Assets are true transparent cutouts (see tools/process_cans.py)
+   Assets are studio renders with transparent backgrounds.
+   Original photo cutouts remain in assets/flavours for reference.
    served through Astro's image pipeline: responsive srcsets in
    modern formats, intrinsic dimensions baked in (zero CLS).
 
-   The component never decorates the artwork itself — all of the
-   premium presentation (glow, reflection, splash, shadow) lives
-   in CanStage, so the label stays pixel-perfect everywhere.
+   The component only *stages* the artwork — it never alters
+   the can render itself (branding stays pixel-perfect).
    ============================================================ */
 import { Image } from 'astro:assets';
 import type { CollectionEntry } from 'astro:content';
@@ -17,8 +17,7 @@ import type { CollectionEntry } from 'astro:content';
 interface Props {
   flavour: CollectionEntry<'flavours'>;
   loading?: 'lazy' | 'eager';
-  /* Rendered width budget — the pipeline generates 2×/3× sources
-     around it so every density gets a sharp render. */
+  /* Rendered width budget; the pipeline also generates a 2× source. */
   width?: number;
   sizes?: string;
   class?: string;
@@ -40,9 +39,9 @@ const { src, alt } = flavour.data.image;
   {loading}
   {width}
   {sizes}
-  widths={[width, width * 2, width * 3]}
+  widths={[width, width * 2]}
   format="webp"
-  quality={82}
+  quality={86}
   decoding="async"
   class:list={['flavour-can', className]}
 />
@@ -52,5 +51,8 @@ const { src, alt } = flavour.data.image;
     display: block;
     width: 100%;
     height: auto;
+    aspect-ratio: 0.44;
+    object-fit: cover;
+    object-position: center;
   }
 </style>

@@ -13,6 +13,6 @@ colors:
   deep: "#c22840"
   soft: "#fbdfe3"
 image:
-  src: ../../assets/flavours/red-guava.png
+  src: ../../assets/flavours-studio/red-guava.png
   alt: SPARK Red Guava sparkling drink can
 ---

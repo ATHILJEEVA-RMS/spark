@@ -175,6 +175,8 @@ const sizes = {
     display: grid;
     justify-items: center;
     width: 52%;
+    perspective: 1100px;
+    transform-style: preserve-3d;
     animation: stage-float 6s ease-in-out infinite alternate;
   }
 
@@ -183,9 +185,13 @@ const sizes = {
     z-index: 1;
     width: 100%;
     height: auto;
+    transform: rotateY(-4deg) rotateX(1deg);
+    transform-origin: 50% 55%;
     filter:
-      drop-shadow(0 30px 34px rgb(26 20 16 / 0.24))
-      drop-shadow(0 6px 10px rgb(26 20 16 / 0.12));
+      drop-shadow(0 1px 0 rgb(16 22 28 / 0.2))
+      drop-shadow(-2px 2px 2px rgb(26 20 16 / 0.14))
+      drop-shadow(0 30px 34px rgb(26 20 16 / 0.28))
+      drop-shadow(0 7px 12px rgb(26 20 16 / 0.14));
   }
 
   /* mirror copy — absolutely parked under the can (zero layout
@@ -208,7 +214,7 @@ const sizes = {
   .stage__mirror :global(.stage__can--mirror) {
     width: 100%;
     height: auto;
-    transform: scaleY(-1);
+    transform: scaleY(-1) rotateY(-4deg) rotateX(1deg);
     filter: none;
   }
 

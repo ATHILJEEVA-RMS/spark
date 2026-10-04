@@ -13,6 +13,6 @@ colors:
   deep: "#b89200"
   soft: "#fbf3c6"
 image:
-  src: ../../assets/flavours/lemon.png
+  src: ../../assets/flavours-studio/lemon.png
   alt: SPARK Lemon sparkling drink can
 ---

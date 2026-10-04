@@ -13,6 +13,6 @@ colors:
   deep: "#cf4b00"
   soft: "#fde4cb"
 image:
-  src: ../../assets/flavours/orange.png
+  src: ../../assets/flavours-studio/orange.png
   alt: SPARK Orange sparkling drink can
 ---

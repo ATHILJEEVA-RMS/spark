@@ -1,13 +1,13 @@
 ---
 /* The product and colour world transition together; visitors can pause
    rotation or select a flavour from the desktop rail. */
-import { getCollection } from 'astro:content';
 import { hero } from '../../data/site';
+import { getFlavours } from '../../data/flavours';
 import Container from '../ui/Container.astro';
 import Button from '../ui/Button.astro';
 import CanStage from '../CanStage.astro';
 
-const flavours = (await getCollection('flavours')).sort((a, b) => a.data.order - b.data.order);
+const flavours = await getFlavours();
 const featured = flavours.find((f) => f.data.featured) ?? flavours[0];
 const initial = featured.data.colors;
 const [l1, l2, l3] = hero.title;
@@ -110,9 +110,7 @@ const flavourData = flavours.map((f) => ({
 </header>
 
 <style>
-  /* Register flavour colour vars as smooth-transitioning
-     custom properties so the whole hero colour-world morphs
-     when JS swaps them. */
+  /* Defaults for the hero's dynamic flavour palette. */
   @property --flavour-primary { syntax: '<color>'; inherits: true; initial-value: #f47b00; }
   @property --flavour-deep    { syntax: '<color>'; inherits: true; initial-value: #cf4b00; }
   @property --flavour-soft    { syntax: '<color>'; inherits: true; initial-value: #fde4cb; }
@@ -127,10 +125,6 @@ const flavourData = flavours.map((f) => ({
     padding-top: var(--space-2xl);
     padding-bottom: var(--space-xl);
     overflow: clip;
-    transition:
-      --flavour-primary var(--hero-switch-duration) var(--hero-switch-easing),
-      --flavour-deep var(--hero-switch-duration) var(--hero-switch-easing),
-      --flavour-soft var(--hero-switch-duration) var(--hero-switch-easing);
   }
 
   /* floating clay blobs — the sanctioned decorative clay */
@@ -459,6 +453,10 @@ const flavourData = flavours.map((f) => ({
   }
 
   /* ---------- Responsive ---------- */
+  @media (min-width: 56.001rem) {
+    .hero__caption { display: none; }
+  }
+
   @media (max-width: 80rem) {
     .hero__rail { display: none; }
   }
@@ -539,9 +537,16 @@ const flavourData = flavours.map((f) => ({
 </style>
 
 <script>
+  import { formatHslPalette, mixHslPalette, toHslPalette, type FlavourColors } from '../../scripts/flavour-colors';
+
   const hero = document.querySelector<HTMLElement>('[data-hero]');
   if (hero) {
-    const flavours = JSON.parse(hero.dataset.flavours || '[]');
+    const flavours = JSON.parse(hero.dataset.flavours || '[]') as Array<{
+      name: string;
+      mood: string;
+      order: number;
+      colors: FlavourColors;
+    }>;
     const layers = Array.from(hero.querySelectorAll<HTMLElement>('[data-layer]'));
     const railLinks = Array.from(hero.querySelectorAll<HTMLElement>('[data-rail-link]'));
     const stage = hero.querySelector<HTMLElement>('[data-stage]');
@@ -556,13 +561,15 @@ const flavourData = flavours.map((f) => ({
     const switchDuration = 620;
     const switchEasing = 'cubic-bezier(0.22, 0.61, 0.36, 1)';
     let index = Math.max(0, Number(hero.dataset.startIndex || 0));
-    const syncPageFlavour = (flavour: { colors: { primary: string; deep: string; soft: string } } | undefined) => {
-      if (!flavour) return;
-      document.documentElement.style.setProperty('--active-flavour-primary', flavour.colors.primary);
-      document.documentElement.style.setProperty('--active-flavour-deep', flavour.colors.deep);
-      document.documentElement.style.setProperty('--active-flavour-soft', flavour.colors.soft);
+    const setColors = (colors: FlavourColors) => {
+      for (const key of ['primary', 'deep', 'soft'] as const) {
+        hero.style.setProperty(`--flavour-${key}`, colors[key]);
+        document.documentElement.style.setProperty(`--active-flavour-${key}`, colors[key]);
+      }
     };
-    syncPageFlavour(flavours[index]);
+    let currentColors = toHslPalette(flavours[index].colors);
+    let colorFrame = 0;
+    setColors(flavours[index].colors);
     let timer: number | undefined;
     let switchingTimer: number | undefined;
     let inView = true;
@@ -570,6 +577,27 @@ const flavourData = flavours.map((f) => ({
     let focusPaused = false;
     const motion = window.matchMedia('(prefers-reduced-motion: reduce)');
     let reduceMotion = motion.matches;
+
+    const transitionColors = (target: FlavourColors) => {
+      window.cancelAnimationFrame(colorFrame);
+      const destination = toHslPalette(target);
+      if (reduceMotion) {
+        currentColors = destination;
+        setColors(target);
+        return;
+      }
+      const origin = currentColors;
+      const started = performance.now();
+      const animate = (now: number) => {
+        const progress = Math.min(1, (now - started) / 820);
+        const eased = progress * progress * (3 - 2 * progress);
+        currentColors = mixHslPalette(origin, destination, eased);
+        setColors(progress < 1 ? formatHslPalette(currentColors) : target);
+        if (progress < 1) colorFrame = window.requestAnimationFrame(animate);
+        else currentColors = destination;
+      };
+      colorFrame = window.requestAnimationFrame(animate);
+    };
 
     const stop = () => {
       window.clearTimeout(timer);
@@ -597,10 +625,7 @@ const flavourData = flavours.map((f) => ({
         link.classList.toggle('is-active', li === i);
         link.setAttribute('aria-pressed', String(li === i));
       });
-      hero.style.setProperty('--flavour-primary', f.colors.primary);
-      hero.style.setProperty('--flavour-deep', f.colors.deep);
-      hero.style.setProperty('--flavour-soft', f.colors.soft);
-      syncPageFlavour(f);
+      transitionColors(f.colors);
       if (nameEl) nameEl.textContent = f.name;
       if (tagEl) tagEl.textContent = f.mood;
       if (captionNum) captionNum.textContent = `Nº ${pad(f.order)}`;
@@ -681,6 +706,7 @@ const flavourData = flavours.map((f) => ({
     document.addEventListener('visibilitychange', schedule);
     motion.addEventListener('change', (event) => {
       reduceMotion = event.matches;
+      if (reduceMotion) transitionColors(flavours[index].colors);
       schedule();
     });
     if ('IntersectionObserver' in window) {

@@ -1,13 +1,12 @@
 /* ============================================================
    SPARK — GLOBAL SITE DATA
    Brand-level, non-flavour content lives here so pages stay
-   data-driven. Copy follows SPARK_Website_Content_Strategy.md —
+   data-driven. Copy follows WEBSITE-CONTENT.md —
    edit here, the whole site follows.
    ============================================================ */
 
 export const site = {
   brand: 'SPARK',
-  tagline: 'Eight flavours. Find your spark.',
   description:
     'Explore eight SPARK sparkling drink flavours, from bright citrus and tropical fruit to berries and classic cola. Proudly crafted in Tamil Nadu.',
   url: 'https://athiljeeva-rms.github.io',
@@ -92,43 +91,6 @@ export const craft = {
   ],
 };
 
-/* ---------- Featured flavour (spotlight) ---------- */
-export const spotlight = {
-  eyebrow: 'Meet the flavour',
-  cta: 'Explore Orange',
-};
-
-/* ---------- Editorial story beats ---------- */
-export const story = {
-  eyebrow: 'Our story',
-  heading: 'Different tastes. One good moment.',
-  lede: 'SPARK began with a simple belief: a shared break feels better when everyone has a choice. Today, eight sparkling flavours each bring their own colour and character to the table.',
-  body: 'Find your flavour. Share the moment.',
-};
-
-/* ---------- About preview (home) ---------- */
-export const about = {
-  eyebrow: 'About',
-  heading: ['Different tastes.', 'One good moment.'],
-  body: 'Crafted in Tamil Nadu, SPARK brings eight sparkling flavours to the shared breaks and catch-ups that make ordinary days feel brighter.',
-  mission: {
-    heading: 'Your taste, your SPARK',
-    body: 'Taste is personal. With eight flavours across citrus, tropical fruit, berries, litchi, guava and cola, everyone can choose a favourite and still share the moment.',
-  },
-};
-
-/* ---------- Our Journey ---------- */
-export const journey = {
-  eyebrow: 'Our journey',
-  heading: ['Different tastes.', 'One shared moment.'],
-  body: 'The story began in Tamil Nadu in 2022 with Hogwarts Food & Beverages Pvt Ltd. In 2024, the team introduced SPARK. Today, eight sparkling flavours give everyone their own way to join the moment.',
-  milestones: [
-    { year: '2022', label: 'The idea of more choice takes root' },
-    { year: '2024', label: 'SPARK brings the idea together' },
-    { year: 'Today', label: 'Eight flavours to share' },
-  ],
-};
-
 /* ---------- CTA ---------- */
 export const ctaSection = {
   eyebrow: 'Take the next step',
@@ -142,7 +104,7 @@ export const ctaSection = {
 export const contact = {
   eyebrow: 'Contact',
   heading: 'How can we help?',
-  copy: 'Ask where to find a flavour, enquire about stocking SPARK, or send the team a general question. Choose an option and we’ll take it from there.',
+  copy: 'Questions about SPARK, flavour availability, retail, or distribution? Get in touch with our team.',
   email: 'soundharyaramasamy1238@gmail.com',
   whatsapp: '918270596210',
   enquiries: [

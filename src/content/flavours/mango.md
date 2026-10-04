@@ -13,6 +13,6 @@ colors:
   deep: "#d96a00"
   soft: "#fcebd0"
 image:
-  src: ../../assets/flavours/mango.png
+  src: ../../assets/flavours-studio/mango.png
   alt: SPARK Mango sparkling drink can
 ---

@@ -1,31 +1,31 @@
 ---
-import { getCollection } from 'astro:content';
+import { getFlavours } from '../data/flavours';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Section from '../components/ui/Section.astro';
 import Eyebrow from '../components/ui/Eyebrow.astro';
 import Button from '../components/ui/Button.astro';
 import FlavourCan from '../components/FlavourCan.astro';
 
-const flavours = (await getCollection('flavours')).sort((a, b) => a.data.order - b.data.order);
+const flavours = await getFlavours();
 const heroCans = ['mango', 'orange', 'blueberry'].map((slug) => flavours.find((flavour) => flavour.id === slug)!).filter(Boolean);
 const storyBeats = [
-  { year: '2022', title: 'A little more choice', body: 'Hogwarts Food & Beverages Pvt Ltd begins with an ambition to make a distinctive range of sparkling drinks.' },
-  { year: '2024', title: 'A name for the feeling', body: 'SPARK is introduced, bringing the idea of more choice and colour under one name.' },
-  { year: 'Today', title: 'Different tastes, together', body: 'Eight sparkling flavours bring their own character to the table, so everyone can find a favourite.' },
+  { year: '2022', title: 'An idea with room for everyone', body: 'Hogwarts Food & Beverages Pvt Ltd begins with a simple ambition: bring more choice to the everyday sparkling drink.' },
+  { year: '2024', title: 'A visual identity takes shape', body: 'Fruit-forward artwork, vivid flavour colours, splash-inspired details and expressive SPARK lettering give every can its own look.' },
+  { year: 'Today', title: 'Eight designs. One SPARK.', body: 'Each can makes its flavour easy to spot, while the collection feels unmistakably part of the same family.' },
 ];
 ---
 
 <BaseLayout
   title="Our Story"
-  description="Rooted in Tamil Nadu, SPARK brings eight sparkling flavours to the everyday moments we share. Discover the story behind the range."
+  description="Rooted in Tamil Nadu, SPARK pairs eight sparkling flavours with distinctive fruit artwork, vivid colours and expressive can design. Discover our story."
 >
   <Section spacing="tight" class="story-intro">
     <div class="story-hero">
       <div class="story-hero__copy">
         <Eyebrow>Rooted in Tamil Nadu</Eyebrow>
-        <h1 class="story-hero__title" data-reveal="up">Different tastes.<br /><em>One good moment.</em></h1>
+        <h1 class="story-hero__title" data-reveal="up">Eight flavours.<br /><em>Distinct by design.</em></h1>
         <p class="story-hero__lede" data-reveal="up" style="--reveal-delay: 120ms">
-          A shared break feels better when everyone has a choice. Crafted in Tamil Nadu, SPARK’s eight sparkling flavours bring their own colour and character to the table—so everyone can find a favourite and enjoy the moment together.
+          Every SPARK can brings its flavour to life through fruit-forward artwork, vivid colour, splash-inspired details and expressive lettering. Eight distinct designs make choosing your flavour part of the experience—before the first sip.
         </p>
         <a class="story-hero__scroll" href="#the-journey" aria-label="Read the SPARK story">
           <span class="story-hero__scroll-mark" aria-hidden="true">↓</span>
@@ -33,9 +33,9 @@ const storyBeats = [
         </a>
       </div>
 
-      <div class="story-hero__art" aria-label="Mango, Orange and Blueberry SPARK cans, from the eight-flavour range" role="img" data-reveal="scale" style="--reveal-delay: 160ms">
+      <div class="story-hero__art" aria-label="Three distinct SPARK can designs: Mango, Orange and Blueberry, featuring vivid flavour colours and fruit artwork" role="img" data-reveal="scale" style="--reveal-delay: 160ms">
         <span class="story-hero__art-glow" aria-hidden="true"></span>
-        <span class="story-hero__art-label" aria-hidden="true"><strong>08</strong><span>flavours<br />one SPARK</span></span>
+        <span class="story-hero__art-label" aria-hidden="true"><strong>08</strong><span>can designs<br />one SPARK</span></span>
         <span class="story-hero__art-ground" aria-hidden="true"></span>
         {heroCans.map((flavour, index) => (
           <div class:list={['story-hero__can', `story-hero__can--${flavour.id}`]} style={`--can-order:${index}`}>
@@ -50,8 +50,8 @@ const storyBeats = [
     <div class="journey">
       <div class="journey__intro">
         <Eyebrow>The SPARK journey</Eyebrow>
-        <h2 data-reveal="up">One idea.<br /><em>More to share.</em></h2>
-        <p data-reveal="up" style="--reveal-delay: 100ms">The idea is simple: everyone chooses a flavour that feels like them, then shares the break. That spirit still runs through every part of the range.</p>
+        <h2 data-reveal="up">One idea.<br /><em>Many expressions.</em></h2>
+        <p data-reveal="up" style="--reveal-delay: 100ms">From our roots in Tamil Nadu to the cans on the shelf, SPARK is built around one belief: choice makes a shared moment better. Each flavour gets its own look while staying part of one bright, recognisable collection.</p>
         <span class="journey__signature">Proudly crafted in Tamil Nadu</span>
       </div>
 
@@ -75,7 +75,7 @@ const storyBeats = [
       <div class="story-cta__copy">
         <Eyebrow>Choose your SPARK</Eyebrow>
         <h2 data-reveal="up">Find your flavour.<br /><em>Share the moment.</em></h2>
-        <p data-reveal="up" style="--reveal-delay:100ms">Meet all eight, pick the one that feels like you, and make it part of your next catch-up. Want SPARK on your shelves? Let’s talk.</p>
+        <p data-reveal="up" style="--reveal-delay:100ms">Start with the can that catches your eye, then discover the flavour behind the colour and artwork. Want SPARK on your shelves? Let’s talk.</p>
       </div>
       <div class="story-cta__actions">
         <Button href="/spark/flavours" variant="ink" size="lg">Explore all flavours</Button>
@@ -105,17 +105,19 @@ const storyBeats = [
 
   .story-hero__art { position: relative; align-self: center; width: 100%; min-height: 39rem; overflow: visible; isolation: isolate; }
   .story-hero__art::before { position: absolute; z-index: -2; top: 13%; left: 10%; width: 80%; aspect-ratio: 1.15; border-radius: 48% 52% 50% 50% / 43% 45% 55% 57%; background: linear-gradient(145deg, color-mix(in oklab, var(--mango-soft) 76%, white), color-mix(in oklab, var(--orange-soft) 50%, white) 54%, color-mix(in oklab, var(--litchi-soft) 54%, white)); content: ''; }
-  .story-hero__art-glow { position: absolute; z-index: -1; top: 17%; left: 19%; width: 62%; aspect-ratio: 1; border-radius: 50%; background: radial-gradient(circle, color-mix(in oklab, var(--mango) 26%, white) 0%, color-mix(in oklab, var(--orange-soft) 42%, transparent) 48%, transparent 72%); }
+  .story-hero__art-glow { position: absolute; z-index: -1; top: 17%; left: 19%; width: 62%; aspect-ratio: 1; border-radius: 50%; background: radial-gradient(circle, color-mix(in oklab, var(--mango) 26%, white) 0%, color-mix(in oklab, var(--orange-soft) 42%, transparent) 48%, transparent 72%); animation: story-glow 6.5s ease-in-out 1s infinite alternate; transform-origin: center; }
   .story-hero__art-label { position: absolute; z-index: 3; top: 8%; left: 4%; display: flex; align-items: center; gap: .7rem; color: var(--ink-800); }
   .story-hero__art-label strong { color: var(--orange-deep); font-family: var(--font-display); font-size: clamp(2.5rem, 4vw, 4rem); font-weight: 650; letter-spacing: -.06em; line-height: .8; }
   .story-hero__art-label span { font-size: var(--text-xs); font-weight: 700; line-height: 1.1; letter-spacing: .08em; text-transform: uppercase; }
   .story-hero__art-ground { position: absolute; z-index: 0; right: 12%; bottom: 10%; left: 12%; height: 5%; border-radius: 50%; background: radial-gradient(ellipse, rgb(66 33 4 / .22), rgb(66 33 4 / 0%) 70%); filter: blur(9px); }
-  .story-hero__can { position: absolute; z-index: 1; bottom: 12%; width: 25%; filter: drop-shadow(0 1.15rem 1rem rgb(66 33 4 / .2)); animation: can-rise .85s var(--ease-out-expo) both; animation-delay: calc(var(--can-order) * 120ms); }
+  .story-hero__can { position: absolute; z-index: 1; bottom: 12%; width: 25%; filter: drop-shadow(0 1.15rem 1rem rgb(66 33 4 / .2)); animation: can-rise .85s var(--ease-out-expo) both, can-float 5.8s ease-in-out infinite; animation-delay: calc(var(--can-order) * 140ms), calc(1s + var(--can-order) * 180ms); }
   .story-hero__can--mango { left: 10%; transform: rotate(-6deg); }
   .story-hero__can--orange { z-index: 2; left: 35.5%; width: 29%; transform: rotate(0); }
   .story-hero__can--blueberry { right: 10%; transform: rotate(6deg); }
   .story-hero__can :global(img) { width: 100%; }
   @keyframes can-rise { from { opacity: 0; translate: 0 1.5rem; } to { opacity: 1; translate: 0 0; } }
+  @keyframes can-float { 0%, 100% { translate: 0 0; } 50% { translate: 0 -10px; } }
+  @keyframes story-glow { from { opacity: .68; scale: .96; } to { opacity: 1; scale: 1.04; } }
 
   .journey { display: grid; grid-template-columns: minmax(15rem, .72fr) minmax(0, 1.28fr); gap: clamp(2rem, 5vw, 4.5rem); align-items: center; }
   .journey__intro { display: grid; justify-items: start; gap: var(--space-m); max-width: 27rem; }
@@ -185,6 +187,7 @@ const storyBeats = [
   }
   @media (prefers-reduced-motion: reduce) {
     .story-hero__can { animation: none; }
+    .story-hero__art-glow { animation: none; }
     .story-hero__scroll-mark, .story-cta__partner span { transition: none; }
   }
 </style>

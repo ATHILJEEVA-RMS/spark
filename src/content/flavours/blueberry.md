@@ -13,6 +13,6 @@ colors:
   deep: "#0a5ca8"
   soft: "#ddeef9"
 image:
-  src: ../../assets/flavours/blueberry.png
+  src: ../../assets/flavours-studio/blueberry.png
   alt: SPARK Blueberry sparkling drink can
 ---

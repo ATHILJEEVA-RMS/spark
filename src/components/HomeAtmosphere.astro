@@ -1,0 +1,64 @@
+<canvas class="home-atmosphere" data-home-atmosphere aria-hidden="true"></canvas>
+
+<style is:global>
+  .home-atmosphere { position: fixed; inset: 0; width: 100%; height: 100%; pointer-events: none; z-index: 8; }
+  .home-scene {
+    --home-accent: var(--orange);
+    --home-deep: var(--orange-deep);
+  }
+  .home-scene .strip-section__title-accent em,
+  .home-scene .future__title-accent em,
+  .home-scene .craft__title-accent em,
+  .home-scene .cta__title-accent em {
+    color: var(--home-accent) !important;
+    transition: color 620ms var(--ease-out-expo);
+  }
+  .home-scene .strip-section__arrow,
+  .home-scene .future__choices-heading,
+  .home-scene .future__occasion-index,
+  .home-scene .future__occasion-arrow,
+  .home-scene .craft__origin,
+  .home-scene .feature-card__index,
+  .home-scene .feature-card__icon,
+  .home-scene .cta__choice-number,
+  .home-scene .cta__choice-action {
+    color: var(--home-deep);
+  }
+  .home-scene .strip-section__arrow {
+    border-color: color-mix(in oklab, var(--home-accent) 28%, white);
+    transition: color 620ms var(--ease-out-expo), border-color 620ms var(--ease-out-expo), box-shadow var(--duration-med) var(--ease-out-expo), translate var(--duration-med) var(--ease-out-expo);
+  }
+  .home-scene .future__occasion,
+  .home-scene .cta__choice {
+    border-color: color-mix(in oklab, var(--home-accent) 28%, white);
+    transition: border-color 620ms var(--ease-out-expo), translate 220ms var(--ease-out-expo), box-shadow 220ms var(--ease-out-expo), background-color 220ms ease;
+  }
+  .home-scene .craft__origin {
+    border-color: color-mix(in oklab, var(--home-accent) 28%, white);
+    transition: color 620ms var(--ease-out-expo), border-color 620ms var(--ease-out-expo);
+  }
+  .home-scene .feature-card__icon {
+    border-color: color-mix(in oklab, var(--home-accent) 28%, white);
+    transition: color 620ms var(--ease-out-expo), border-color 620ms var(--ease-out-expo), rotate 260ms var(--ease-out-expo), scale 260ms var(--ease-out-expo);
+  }
+  .home-scene .craft__grid > * {
+    border: 1px solid color-mix(in oklab, var(--home-accent) 20%, transparent);
+  }
+  body:has(.home-scene) .site-footer {
+    --home-accent: var(--orange);
+    --orange: var(--home-accent);
+  }
+  body:has(.home-scene) .site-footer__link:hover,
+  body:has(.home-scene) .site-footer__contact-link {
+    color: var(--home-accent);
+    transition: color 620ms var(--ease-out-expo);
+  }
+  @media (prefers-reduced-motion: reduce) { .home-atmosphere { display: none; } }
+</style>
+
+<script>
+  import { startHomeAtmosphere } from '../scripts/home-atmosphere';
+  const canvas = document.querySelector<HTMLCanvasElement>('[data-home-atmosphere]');
+  const poolFlow = document.querySelector<HTMLElement>('.hero-story');
+  if (canvas && poolFlow) startHomeAtmosphere(canvas, poolFlow);
+</script>

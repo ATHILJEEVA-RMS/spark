@@ -4,7 +4,8 @@
    Deep-gradient hero with oversized name, staged can,
    tasting notes, prev/next nav.
    ============================================================ */
-import { getCollection, type CollectionEntry } from 'astro:content';
+import type { CollectionEntry } from 'astro:content';
+import { getFlavours } from '../../data/flavours';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import Container from '../../components/ui/Container.astro';
 import Button from '../../components/ui/Button.astro';
@@ -13,7 +14,7 @@ import CtaSection from '../../components/sections/CtaSection.astro';
 import { site } from '../../data/site';
 
 export async function getStaticPaths() {
-  const flavours = (await getCollection('flavours')).sort((a, b) => a.data.order - b.data.order);
+  const flavours = await getFlavours();
   return flavours.map((flavour, i) => ({
     params: { slug: flavour.id },
     props: {

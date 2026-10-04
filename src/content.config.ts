@@ -4,8 +4,8 @@ import { glob } from 'astro/loaders';
 /* ============================================================
    FLAVOURS — the heart of the site.
    Everything flavour-related is driven by this collection.
-   Adding a flavour forever = dropping one .md file here plus
-   one cutout in /src/assets/flavours/. No page, component
+   Adding a flavour = dropping one .md file here plus
+   one transparent render in /src/assets/flavours-studio/. No page, component
    or route ever changes.
 
    Can artwork lives in src/assets so Astro's image pipeline
@@ -28,14 +28,13 @@ const flavours = defineCollection({
       volume: z.string().default('250 ml'),
       notes: z.array(z.string()).default([]),
       colors: z.object({
-        primary: z.string(),
-        deep: z.string(),
-        soft: z.string(),
+        primary: z.string().regex(/^#[\da-f]{6}$/i),
+        deep: z.string().regex(/^#[\da-f]{6}$/i),
+        soft: z.string().regex(/^#[\da-f]{6}$/i),
       }),
       image: z.object({
-        /* Path to the transparent can cutout, relative to the .md
-           file (e.g. ../../assets/flavours/orange.png). Cutouts are
-           produced by tools/process_cans.py — see can-originals/. */
+        /* Path to the transparent studio render, relative to the .md
+           file (e.g. ../../assets/flavours-studio/orange.png). */
         src: image(),
         alt: z.string(),
       }),
