@@ -38,7 +38,7 @@ const socials = [
         </ul>
       </div>
 
-      <nav class="site-footer__col" aria-label="Flavours">
+      <nav class="site-footer__col site-footer__flavours" aria-label="Flavours">
         <h4 class="site-footer__heading">Flavours</h4>
         <ul role="list">
           {
@@ -249,6 +249,9 @@ const socials = [
   @media (max-width: 40rem) {
     .site-footer {
       padding-block: var(--space-xl) var(--space-s);
+    }
+    .site-footer__flavours {
+      display: none;
     }
     .site-footer__grid {
       grid-template-columns: 1fr;
