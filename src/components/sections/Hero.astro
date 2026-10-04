@@ -298,26 +298,25 @@ const flavourData = flavours.map((f) => ({
     place-items: center;
     opacity: 0;
     transform: translate3d(var(--hero-enter-x, 1.25rem), 0.25rem, 0) scale(0.96) rotate(var(--hero-enter-rotate, -2deg));
-    filter: blur(4px);
     pointer-events: none;
     transition:
       opacity var(--hero-switch-duration) var(--hero-switch-easing),
-      transform var(--hero-switch-duration) var(--hero-switch-easing),
-      filter var(--hero-switch-duration) var(--hero-switch-easing);
+      transform var(--hero-switch-duration) var(--hero-switch-easing);
   }
 
   .hero__stage-layer.is-active {
     opacity: 1;
     transform: translate3d(0, 0, 0) scale(1) rotate(0deg);
-    filter: blur(0);
     pointer-events: auto;
   }
 
   .hero__stage-layer.is-leaving {
     opacity: 0;
     transform: translate3d(var(--hero-leave-x, -0.9rem), -0.1rem, 0) scale(0.98) rotate(var(--hero-leave-rotate, 1.5deg));
-    transition-duration: 340ms, var(--hero-switch-duration), var(--hero-switch-duration);
-    transition-timing-function: ease-in, var(--hero-switch-easing), var(--hero-switch-easing);
+    /* Keep the outgoing can visible until the incoming one covers it. */
+    transition-duration: 420ms, var(--hero-switch-duration);
+    transition-delay: 200ms, 0ms;
+    transition-timing-function: ease-in, var(--hero-switch-easing);
   }
 
   .hero__stage-layer:not(.is-active) :global(*) {
@@ -589,7 +588,7 @@ const flavourData = flavours.map((f) => ({
       const origin = currentColors;
       const started = performance.now();
       const animate = (now: number) => {
-        const progress = Math.min(1, (now - started) / 820);
+        const progress = Math.min(1, (now - started) / switchDuration);
         const eased = progress * progress * (3 - 2 * progress);
         currentColors = mixHslPalette(origin, destination, eased);
         setColors(progress < 1 ? formatHslPalette(currentColors) : target);
