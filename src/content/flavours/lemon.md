@@ -14,5 +14,5 @@ colors:
   soft: "#fbf3c6"
 image:
   src: ../../assets/flavours-studio/lemon.png
-  alt: SPARK Lemon sparkling drink can
+  alt: SPARK Lemon sparkling drink bottle
 ---

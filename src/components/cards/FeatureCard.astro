@@ -2,7 +2,7 @@
 interface Props {
   title: string;
   body: string;
-  icon?: 'fruit' | 'bubbles' | 'can' | 'share' | 'globe' | 'basket' | 'pen' | 'spark' | 'mail';
+  icon?: 'fruit' | 'bubbles' | 'bottle' | 'can' | 'share' | 'globe' | 'basket' | 'pen' | 'spark' | 'mail';
   index?: number;
 }
 
@@ -17,6 +17,7 @@ const [accent, soft] = accents[index % accents.length];
 const icons = {
   fruit: '<circle cx="12" cy="13" r="7"/><path d="M12 6c0-2.5 2-4.5 4.5-4.5.3 2.6-1.8 4.5-4.5 4.5z"/>',
   bubbles: '<circle cx="8" cy="10" r="3.5"/><circle cx="15.5" cy="7.5" r="2"/><circle cx="14" cy="15" r="3"/>',
+  bottle: '<path d="M9 2h6v3l1.5 2v2.5c1.8 1.2 2.5 2.7 2.5 4.5V20a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2v-6c0-1.8.7-3.3 2.5-4.5V7L9 5V2Z"/><path d="M9 5h6M6 13h12M6 18h12"/>',
   can: '<rect x="8" y="3" width="8" height="18" rx="2.5"/><path d="M8 8h8M8 17h8"/>',
   share: '<circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="M8.6 10.5l6.8-4M8.6 13.5l6.8 4"/>',
   globe: '<circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c2.8 2.6 4.2 5.7 4.2 9S14.8 18.4 12 21c-2.8-2.6-4.2-5.7-4.2-9S9.2 5.6 12 3z"/>',

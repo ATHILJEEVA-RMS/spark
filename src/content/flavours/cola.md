@@ -14,5 +14,5 @@ colors:
   soft: "#f7dbd2"
 image:
   src: ../../assets/flavours-studio/cola.png
-  alt: SPARK Cola limited edition can
+  alt: SPARK Cola limited edition bottle
 ---

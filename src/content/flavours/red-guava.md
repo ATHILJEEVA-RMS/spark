@@ -14,5 +14,5 @@ colors:
   soft: "#fbdfe3"
 image:
   src: ../../assets/flavours-studio/red-guava.png
-  alt: SPARK Red Guava sparkling drink can
+  alt: SPARK Red Guava sparkling drink bottle
 ---

@@ -178,6 +178,7 @@ const flavourData = flavours.map((f) => ({
 
   .hero__title {
     font-size: var(--text-hero);
+    font-weight: 760;
     line-height: var(--leading-none);
     letter-spacing: var(--tracking-tight);
     text-transform: uppercase;
@@ -190,7 +191,7 @@ const flavourData = flavours.map((f) => ({
   .hero__title-line--accent em {
     text-transform: none;
     font-style: italic;
-    font-weight: 400;
+    font-weight: 760;
     background: linear-gradient(
       100deg,
       color-mix(in oklab, var(--flavour-primary) 80%, white) 0%,
@@ -296,27 +297,20 @@ const flavourData = flavours.map((f) => ({
     grid-area: 1 / 1;
     display: grid;
     place-items: center;
-    opacity: 0;
-    transform: translate3d(var(--hero-enter-x, 1.25rem), 0.25rem, 0) scale(0.96) rotate(var(--hero-enter-rotate, -2deg));
+    clip-path: inset(0 100% 0 0);
     pointer-events: none;
-    transition:
-      opacity var(--hero-switch-duration) var(--hero-switch-easing),
-      transform var(--hero-switch-duration) var(--hero-switch-easing);
+    transition: clip-path var(--hero-switch-duration) var(--hero-switch-easing);
   }
 
   .hero__stage-layer.is-active {
-    opacity: 1;
-    transform: translate3d(0, 0, 0) scale(1) rotate(0deg);
+    z-index: 2;
+    clip-path: inset(0 0 0 0);
     pointer-events: auto;
   }
 
   .hero__stage-layer.is-leaving {
-    opacity: 0;
-    transform: translate3d(var(--hero-leave-x, -0.9rem), -0.1rem, 0) scale(0.98) rotate(var(--hero-leave-rotate, 1.5deg));
-    /* Keep the outgoing can visible until the incoming one covers it. */
-    transition-duration: 420ms, var(--hero-switch-duration);
-    transition-delay: 200ms, 0ms;
-    transition-timing-function: ease-in, var(--hero-switch-easing);
+    z-index: 1;
+    clip-path: inset(0 0 0 100%);
   }
 
   .hero__stage-layer:not(.is-active) :global(*) {
@@ -518,11 +512,8 @@ const flavourData = flavours.map((f) => ({
 
   @media (prefers-reduced-motion: reduce) {
     .hero__stage-layer {
-      transition: opacity var(--duration-fast) ease;
-      transform: none;
-      filter: none;
+      transition: none;
     }
-    .hero__stage-layer.is-leaving { transform: none; }
     .hero.is-switching .hero__stage::before { animation: none; }
     .hero,
     .hero__blob,
@@ -571,6 +562,7 @@ const flavourData = flavours.map((f) => ({
     setColors(flavours[index].colors);
     let timer: number | undefined;
     let switchingTimer: number | undefined;
+    let queuedIndex: number | undefined;
     let inView = true;
     let hoverPaused = false;
     let focusPaused = false;
@@ -609,10 +601,6 @@ const flavourData = flavours.map((f) => ({
       const previousIndex = index;
       const forwardDistance = (i - previousIndex + flavours.length) % flavours.length;
       const direction = forwardDistance <= flavours.length / 2 ? 1 : -1;
-      hero.style.setProperty('--hero-enter-x', `${direction * 1.25}rem`);
-      hero.style.setProperty('--hero-enter-rotate', `${direction * -2}deg`);
-      hero.style.setProperty('--hero-leave-x', `${direction * -0.9}rem`);
-      hero.style.setProperty('--hero-leave-rotate', `${direction * 1.5}deg`);
       index = i;
       layers.forEach((layer, li) => {
         const active = li === i;
@@ -635,7 +623,15 @@ const flavourData = flavours.map((f) => ({
       if (!reduceMotion) {
         hero.classList.add('is-switching');
         void hero.offsetWidth;
-        switchingTimer = window.setTimeout(() => hero.classList.remove('is-switching'), switchDuration);
+        switchingTimer = window.setTimeout(() => {
+          hero.classList.remove('is-switching');
+          switchingTimer = undefined;
+          if (queuedIndex !== undefined) {
+            const nextIndex = queuedIndex;
+            queuedIndex = undefined;
+            select(nextIndex, true);
+          }
+        }, switchDuration);
         for (const label of [featuringEl, captionEl]) {
           if (!label) continue;
           label.getAnimations().forEach((animation) => animation.cancel());
@@ -659,7 +655,15 @@ const flavourData = flavours.map((f) => ({
     };
 
     const select = (i: number, manual: boolean) => {
-      if (i === index || !layers[i]) return;
+      if (i === index) {
+        queuedIndex = undefined;
+        return;
+      }
+      if (!layers[i]) return;
+      if (switchingTimer && !reduceMotion) {
+        queuedIndex = i;
+        return;
+      }
       stop();
       const image = layers[i].querySelector<HTMLImageElement>('.stage__float img');
       if (!manual && (reduceMotion || !inView || document.hidden || hoverPaused || focusPaused)) return;
@@ -705,7 +709,10 @@ const flavourData = flavours.map((f) => ({
     document.addEventListener('visibilitychange', schedule);
     motion.addEventListener('change', (event) => {
       reduceMotion = event.matches;
-      if (reduceMotion) transitionColors(flavours[index].colors);
+      if (reduceMotion) {
+        queuedIndex = undefined;
+        transitionColors(flavours[index].colors);
+      }
       schedule();
     });
     if ('IntersectionObserver' in window) {

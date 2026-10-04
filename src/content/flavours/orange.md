@@ -14,5 +14,5 @@ colors:
   soft: "#fde4cb"
 image:
   src: ../../assets/flavours-studio/orange.png
-  alt: SPARK Orange sparkling drink can
+  alt: SPARK Orange sparkling drink bottle
 ---

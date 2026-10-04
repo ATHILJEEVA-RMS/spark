@@ -8,7 +8,7 @@
 export const site = {
   brand: 'SPARK',
   description:
-    'Explore eight SPARK sparkling drink flavours, from bright citrus and tropical fruit to berries and classic cola. Proudly crafted in Tamil Nadu.',
+    'Explore eight SPARK sparkling drink flavours, from bright citrus and tropical fruit to berries and classic cola. Proudly crafted in India.',
   url: 'https://athiljeeva-rms.github.io',
   base: '/spark',
 };
@@ -31,7 +31,7 @@ export const hero = {
   lede: 'Bright, bold flavour for every kind of break.',
   primaryCta: { label: 'Explore Flavours', href: '/spark/flavours' },
   secondaryCta: { label: 'Become a Distributor', href: '/spark/contact#distributor' },
-  meta: 'Crafted in Tamil Nadu',
+  meta: 'Crafted in India',
 };
 
 /* ---------- Why SPARK (brand argument) ---------- */
@@ -70,7 +70,7 @@ export const future = {
 /* ---------- Our craft ---------- */
 export const craft = {
   eyebrow: 'A range with roots',
-  heading: ['From Tamil Nadu.', 'Eight ways to choose.'],
+  heading: ['Crafted in India.', 'Designed to stand out.'],
   cta: { label: 'Read Our Story', href: '/spark/about' },
   items: [
     {
@@ -79,9 +79,9 @@ export const craft = {
       icon: 'fruit',
     },
     {
-      title: 'Find Your Taste',
-      body: 'Check each flavour’s tasting notes to find a bright, mellow, fruity or classic option.',
-      icon: 'bubbles',
+      title: 'A Bottle That Stands Out',
+      body: 'Our clear, contoured bottle pairs bold SPARK lettering with fruit artwork and a vivid colour for every flavour.',
+      icon: 'bottle',
     },
     {
       title: 'Know Where to Look',
@@ -121,7 +121,7 @@ export const contact = {
 
 export const footer = {
   wordmark: { pre: 'Find your', accent: 'spark.' },
-  tagline: 'Eight sparkling flavours, crafted in Tamil Nadu.',
+  tagline: 'Eight sparkling flavours, crafted in India.',
   contact: {
     title: 'Let’s talk',
     copy: 'Questions about a flavour, stocking SPARK, or working together? Send our team a message.',

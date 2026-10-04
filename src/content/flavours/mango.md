@@ -14,5 +14,5 @@ colors:
   soft: "#fcebd0"
 image:
   src: ../../assets/flavours-studio/mango.png
-  alt: SPARK Mango sparkling drink can
+  alt: SPARK Mango sparkling drink bottle
 ---

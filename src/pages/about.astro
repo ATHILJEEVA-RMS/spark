@@ -9,23 +9,23 @@ import FlavourCan from '../components/FlavourCan.astro';
 const flavours = await getFlavours();
 const heroCans = ['mango', 'orange', 'blueberry'].map((slug) => flavours.find((flavour) => flavour.id === slug)!).filter(Boolean);
 const storyBeats = [
-  { year: '2022', title: 'An idea with room for everyone', body: 'Hogwarts Food & Beverages Pvt Ltd begins with a simple ambition: bring more choice to the everyday sparkling drink.' },
-  { year: '2024', title: 'A visual identity takes shape', body: 'Fruit-forward artwork, vivid flavour colours, splash-inspired details and expressive SPARK lettering give every can its own look.' },
-  { year: 'Today', title: 'Eight designs. One SPARK.', body: 'Each can makes its flavour easy to spot, while the collection feels unmistakably part of the same family.' },
+  { year: '2022', title: 'An idea with room for everyone', body: 'Hogwards Foods and Beverages begins with a simple ambition: bring more choice to the everyday sparkling drink.' },
+  { year: '2024', title: 'A visual identity takes shape', body: 'A clear, contoured bottle, fruit-forward artwork and expressive SPARK lettering give every flavour its own look.' },
+  { year: 'Today', title: 'Eight designs. One SPARK.', body: 'Each bottle makes its flavour easy to spot, while the collection feels unmistakably part of the same family.' },
 ];
 ---
 
 <BaseLayout
   title="Our Story"
-  description="Rooted in Tamil Nadu, SPARK pairs eight sparkling flavours with distinctive fruit artwork, vivid colours and expressive can design. Discover our story."
+  description="Crafted in India, SPARK pairs eight sparkling flavours with distinctive fruit artwork, vivid colours and a bottle designed to stand out. Discover our story."
 >
   <Section spacing="tight" class="story-intro">
     <div class="story-hero">
       <div class="story-hero__copy">
-        <Eyebrow>Rooted in Tamil Nadu</Eyebrow>
+        <Eyebrow>Crafted in India</Eyebrow>
         <h1 class="story-hero__title" data-reveal="up">Eight flavours.<br /><em>Distinct by design.</em></h1>
         <p class="story-hero__lede" data-reveal="up" style="--reveal-delay: 120ms">
-          Every SPARK can brings its flavour to life through fruit-forward artwork, vivid colour, splash-inspired details and expressive lettering. Eight distinct designs make choosing your flavour part of the experience—before the first sip.
+          Every SPARK bottle brings its flavour to life through a clear, contoured shape, fruit-forward artwork, vivid colour and expressive lettering. Eight distinct designs make choosing your flavour part of the experience—before the first sip.
         </p>
         <a class="story-hero__scroll" href="#the-journey" aria-label="Read the SPARK story">
           <span class="story-hero__scroll-mark" aria-hidden="true">↓</span>
@@ -33,9 +33,9 @@ const storyBeats = [
         </a>
       </div>
 
-      <div class="story-hero__art" aria-label="Three distinct SPARK can designs: Mango, Orange and Blueberry, featuring vivid flavour colours and fruit artwork" role="img" data-reveal="scale" style="--reveal-delay: 160ms">
+      <div class="story-hero__art" aria-label="Three distinct SPARK bottle designs: Mango, Orange and Blueberry, featuring vivid flavour colours and fruit artwork" role="img" data-reveal="scale" style="--reveal-delay: 160ms">
         <span class="story-hero__art-glow" aria-hidden="true"></span>
-        <span class="story-hero__art-label" aria-hidden="true"><strong>08</strong><span>can designs<br />one SPARK</span></span>
+        <span class="story-hero__art-label" aria-hidden="true"><strong>08</strong><span>bottle designs<br />one SPARK</span></span>
         <span class="story-hero__art-ground" aria-hidden="true"></span>
         {heroCans.map((flavour, index) => (
           <div class:list={['story-hero__can', `story-hero__can--${flavour.id}`]} style={`--can-order:${index}`}>
@@ -51,8 +51,8 @@ const storyBeats = [
       <div class="journey__intro">
         <Eyebrow>The SPARK journey</Eyebrow>
         <h2 data-reveal="up">One idea.<br /><em>Many expressions.</em></h2>
-        <p data-reveal="up" style="--reveal-delay: 100ms">From our roots in Tamil Nadu to the cans on the shelf, SPARK is built around one belief: choice makes a shared moment better. Each flavour gets its own look while staying part of one bright, recognisable collection.</p>
-        <span class="journey__signature">Proudly crafted in Tamil Nadu</span>
+        <p data-reveal="up" style="--reveal-delay: 100ms">Crafted in India and designed to stand out on the shelf, SPARK is built around one belief: choice makes a shared moment better. Each bottle has its own flavour-led look while staying part of one bright, recognisable collection.</p>
+        <span class="journey__signature">Proudly crafted in India</span>
       </div>
 
       <ol class="timeline">
@@ -75,7 +75,7 @@ const storyBeats = [
       <div class="story-cta__copy">
         <Eyebrow>Choose your SPARK</Eyebrow>
         <h2 data-reveal="up">Find your flavour.<br /><em>Share the moment.</em></h2>
-        <p data-reveal="up" style="--reveal-delay:100ms">Start with the can that catches your eye, then discover the flavour behind the colour and artwork. Want SPARK on your shelves? Let’s talk.</p>
+        <p data-reveal="up" style="--reveal-delay:100ms">Start with the bottle that catches your eye, then discover the flavour behind the colour and artwork. Want SPARK on your shelves? Let’s talk.</p>
       </div>
       <div class="story-cta__actions">
         <Button href="/spark/flavours" variant="ink" size="lg">Explore all flavours</Button>

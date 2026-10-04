@@ -5,7 +5,7 @@ import Eyebrow from '../ui/Eyebrow.astro';
 import Button from '../ui/Button.astro';
 import FeatureCard from '../cards/FeatureCard.astro';
 
-type IconName = 'fruit' | 'bubbles' | 'can' | 'share' | 'globe' | 'basket' | 'pen' | 'spark' | 'mail';
+type IconName = 'fruit' | 'bubbles' | 'bottle' | 'can' | 'share' | 'globe' | 'basket' | 'pen' | 'spark' | 'mail';
 const [h1, h2] = craft.heading;
 ---
 
@@ -27,9 +27,9 @@ const [h1, h2] = craft.heading;
             <circle cx="10" cy="8" r="2" stroke="currentColor" stroke-width="1.5" />
           </svg>
         </span>
-        Crafted in Tamil Nadu
+        Crafted in India
       </span>
-      <p>Eight sparkling flavours. Find the one you’ll reach for next.</p>
+      <p>Eight sparkling flavours in a bottle designed to be noticed.</p>
       <Button href={craft.cta.href} variant="ghost" size="md">{craft.cta.label}</Button>
     </div>
   </div>

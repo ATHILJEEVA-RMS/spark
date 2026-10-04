@@ -14,5 +14,5 @@ colors:
   soft: "#f4e2de"
 image:
   src: ../../assets/flavours-studio/litchi-original-branding.png
-  alt: SPARK Litchi sparkling drink can
+  alt: SPARK Litchi sparkling drink bottle
 ---

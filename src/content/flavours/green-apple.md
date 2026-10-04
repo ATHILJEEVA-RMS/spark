@@ -14,5 +14,5 @@ colors:
   soft: "#e8f3d4"
 image:
   src: ../../assets/flavours-studio/green-apple.png
-  alt: SPARK Green Apple sparkling drink can
+  alt: SPARK Green Apple sparkling drink bottle
 ---
