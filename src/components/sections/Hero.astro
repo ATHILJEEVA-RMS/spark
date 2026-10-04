@@ -116,8 +116,6 @@ const flavourData = flavours.map((f) => ({
   @property --flavour-soft    { syntax: '<color>'; inherits: true; initial-value: #fde4cb; }
 
   .hero {
-    --hero-switch-duration: 620ms;
-    --hero-switch-easing: cubic-bezier(0.22, 0.61, 0.36, 1);
     position: relative;
     min-height: 100svh;
     display: flex;
@@ -277,48 +275,16 @@ const flavourData = flavours.map((f) => ({
     min-height: clamp(20rem, 38vw, 32rem);
   }
 
-  .hero__stage::before {
-    content: '';
-    position: absolute;
-    z-index: 0;
-    width: min(80%, 26rem);
-    aspect-ratio: 1;
-    border-radius: 50%;
-    background: radial-gradient(circle, color-mix(in oklab, var(--flavour-primary) 22%, white) 0%, transparent 68%);
-    opacity: 0;
-    pointer-events: none;
-  }
-
-  .hero.is-switching .hero__stage::before {
-    animation: hero-switch-glow var(--hero-switch-duration) var(--hero-switch-easing) both;
-  }
-
   .hero__stage-layer {
     grid-area: 1 / 1;
-    display: grid;
+    display: none;
     place-items: center;
-    clip-path: inset(0 100% 0 0);
     pointer-events: none;
-    transition: clip-path var(--hero-switch-duration) var(--hero-switch-easing);
   }
 
   .hero__stage-layer.is-active {
-    z-index: 2;
-    clip-path: inset(0 0 0 0);
+    display: grid;
     pointer-events: auto;
-  }
-
-  .hero__stage-layer.is-leaving {
-    z-index: 1;
-    clip-path: inset(0 0 0 100%);
-  }
-
-  .hero__stage-layer:not(.is-active) :global(*) {
-    animation-play-state: paused !important;
-  }
-
-  .hero.is-switching .hero__stage-layer :global(*) {
-    animation-play-state: paused !important;
   }
 
   .hero__caption {
@@ -439,12 +405,6 @@ const flavourData = flavours.map((f) => ({
     to   { transform: translateY(-22px) rotate(8deg); }
   }
 
-  @keyframes hero-switch-glow {
-    0% { opacity: 0; transform: scale(0.76); }
-    38% { opacity: 0.72; }
-    100% { opacity: 0; transform: scale(1.32); }
-  }
-
   /* ---------- Responsive ---------- */
   @media (min-width: 56.001rem) {
     .hero__caption { display: none; }
@@ -511,10 +471,6 @@ const flavourData = flavours.map((f) => ({
   }
 
   @media (prefers-reduced-motion: reduce) {
-    .hero__stage-layer {
-      transition: none;
-    }
-    .hero.is-switching .hero__stage::before { animation: none; }
     .hero,
     .hero__blob,
     .hero__title-line--accent em,
@@ -527,8 +483,7 @@ const flavourData = flavours.map((f) => ({
 </style>
 
 <script>
-  import { formatHslPalette, mixHslPalette, toHslPalette, type FlavourColors } from '../../scripts/flavour-colors';
-
+  type FlavourColors = { primary: string; deep: string; soft: string };
   const hero = document.querySelector<HTMLElement>('[data-hero]');
   if (hero) {
     const flavours = JSON.parse(hero.dataset.flavours || '[]') as Array<{
@@ -542,56 +497,25 @@ const flavourData = flavours.map((f) => ({
     const stage = hero.querySelector<HTMLElement>('[data-stage]');
     const nameEl = hero.querySelector<HTMLElement>('[data-featuring-name]');
     const tagEl = hero.querySelector<HTMLElement>('[data-featuring-tag]');
-    const featuringEl = hero.querySelector<HTMLElement>('[data-featuring]');
-    const captionEl = hero.querySelector<HTMLElement>('[data-caption]');
     const captionNum = hero.querySelector<HTMLElement>('[data-caption-num]');
     const captionName = hero.querySelector<HTMLElement>('[data-caption-name]');
     const captionTag = hero.querySelector<HTMLElement>('[data-caption-tag]');
     const pad = (n: number) => String(n).padStart(2, '0');
-    const switchDuration = 620;
-    const switchEasing = 'cubic-bezier(0.22, 0.61, 0.36, 1)';
     let index = Math.max(0, Number(hero.dataset.startIndex || 0));
+    let selection = 0;
     const setColors = (colors: FlavourColors) => {
       for (const key of ['primary', 'deep', 'soft'] as const) {
         hero.style.setProperty(`--flavour-${key}`, colors[key]);
         document.documentElement.style.setProperty(`--active-flavour-${key}`, colors[key]);
       }
     };
-    let currentColors = toHslPalette(flavours[index].colors);
-    let colorFrame = 0;
     setColors(flavours[index].colors);
     let timer: number | undefined;
-    let switchingTimer: number | undefined;
-    let queuedIndex: number | undefined;
     let inView = true;
     let hoverPaused = false;
     let focusPaused = false;
     const motion = window.matchMedia('(prefers-reduced-motion: reduce)');
-    const mobilePalette = window.matchMedia('(max-width: 56rem)');
     let reduceMotion = motion.matches;
-
-    const transitionColors = (target: FlavourColors) => {
-      window.cancelAnimationFrame(colorFrame);
-      const destination = toHslPalette(target);
-      // On compact screens, switch directly between real flavour palettes.
-      // Sweeping the hue wheel makes orange-to-blue pass through green.
-      if (reduceMotion || mobilePalette.matches) {
-        currentColors = destination;
-        setColors(target);
-        return;
-      }
-      const origin = currentColors;
-      const started = performance.now();
-      const animate = (now: number) => {
-        const progress = Math.min(1, (now - started) / switchDuration);
-        const eased = progress * progress * (3 - 2 * progress);
-        currentColors = mixHslPalette(origin, destination, eased);
-        setColors(progress < 1 ? formatHslPalette(currentColors) : target);
-        if (progress < 1) colorFrame = window.requestAnimationFrame(animate);
-        else currentColors = destination;
-      };
-      colorFrame = window.requestAnimationFrame(animate);
-    };
 
     const stop = () => {
       window.clearTimeout(timer);
@@ -601,52 +525,22 @@ const flavourData = flavours.map((f) => ({
     const apply = (i: number) => {
       const f = flavours[i];
       if (!f || i === index) return;
-      const previousIndex = index;
-      const forwardDistance = (i - previousIndex + flavours.length) % flavours.length;
-      const direction = forwardDistance <= flavours.length / 2 ? 1 : -1;
       index = i;
       layers.forEach((layer, li) => {
         const active = li === i;
         layer.classList.toggle('is-active', active);
-        layer.classList.toggle('is-leaving', !active && li === previousIndex);
         layer.setAttribute('aria-hidden', active ? 'false' : 'true');
       });
       railLinks.forEach((link, li) => {
         link.classList.toggle('is-active', li === i);
         link.setAttribute('aria-pressed', String(li === i));
       });
-      transitionColors(f.colors);
+      setColors(f.colors);
       if (nameEl) nameEl.textContent = f.name;
       if (tagEl) tagEl.textContent = f.mood;
       if (captionNum) captionNum.textContent = `Nº ${pad(f.order)}`;
       if (captionName) captionName.textContent = f.name;
       if (captionTag) captionTag.textContent = f.mood;
-      window.clearTimeout(switchingTimer);
-      hero.classList.remove('is-switching');
-      if (!reduceMotion) {
-        hero.classList.add('is-switching');
-        void hero.offsetWidth;
-        switchingTimer = window.setTimeout(() => {
-          hero.classList.remove('is-switching');
-          switchingTimer = undefined;
-          if (queuedIndex !== undefined) {
-            const nextIndex = queuedIndex;
-            queuedIndex = undefined;
-            select(nextIndex, true);
-          }
-        }, switchDuration);
-        for (const label of [featuringEl, captionEl]) {
-          if (!label) continue;
-          label.getAnimations().forEach((animation) => animation.cancel());
-          label.animate(
-            [
-              { opacity: 0, transform: `translate3d(${direction * 0.5}rem, 0, 0)`, filter: 'blur(3px)' },
-              { opacity: 1, transform: 'translate3d(0, 0, 0)', filter: 'blur(0)' },
-            ],
-            { duration: switchDuration, easing: switchEasing }
-          );
-        }
-      }
       const upcoming = layers[(i + 1) % layers.length]?.querySelector<HTMLImageElement>('.stage__float img');
       if (upcoming) upcoming.loading = 'eager';
     };
@@ -657,20 +551,18 @@ const flavourData = flavours.map((f) => ({
       timer = window.setTimeout(() => void select((index + 1) % flavours.length, false), 4600);
     };
 
-    const select = (i: number, manual: boolean) => {
-      if (i === index) {
-        queuedIndex = undefined;
-        return;
-      }
-      if (!layers[i]) return;
-      if (switchingTimer && !reduceMotion) {
-        queuedIndex = i;
-        return;
-      }
+    const select = async (i: number, manual: boolean) => {
+      if (i === index || !layers[i]) return;
       stop();
       const image = layers[i].querySelector<HTMLImageElement>('.stage__float img');
       if (!manual && (reduceMotion || !inView || document.hidden || hoverPaused || focusPaused)) return;
-      if (image) image.loading = 'eager';
+      const request = ++selection;
+      if (image) {
+        image.loading = 'eager';
+        try { await image.decode(); } catch { /* Continue if the image cannot be decoded. */ }
+      }
+      if (request !== selection) return;
+      if (!manual && (reduceMotion || !inView || document.hidden || hoverPaused || focusPaused)) return;
       apply(i);
       schedule();
     };
@@ -712,14 +604,7 @@ const flavourData = flavours.map((f) => ({
     document.addEventListener('visibilitychange', schedule);
     motion.addEventListener('change', (event) => {
       reduceMotion = event.matches;
-      if (reduceMotion) {
-        queuedIndex = undefined;
-        transitionColors(flavours[index].colors);
-      }
       schedule();
-    });
-    mobilePalette.addEventListener('change', (event) => {
-      if (event.matches) transitionColors(flavours[index].colors);
     });
     if ('IntersectionObserver' in window) {
       const observer = new IntersectionObserver(([entry]) => {

@@ -2,15 +2,14 @@
 /* ============================================================
    CAN STAGE — the premium commercial presentation of a can.
 
-   Every can on the site floats inside this composition:
+   Product artwork sits inside a flavour-matched composition:
      · atmospheric flavour glow       (radial, breathing)
      · juice-splash blob              (organic, behind the can)
-     · the can itself                 (floating, drop-shadowed)
-     · mirror reflection              (masked fade under the can)
-     · soft elliptical ground shadow  (counter-animated)
+     · the bottle itself              (softly shadowed)
+     · optional reflection and ground shadow for smaller cards
      · drifting condensation droplets (flavour-tinted)
 
-   Variants: hero (large, orbit ring) · world (mid, worlds
+   Variants: hero (large) · world (mid, worlds
    sections) · card (compact, poster cards) · strip (mini).
 
    The component only *stages* the artwork — it never alters
@@ -45,9 +44,8 @@ const sizes = {
   {/* atmosphere */}
   <span class="stage__glow" aria-hidden="true"></span>
   <span class="stage__splash" aria-hidden="true"></span>
-  {variant === 'hero' && <span class="stage__ring" aria-hidden="true"></span>}
 
-  {/* floating unit: can + its mirror */}
+  {/* bottle with an optional reflection for smaller stages */}
   <div class="stage__float">
     <FlavourCan
       {flavour}
@@ -57,7 +55,7 @@ const sizes = {
       class="stage__can"
     />
     {
-      variant !== 'strip' && (
+      variant !== 'strip' && variant !== 'hero' && (
         <span class="stage__mirror" aria-hidden="true">
           <FlavourCan {flavour} width={widths[variant]} sizes={sizes[variant]} class="stage__can stage__can--mirror" />
         </span>
@@ -65,8 +63,8 @@ const sizes = {
     }
   </div>
 
-  {/* grounding */}
-  <span class="stage__shadow" aria-hidden="true"></span>
+  {/* grounding for the smaller product stages */}
+  {variant !== 'hero' && <span class="stage__shadow" aria-hidden="true"></span>}
 
   {/* condensation in the air */}
   {
@@ -145,28 +143,6 @@ const sizes = {
     aspect-ratio: 1;
     bottom: 2%;
     left: -6%;
-  }
-
-  /* ---------- Orbit ring (hero only) ---------- */
-  .stage__ring {
-    position: absolute;
-    inset: 9%;
-    z-index: -1;
-    border-radius: 50%;
-    border: 1px solid color-mix(in oklab, var(--flavour-primary) 42%, transparent);
-    animation: stage-spin 26s linear infinite;
-  }
-
-  .stage__ring::before {
-    content: '';
-    position: absolute;
-    top: -4px;
-    left: 50%;
-    width: 9px;
-    height: 9px;
-    border-radius: 50%;
-    background: var(--flavour-primary);
-    box-shadow: 0 0 12px color-mix(in oklab, var(--flavour-primary) 70%, transparent);
   }
 
   /* ---------- Floating can + reflection ---------- */
@@ -288,6 +264,10 @@ const sizes = {
 
   /* ---------- Variant scale ---------- */
   .stage--hero { width: min(100%, 30rem); }
+  .stage--hero .stage__float { animation: none; }
+  .stage--hero .stage__float :global(.stage__can) {
+    filter: drop-shadow(0 12px 18px rgb(26 20 16 / 0.16));
+  }
   .stage--world { width: min(100%, 24rem); }
   .stage--card { width: min(100%, 15rem); --mirror-h: 24%; }
   .stage--card .stage__float { width: 46%; }
@@ -322,10 +302,6 @@ const sizes = {
     to   { border-radius: 55% 45% 44% 56% / 45% 56% 44% 55%; transform: rotate(4deg) scale(1.05); }
   }
 
-  @keyframes stage-spin {
-    to { transform: rotate(360deg); }
-  }
-
   @keyframes stage-drift {
     from { transform: translateY(0); }
     to   { transform: translateY(-14px); }
@@ -333,11 +309,7 @@ const sizes = {
 
   @media (max-width: 56rem) {
     .stage--hero .stage__float :global(.stage__can) {
-      filter: drop-shadow(0 10px 16px rgb(26 20 16 / 0.18));
-    }
-    .stage--hero .stage__mirror,
-    .stage--hero .stage__shadow {
-      display: none;
+      filter: none;
     }
   }
 
@@ -346,7 +318,6 @@ const sizes = {
     .stage__shadow,
     .stage__glow,
     .stage__splash,
-    .stage__ring,
     .stage__droplets i {
       animation: none;
     }
