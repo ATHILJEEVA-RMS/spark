@@ -77,11 +77,8 @@ const jsonLd = {
           <div class="flavour-hero__notes" data-reveal="up" style="--reveal-delay: 220ms">
             <span class="flavour-hero__notes-label">Tasting notes</span>
             <div class="flavour-hero__note-list" role="list">
-              {notes.map((note, i) => (
-                <span class="flavour-hero__note" role="listitem">
-                  <span class="flavour-hero__note-index" aria-hidden="true">{String(i + 1).padStart(2, '0')}</span>
-                  {note}
-                </span>
+              {notes.map((note) => (
+                <span class="flavour-hero__note" role="listitem">{note}</span>
               ))}
             </div>
           </div>
@@ -249,6 +246,7 @@ const jsonLd = {
     font-size: var(--text-xl);
     color: var(--ink-700);
     max-width: 30ch;
+    text-wrap: balance;
   }
 
   .flavour-hero__description {
@@ -257,6 +255,7 @@ const jsonLd = {
     opacity: 0.85;
     max-width: 44ch;
     line-height: var(--leading-body);
+    text-wrap: pretty;
   }
 
   .flavour-hero__notes {
@@ -294,14 +293,6 @@ const jsonLd = {
     font-weight: 500;
     letter-spacing: 0.04em;
     color: var(--ink-700);
-  }
-
-  .flavour-hero__note-index {
-    color: var(--flavour-deep);
-    font-size: 0.78em;
-    font-weight: 700;
-    font-variant-numeric: tabular-nums;
-    opacity: 0.72;
   }
 
   .flavour-hero__volume {
@@ -482,8 +473,12 @@ const jsonLd = {
     }
 
     .flavour-hero__description {
+      max-width: 40ch;
       margin-inline: auto;
     }
+
+    .flavour-hero__notes { width: 100%; }
+    .flavour-hero__note-list { width: 100%; justify-content: center; }
 
     .flavour-hero__name {
       font-size: var(--text-3xl);
