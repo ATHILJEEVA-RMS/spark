@@ -2,7 +2,7 @@
 name: Green Apple
 tagline: Crisp apple. Tart edge.
 mood: Crisp & Tart
-description: Green apple brings a crisp first taste and a tart edge at the finish.
+description: Green apple flavour brings a crisp first taste and a tart edge at the finish.
 status: current
 featured: false
 order: 3

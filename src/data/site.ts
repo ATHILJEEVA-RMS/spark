@@ -8,7 +8,7 @@
 export const site = {
   brand: 'SPARK',
   description:
-    'Explore eight SPARK sparkling drink flavours, from bright citrus and tropical fruit to berries and classic cola. Proudly crafted in India.',
+    'Explore eight SPARK sparkling drink flavours, from bright citrus and tropical fruit to berries and classic cola. Made in India.',
   url: 'https://athiljeeva-rms.github.io',
   base: '/spark',
 };
@@ -28,24 +28,24 @@ export const cta = {
 /* ---------- Hero ---------- */
 export const hero = {
   title: ['FIND', 'YOUR', 'SPARK.'],
-  lede: 'Bright, bold flavour for every kind of break.',
+  lede: 'Eight sparkling drink flavours — from bright citrus and tropical fruit to berries and classic cola.',
   primaryCta: { label: 'Explore Flavours', href: '/spark/flavours' },
   secondaryCta: { label: 'Become a Distributor', href: '/spark/contact#distributor' },
-  meta: 'Crafted in India',
+  meta: 'Made in India',
 };
 
 /* ---------- Why SPARK (brand argument) ---------- */
 export const manifesto = {
   eyebrow: 'Made for your moment',
   heading: ['Your taste.', 'Your SPARK.'],
-  body: 'Explore the range and find the flavour you’re in the mood for.',
+  body: 'Eight sparkling flavours, each with its own colour, character and finish. Pick the one that fits the moment.',
 };
 
 /* ---------- Flavour collection intro (homepage strip) ---------- */
 export const collection = {
   eyebrow: 'The SPARK range',
   heading: ['Find your', 'flavour.'],
-  lede: 'Explore eight sparkling drinks, from bright citrus and tropical fruit to berries and cola.',
+  lede: 'Start with citrus, go tropical, or keep it classic. Compare the tasting notes and pick the one you’ll try next.',
   cta: { label: 'Explore All Flavours', href: '/spark/flavours' },
 };
 
@@ -56,13 +56,13 @@ export const flavoursPage = {
   lede: 'Meet the full SPARK range. Compare the tasting notes, choose a favourite, and ask us where to find it.',
 };
 
-/* ---------- Coming soon teaser ---------- */
+/* ---------- Occasion picker (homepage panel) ---------- */
 export const future = {
   eyebrow: 'Choose your next sip',
   heading: ['Pick a flavour.', 'Make it yours.'],
   body: [
     'Go for bright Orange, tropical Mango, or the familiar taste of Cola.',
-    'Explore the range and find the SPARK you feel like today.',
+    'Every flavour is available in 250 ml. Explore the range and pick the SPARK you feel like today.',
   ],
   cta: { label: 'Explore the Flavours', href: '/spark/flavours' },
 };
@@ -70,22 +70,22 @@ export const future = {
 /* ---------- Our craft ---------- */
 export const craft = {
   eyebrow: 'A range with roots',
-  heading: ['Crafted in India.', 'Designed to stand out.'],
+  heading: ['Made in India.', 'Made to stand out.'],
   cta: { label: 'Read Our Story', href: '/spark/about' },
   items: [
     {
       title: 'Eight Flavours',
-      body: 'Choose from citrus, tropical fruit, berries, litchi, guava and classic cola.',
+      body: 'Eight sparkling drinks in 250 ml — from bright citrus and tropical flavours to berries, litchi, guava and classic cola.',
       icon: 'fruit',
     },
     {
       title: 'A Bottle That Stands Out',
-      body: 'Our clear, contoured bottle pairs bold SPARK lettering with fruit artwork and a vivid colour for every flavour.',
+      body: 'A clear, contoured bottle pairs bold SPARK lettering with flavour artwork and a different colour for every flavour.',
       icon: 'bottle',
     },
     {
       title: 'Know Where to Look',
-      body: 'Choose a flavour and tell us your city. We’ll help you check where SPARK is available.',
+      body: 'Choose a flavour and tell us your city. Our team will help you check availability near you.',
       icon: 'can',
     },
   ],
@@ -94,8 +94,8 @@ export const craft = {
 /* ---------- CTA ---------- */
 export const ctaSection = {
   eyebrow: 'Take the next step',
-  heading: 'Which SPARK will you try?',
-  copy: 'Tell us your city and the flavour you have in mind. Interested in stocking SPARK? Share your shop or territory with our team.',
+  heading: ['Found your', 'flavour?'],
+  copy: 'Eight sparkling flavours. Find your favourite, or bring SPARK to your shelves.',
   primaryCta: { label: 'Check Availability', href: '/spark/contact#availability' },
   secondaryCta: { label: 'Stock SPARK', href: '/spark/contact#distributor' },
 };
@@ -121,7 +121,7 @@ export const contact = {
 
 export const footer = {
   wordmark: { pre: 'Find your', accent: 'spark.' },
-  tagline: 'Eight sparkling flavours, crafted in India.',
+  tagline: 'Eight sparkling flavours, made in India.',
   contact: {
     title: 'Let’s talk',
     copy: 'Questions about a flavour, stocking SPARK, or working together? Send our team a message.',

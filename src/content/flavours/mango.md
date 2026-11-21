@@ -1,6 +1,6 @@
 ---
 name: Mango
-tagline: Ripe mango. Tropical lift.
+tagline: Golden mango. Tropical lift.
 mood: Tropical Mango
 description: Rounded mango flavour with a bright, tropical character.
 status: current

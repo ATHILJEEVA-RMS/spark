@@ -21,6 +21,7 @@ const paths = [
     color: 'var(--litchi)',
   },
 ];
+const [h1, h2] = ctaSection.heading;
 ---
 
 <Section id="stockists" spacing="tight">
@@ -29,10 +30,10 @@ const paths = [
       <div class="cta__copy" data-reveal="up">
         <Eyebrow>{ctaSection.eyebrow}</Eyebrow>
         <h2 class="cta__title" id="stockists-title">
-          <span>Which SPARK</span>
-          <span class="cta__title-accent"><em>will you try?</em></span>
+          <span>{h1}</span>
+          <span class="cta__title-accent"><em>{h2}</em></span>
         </h2>
-        <p class="cta__lede">Eight sparkling flavours. Find your favourite, or bring SPARK to your shelves.</p>
+        <p class="cta__lede">{ctaSection.copy}</p>
       </div>
 
       <div class="cta__choices" aria-labelledby="stockists-title">

@@ -6,6 +6,14 @@ import Eyebrow from '../components/ui/Eyebrow.astro';
 import { getFlavours } from '../data/flavours';
 const flavours = await getFlavours();
 
+/* Single source for the mailto target: swap contact.email in data/site.ts
+   before deployment and every email link on the site follows. Keep it equal
+   to the Web3Forms delivery address so both routes reach the same inbox. */
+const mailSubject = '[SPARK Contact from website] Website enquiry';
+const emailHref = `mailto:${contact.email}?subject=${encodeURIComponent(mailSubject)}`;
+const gmailHref = `https://mail.google.com/mail/?view=cm&fs=1&to=${contact.email}&su=${encodeURIComponent(mailSubject)}`;
+const outlookHref = `https://outlook.office.com/mail/deeplink/compose?to=${contact.email}&subject=${encodeURIComponent(mailSubject)}`;
+
 ---
 
 <BaseLayout title="Contact" description={contact.copy}>
@@ -19,7 +27,18 @@ const flavours = await getFlavours();
         </p>
         <div class="contact-copy__direct" data-reveal="up" style="--reveal-delay: 180ms">
           <a class="contact-copy__chat" href={`https://wa.me/${contact.whatsapp}`} target="_blank" rel="noreferrer">Chat on WhatsApp <span aria-hidden="true">&#8599;</span></a>
-          <a class="contact-copy__email" href={`mailto:${contact.email}`}>Email our team <span aria-hidden="true">&#8599;</span></a>
+          <a class="contact-copy__email" href={emailHref} data-email-link>Email our team <span aria-hidden="true">&#8599;</span></a>
+        </div>
+        <div class="contact-copy__mailalt" data-email-alt data-email={contact.email} hidden>
+          <p class="contact-copy__mailalt-note">
+            Your mail app didn&rsquo;t open — write to us at
+            <a href={emailHref}>{contact.email}</a>
+          </p>
+          <div class="contact-copy__mailalt-actions">
+            <button type="button" class="contact-copy__copy" data-email-copy>Copy address</button>
+            <a class="contact-copy__webmail" href={gmailHref} target="_blank" rel="noreferrer">Open in Gmail <span aria-hidden="true">&#8599;</span></a>
+            <a class="contact-copy__webmail" href={outlookHref} target="_blank" rel="noreferrer">Open in Outlook <span aria-hidden="true">&#8599;</span></a>
+          </div>
         </div>
       </div>
       <div class="contact-form-wrap" id="availability">
@@ -130,7 +149,7 @@ const flavours = await getFlavours();
           </span>
           <span class="contact-form__status-body">
             <strong>Your enquiry could not be sent.</strong>
-            <span>Please try again or <a href={`mailto:${contact.email}`}>email the SPARK team</a>.</span>
+            <span>Please try again or <a href={emailHref}>email the SPARK team</a>.</span>
           </span>
         </div>
       </form>
@@ -233,6 +252,69 @@ const flavours = await getFlavours();
 
   .contact-copy__email span { color: var(--orange-deep); }
   .contact-copy__email:hover { color: var(--orange-deep); }
+
+  /* Fallback shown only if the mail app fails to launch */
+  .contact-copy__mailalt {
+    display: grid;
+    gap: 0.55rem;
+    width: min(100%, 34rem);
+    padding: 0.9rem 1.05rem;
+    border: 1px solid color-mix(in oklab, var(--orange-deep) 26%, transparent);
+    border-radius: var(--radius-md);
+    background: color-mix(in oklab, var(--orange-soft) 38%, var(--cream-50));
+  }
+
+  .contact-copy__mailalt[hidden] { display: none; }
+
+  .contact-copy__mailalt-note {
+    margin: 0;
+    color: var(--ink-700);
+    font-size: var(--text-xs);
+    line-height: 1.5;
+  }
+
+  .contact-copy__mailalt-note a {
+    color: var(--orange-deep);
+    font-weight: 650;
+    text-decoration: underline;
+    text-underline-offset: 0.2em;
+    overflow-wrap: anywhere;
+  }
+
+  .contact-copy__mailalt-actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.5rem 0.8rem;
+  }
+
+  .contact-copy__copy {
+    min-height: 2.4rem;
+    padding: 0.45rem 0.95rem;
+    border: 1px solid color-mix(in oklab, var(--ink-900) 22%, transparent);
+    border-radius: var(--radius-pill);
+    background: var(--cream-50);
+    color: var(--ink-900);
+    font-family: var(--font-sans);
+    font-size: var(--text-xs);
+    font-weight: 650;
+    cursor: pointer;
+    transition: border-color var(--duration-fast) ease, color var(--duration-fast) ease;
+  }
+
+  .contact-copy__copy:hover { border-color: var(--orange-deep); color: var(--orange-deep); }
+
+  .contact-copy__webmail {
+    color: var(--ink-900);
+    font-size: var(--text-xs);
+    font-weight: 650;
+    text-decoration: underline;
+    text-decoration-color: var(--orange-deep);
+    text-underline-offset: 0.2em;
+  }
+
+  .contact-copy__webmail span { color: var(--orange-deep); }
+  .contact-copy__webmail:hover { color: var(--orange-deep); }
 
   .contact-form-wrap { min-width: 0; scroll-margin-top: 7rem; }
 
@@ -463,6 +545,37 @@ const flavours = await getFlavours();
   window.addEventListener('hashchange', setIntentFromUrl);
   window.addEventListener('popstate', setIntentFromUrl);
   intentInput?.addEventListener('change', () => setIntent(intentInput.value));
+
+  /* Email CTA: hand off to the visitor's mail app with the To field filled.
+     If nothing launches (no default mail client, or an embedded preview that
+     blocks mailto:), reveal copy + webmail fallbacks so the button still works. */
+  const emailLink = document.querySelector<HTMLAnchorElement>('[data-email-link]');
+  const emailAlt = document.querySelector<HTMLElement>('[data-email-alt]');
+  const emailCopy = document.querySelector<HTMLButtonElement>('[data-email-copy]');
+
+  emailLink?.addEventListener('click', () => {
+    if (!emailAlt) return;
+    let launched = false;
+    const markLaunched = () => { launched = true; };
+    window.addEventListener('blur', markLaunched, { once: true });
+    document.addEventListener('visibilitychange', markLaunched, { once: true });
+    window.setTimeout(() => {
+      window.removeEventListener('blur', markLaunched);
+      document.removeEventListener('visibilitychange', markLaunched);
+      if (!launched && document.hasFocus()) emailAlt.hidden = false;
+    }, 1200);
+  });
+
+  emailCopy?.addEventListener('click', async () => {
+    const address = emailAlt?.dataset.email ?? '';
+    try {
+      await navigator.clipboard.writeText(address);
+      emailCopy.textContent = 'Copied!';
+    } catch {
+      emailCopy.textContent = address;
+    }
+    window.setTimeout(() => { emailCopy.textContent = 'Copy address'; }, 2400);
+  });
 
   const error = (key: string, message: string) => {
     const field = form.elements.namedItem(key) as HTMLElement | null;
