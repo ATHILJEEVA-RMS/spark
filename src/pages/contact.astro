@@ -23,7 +23,7 @@ const outlookHref = `https://outlook.office.com/mail/deeplink/compose?to=${conta
         <Eyebrow>Get in touch</Eyebrow>
         <h1 class="contact-copy__title" data-reveal="up">BRING SPARK <em>CLOSER.</em></h1>
         <p class="contact-copy__lede" data-reveal="up" style="--reveal-delay: 100ms">
-          Looking for a flavour near you? Want our distinctive bottles on your shelves? Planning a partnership? Tell us what you have in mind and we&rsquo;ll connect you with the right person.
+          Looking for a flavour near you? Want our distinctive bottles on your shelves? Planning a partnership? Organising a gathering or event? Tell us what you have in mind and we&rsquo;ll connect you with the right person.
         </p>
         <div class="contact-copy__direct" data-reveal="up" style="--reveal-delay: 180ms">
           <a class="contact-copy__chat" href={`https://wa.me/${contact.whatsapp}`} target="_blank" rel="noreferrer">Chat on WhatsApp <span aria-hidden="true">&#8599;</span></a>
@@ -59,7 +59,7 @@ const outlookHref = `https://outlook.office.com/mail/deeplink/compose?to=${conta
             <option value="availability">Finding a flavour</option>
             <option value="retail">Stocking SPARK in my shop</option>
             <option value="distributor">Distribution partnership</option>
-            <option value="media">Press or collaboration</option>
+            <option value="events">Event or bulk supply</option>
           </select>
           <span class="contact-form__error" id="cf-intent-error" data-error="intent"></span>
         </div>
@@ -108,6 +108,29 @@ const outlookHref = `https://outlook.office.com/mail/deeplink/compose?to=${conta
             <label class="contact-form__label" for="cf-territory">City or territory <span aria-hidden="true">*</span></label>
             <input class="contact-form__input" id="cf-territory" name="territory" autocomplete="address-level2" placeholder="City or territory you serve" aria-describedby="cf-territory-error" />
             <span class="contact-form__error" id="cf-territory-error" data-error="territory"></span>
+          </div>
+        </div>
+
+        <div class="contact-form__row" data-intent-group="events" hidden>
+          <div class="contact-form__field">
+            <label class="contact-form__label" for="cf-event-type">Occasion or event type <span aria-hidden="true">*</span></label>
+            <input class="contact-form__input" id="cf-event-type" name="event_type" placeholder="Wedding, birthday, office party..." aria-describedby="cf-event-type-error" />
+            <span class="contact-form__error" id="cf-event-type-error" data-error="event_type"></span>
+          </div>
+          <div class="contact-form__field">
+            <label class="contact-form__label" for="cf-event-date">Date of event <span aria-hidden="true">*</span></label>
+            <input class="contact-form__input" type="date" id="cf-event-date" name="event_date" aria-describedby="cf-event-date-error" />
+            <span class="contact-form__error" id="cf-event-date-error" data-error="event_date"></span>
+          </div>
+          <div class="contact-form__field">
+            <label class="contact-form__label" for="cf-event-city">City <span aria-hidden="true">*</span></label>
+            <input class="contact-form__input" id="cf-event-city" name="event_city" autocomplete="address-level2" placeholder="Your city" aria-describedby="cf-event-city-error" />
+            <span class="contact-form__error" id="cf-event-city-error" data-error="event_city"></span>
+          </div>
+          <div class="contact-form__field">
+            <label class="contact-form__label" for="cf-event-quantity">Approx. quantity</label>
+            <input class="contact-form__input" id="cf-event-quantity" name="event_quantity" placeholder="e.g. 200 bottles" aria-describedby="cf-event-quantity-error" />
+            <span class="contact-form__error" id="cf-event-quantity-error" data-error="event_quantity"></span>
           </div>
         </div>
 
@@ -457,7 +480,14 @@ const outlookHref = `https://outlook.office.com/mail/deeplink/compose?to=${conta
     .contact-page__inner { gap: var(--space-m); }
     .contact-copy__title { max-width: 12ch; font-size: clamp(2.85rem, 11vw, 4.3rem); }
     .contact-copy__lede { font-size: var(--text-base); line-height: 1.55; }
-    .contact-copy__direct { gap: 0.6rem 1.1rem; margin-top: var(--space-2xs); }
+    .contact-copy__direct {
+      flex-direction: column;
+      align-items: stretch;
+      gap: 0.7rem;
+      margin-top: var(--space-2xs);
+    }
+    .contact-copy__chat { width: 100%; }
+    .contact-copy__email { justify-content: center; }
     .contact-form { gap: var(--space-s); padding: 1.15rem; border-radius: var(--radius-lg); }
     .contact-form__row { grid-template-columns: minmax(0, 1fr); gap: var(--space-s); }
     .contact-form__actions { align-items: stretch; flex-direction: column-reverse; }
@@ -478,7 +508,7 @@ const outlookHref = `https://outlook.office.com/mail/deeplink/compose?to=${conta
   const messageInput = document.getElementById('cf-message') as HTMLTextAreaElement;
   const introHeading = document.getElementById('contact-form-heading');
   const introCopy = document.getElementById('contact-form-copy');
-  const intents = ['availability', 'distributor', 'retail', 'media', 'general'];
+  const intents = ['availability', 'distributor', 'retail', 'events', 'general'];
 
   const setIntent = (intent: string) => {
     const chosen = intents.includes(intent) ? intent : 'general';
@@ -490,14 +520,14 @@ const outlookHref = `https://outlook.office.com/mail/deeplink/compose?to=${conta
       availability: 'Check flavour availability',
       distributor: 'Discuss a distribution partnership',
       retail: 'Stock SPARK in your shop',
-      media: 'Press and collaborations',
+      events: 'Plan supply for your event',
       general: 'How can we help?',
     };
     const descriptions: Record<string, string> = {
       availability: 'Tell us your city and the flavour you’d like to try. We’ll help you check availability.',
       distributor: 'Tell us about your business and the territory you serve.',
       retail: 'Tell us about your shop and the SPARK range you’re interested in.',
-      media: 'Tell us about your publication, event or collaboration idea.',
+      events: 'Tell us the occasion, city and date — we’ll confirm availability and quantities.',
       general: 'Choose a topic and share a few details. We’ll send your note to the right person.',
     };
     if (introHeading) introHeading.textContent = headings[chosen];
@@ -506,7 +536,7 @@ const outlookHref = `https://outlook.office.com/mail/deeplink/compose?to=${conta
       availability: 'Tell us which flavour you are looking for...',
       distributor: 'Tell us about your distribution network...',
       retail: 'Tell us about your shop and what you would like to stock...',
-      media: 'Tell us about your publication or collaboration idea...',
+      events: 'Tell us what you’re serving and how many guests you’re expecting...',
       general: 'Tell us what you have in mind...',
     };
     messageInput.placeholder = placeholders[chosen];
@@ -514,7 +544,7 @@ const outlookHref = `https://outlook.office.com/mail/deeplink/compose?to=${conta
       availability: 'Flavour Availability',
       distributor: 'Distribution Partnership',
       retail: 'Retail Opportunity',
-      media: 'Press & Collaboration',
+      events: 'Event Supply',
       general: 'General Question',
     };
     subjectInput.value = subjectsByIntent[chosen];
@@ -526,7 +556,7 @@ const outlookHref = `https://outlook.office.com/mail/deeplink/compose?to=${conta
       '#availability': 'availability',
       '#distributor': 'distributor',
       '#retail': 'retail',
-      '#media': 'media',
+      '#events': 'events',
       '#general': 'general',
     };
     const queryIntent = url.searchParams.get('intent');
@@ -537,7 +567,7 @@ const outlookHref = `https://outlook.office.com/mail/deeplink/compose?to=${conta
     const slug = url.searchParams.get('flavour');
     const option = [...(document.getElementById('cf-flavour') as HTMLSelectElement).options].find((item) => item.value.toLowerCase().replaceAll(' ', '-') === slug);
     if (option) (document.getElementById('cf-flavour') as HTMLSelectElement).value = option.value;
-    if (['#distributor', '#retail', '#media', '#general'].includes(url.hash)) {
+    if (['#distributor', '#retail', '#events', '#general'].includes(url.hash)) {
       window.setTimeout(() => document.getElementById('availability')?.scrollIntoView({ behavior: 'instant' }), 60);
     }
   };
@@ -545,6 +575,13 @@ const outlookHref = `https://outlook.office.com/mail/deeplink/compose?to=${conta
   window.addEventListener('hashchange', setIntentFromUrl);
   window.addEventListener('popstate', setIntentFromUrl);
   intentInput?.addEventListener('change', () => setIntent(intentInput.value));
+
+  /* Keep the event date picker from offering past dates. */
+  const eventDateInput = document.getElementById('cf-event-date') as HTMLInputElement | null;
+  if (eventDateInput) {
+    const now = new Date();
+    eventDateInput.min = new Date(now.getTime() - now.getTimezoneOffset() * 60000).toISOString().slice(0, 10);
+  }
 
   /* Email CTA: hand off to the visitor's mail app with the To field filled.
      If nothing launches (no default mail client, or an embedded preview that
@@ -612,6 +649,10 @@ const outlookHref = `https://outlook.office.com/mail/deeplink/compose?to=${conta
     const businessIntent = intent === 'distributor' || intent === 'retail';
     valid = !error('business', businessIntent && !value('business') ? 'Please enter your business name' : '') && valid;
     valid = !error('territory', businessIntent && !value('territory') ? 'Please enter your city or territory' : '') && valid;
+    const eventIntent = intent === 'events';
+    valid = !error('event_type', eventIntent && !value('event_type') ? 'Please tell us the occasion' : '') && valid;
+    valid = !error('event_date', eventIntent && !value('event_date') ? 'Please choose the event date' : '') && valid;
+    valid = !error('event_city', eventIntent && !value('event_city') ? 'Please enter the city' : '') && valid;
 
     if (!valid) {
       form.querySelector<HTMLElement>('.is-invalid')?.focus();
@@ -622,7 +663,10 @@ const outlookHref = `https://outlook.office.com/mail/deeplink/compose?to=${conta
     // (Name/Email/Phone/Subject/Message) as its own section in the email.
     data.set('subject', `[SPARK Contact from website] ${subject}`);
     data.set('message', value('message'));
-    for (const key of intent === 'availability' ? ['business', 'territory'] : businessIntent ? ['city', 'flavour'] : intent === 'general' || intent === 'media' ? ['city', 'flavour', 'business', 'territory'] : []) data.delete(key);
+    for (const key of intent === 'availability' ? ['business', 'territory'] : businessIntent ? ['city', 'flavour'] : intent === 'general' || intent === 'events' ? ['city', 'flavour', 'business', 'territory'] : []) data.delete(key);
+    // Event fields belong to the events intent only; drop them elsewhere so
+    // hidden inputs don't arrive as empty sections in the notification email.
+    if (intent !== 'events') for (const key of ['event_type', 'event_date', 'event_city', 'event_quantity']) data.delete(key);
 
     // 1. Send email via Web3Forms API
     const submitBtn = form.querySelector<HTMLButtonElement>('.contact-form__submit');

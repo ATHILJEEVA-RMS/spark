@@ -33,14 +33,13 @@ const icons = {
   data-reveal="up"
   style={`--feature-accent: ${accent}; --feature-soft: ${soft}; --reveal-delay: ${index * 100}ms`}
 >
-  <div class="feature-card__topline">
-    <span class="feature-card__index">0{index + 1} <i></i> 03</span>
-    <span class="feature-card__icon" aria-hidden="true">
-      <svg width="27" height="27" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" set:html={icons[icon]} />
-    </span>
-  </div>
   <div class="feature-card__copy">
-    <h3 class="feature-card__title">{title}</h3>
+    <div class="feature-card__head">
+      <h3 class="feature-card__title">{title}</h3>
+      <span class="feature-card__icon" aria-hidden="true">
+        <svg width="27" height="27" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" set:html={icons[icon]} />
+      </span>
+    </div>
     <p class="feature-card__body">{body}</p>
   </div>
 </article>
@@ -81,28 +80,11 @@ const icons = {
     .feature-card:hover .feature-card__icon { rotate: 7deg; scale: 1.05; }
   }
 
-  .feature-card__topline {
+  .feature-card__head {
     display: flex;
     align-items: center;
     justify-content: space-between;
     gap: var(--space-s);
-  }
-
-  .feature-card__index {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.5rem;
-    color: var(--feature-accent);
-    font-size: var(--text-xs);
-    font-weight: 700;
-    letter-spacing: 0.1em;
-  }
-
-  .feature-card__index i {
-    display: inline-block;
-    width: 2rem;
-    height: 1px;
-    background: color-mix(in oklab, var(--feature-accent) 55%, white);
   }
 
   .feature-card__icon {
@@ -120,7 +102,7 @@ const icons = {
     transition: rotate 260ms var(--ease-out-expo), scale 260ms var(--ease-out-expo);
   }
 
-  .feature-card__copy { display: grid; align-content: start; gap: var(--space-2xs); }
+  .feature-card__copy { display: grid; align-content: start; gap: var(--space-xs); }
 
   .feature-card__title {
     font-size: var(--text-lg);

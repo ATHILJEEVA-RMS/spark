@@ -63,6 +63,7 @@ export const future = {
   body: [
     'Go for bright Orange, tropical Mango, or the familiar taste of Cola.',
     'Every flavour is available in 250 ml. Explore the range and pick the SPARK you feel like today.',
+    'Hosting a gathering? We supply for parties, weddings and events.',
   ],
   cta: { label: 'Explore the Flavours', href: '/spark/flavours' },
 };
@@ -95,7 +96,7 @@ export const craft = {
 export const ctaSection = {
   eyebrow: 'Take the next step',
   heading: ['Found your', 'flavour?'],
-  copy: 'Eight sparkling flavours. Find your favourite, or bring SPARK to your shelves.',
+  copy: 'Eight sparkling flavours. Find your favourite, or bring SPARK to your shelves — or your next event.',
   primaryCta: { label: 'Check Availability', href: '/spark/contact#availability' },
   secondaryCta: { label: 'Stock SPARK', href: '/spark/contact#distributor' },
 };
@@ -104,7 +105,7 @@ export const ctaSection = {
 export const contact = {
   eyebrow: 'Contact',
   heading: 'How can we help?',
-  copy: 'Questions about SPARK, flavour availability, retail, or distribution? Get in touch with our team.',
+  copy: 'Questions about SPARK, flavour availability, retail, distribution, or event supply? Get in touch with our team.',
   email: 'soundharyaramasamy1238@gmail.com',
   whatsapp: '918270596210',
   enquiries: [
@@ -114,8 +115,8 @@ export const contact = {
       body: 'Tell us about your business and the territory you serve. Our team will follow up with you.', icon: 'globe' },
     { title: 'Retail opportunities', id: 'retail',
       body: 'Interested in carrying SPARK? Tell us about your shop and we’ll discuss the next steps.', icon: 'basket' },
-    { title: 'Media & collaborations', id: 'media',
-      body: 'For press, events and creative partnerships, send the team a note.', icon: 'pen' },
+    { title: 'Event supply', id: 'events',
+      body: 'Planning a party, wedding or gathering? Tell us the date, city and quantity you need.', icon: 'spark' },
   ],
 };
 
@@ -142,6 +143,7 @@ export const footer = {
       links: [
         { label: 'Contact Us', href: '/spark/contact' },
         { label: 'Distribution Enquiry', href: '/spark/contact#distributor' },
+        { label: 'Event Supply', href: '/spark/contact#events' },
       ],
     },
   ],
